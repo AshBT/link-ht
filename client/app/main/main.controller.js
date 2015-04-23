@@ -25,6 +25,21 @@ angular.module('memexLinkerApp')
     //   socket.unsyncUpdates('thing');
     // });
 
-    $scope.entities = [{id:1, name:'Ada E. Yonath' ,phone:'123.456.7890'},
-     {id:0, name:'Dorothy C. Hodgkin', phone:'123.456.7890'}];
+    $scope.entities = [{
+                        id:1,
+                        name:'Ada E. Yonath',
+                        nPosts: '3',
+                        phone:'123.456.7890',
+                        imgs: ['https://placekitten.com/g/600/300',
+                                'https://placekitten.com/g/601/300',
+                                'https://placekitten.com/g/602/300',
+                                ]
+                      },
+                      {
+                        id:0,
+                        name:'Dorothy C. Hodgkin',
+                        nPosts: '4',
+                        phone:'555.456.7890',
+                        imgs: ['https://placekitten.com/g/200/300']
+                      }];
   });

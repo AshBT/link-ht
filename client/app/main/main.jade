@@ -1,6 +1,5 @@
 div(ng-include='"components/navbar/navbar.html"')
 
-
 .container
 
 	.row
@@ -8,20 +7,25 @@ div(ng-include='"components/navbar/navbar.html"')
 			.panel.panel-default
 				.panel-heading Entity Search
 				.panel-body
-					| Search: 
-					input(ng-model="searchText")
+					| Filter: 
+					input(ng-model="filterText")
 
 		.entity-panel.col-md-9
 			.panel.panel-default
 				.panel-heading {{entities.length}} Entities
 				.panel-body
-					
-					.panel.panel-default(ng-repeat='entity in entities | filter:searchText')
+					.panel.panel-default(ng-repeat='entity in entities | filter:filterText' style="height: 505px")
 						.panel-heading {{entity.phone}}
 						.panel-body
 							p Name: {{entity.name}}
-							p Last active:
+							p Last active: {{entity.nPosts}}
 							p Number of posts:
+							carousel
+								slide(ng-repeat='img in entity.imgs')
+									img(ng-src="{{img}}" style="margin:auto;")
+							a(ui-sref="entitydetail({ id: entity.id })") Inspect
+
+										
 footer.footer
 	.container
 		p Qadium 2015
