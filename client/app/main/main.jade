@@ -1,10 +1,27 @@
 div(ng-include='"components/navbar/navbar.html"')
 
 
-.col-md-12
-    | This is the main (entity search) view.
+.container
 
+	.row
+		.entity-search.col-md-3
+			.panel.panel-default
+				.panel-heading Entity Search
+				.panel-body
+					| Search: 
+					input(ng-model="searchText")
+
+		.entity-panel.col-md-9
+			.panel.panel-default
+				.panel-heading {{entities.length}} Entities
+				.panel-body
+					
+					.panel.panel-default(ng-repeat='entity in entities | filter:searchText')
+						.panel-heading {{entity.phone}}
+						.panel-body
+							p Name: {{entity.name}}
+							p Last active:
+							p Number of posts:
 footer.footer
-  .container
-    p 2015
-  
+	.container
+		p Qadium 2015
