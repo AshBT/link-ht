@@ -1,8 +1,33 @@
 div(ng-include='"components/navbar/navbar.html"')
 
-.col-md-12
-    | This is the entitydetail view for ID {{id}}
+.container
+	.row
+		.entity-summary.col-md-3
+			.panel.panel-default
+				.panel-heading Entity Profile
+				.panel-body
+					p Phone: {{entity.phone}}
+					p Names: {{entity.names}}
+					p {{ads.length}} Ads
+					p {{reviews.length}} Reviews
+		.col-md-9
+			| Calendar goes here.
 
+	.row
+		.col-md-3
+			.panel.panel-default(style="height: 300px")
+				.panel-heading Map
+				.panel-body
+					|map goes here
+		.col-md-9
+			.panel.panel-default(ng-repeat='ad in ads' style="height: 600px")
+				.panel-title.h1 {{ad.title}}
+				.panel-body
+					p {{ad.phone}}
+					p {{ad.text}}
+					carousel
+						slide(ng-repeat='img in ad.imgs')
+							img(ng-src="{{img}}" style="margin:auto;")
 footer.footer
-  .container
-    p 2015
+	.container
+		p Qadium 2015

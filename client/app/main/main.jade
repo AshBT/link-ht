@@ -14,8 +14,10 @@ div(ng-include='"components/navbar/navbar.html"')
 			.panel.panel-default
 				.panel-heading {{entities.length}} Entities
 				.panel-body
-					.panel.panel-default(ng-repeat='entity in entities | filter:filterText' style="height: 505px")
-						.panel-heading {{entity.phone}}
+					.panel.panel-default(ng-repeat='entity in entities | filter:filterText' style="height: 600px")
+						.panel-heading.clear-fix		
+								a.button.btn-primary.btn-lg.pull-right(ui-sref="entitydetail({ id: entity.id })") Inspect
+								.panel-title {{entity.phone}} 
 						.panel-body
 							p Name: {{entity.name}}
 							p Last active: {{entity.nPosts}}
@@ -23,7 +25,7 @@ div(ng-include='"components/navbar/navbar.html"')
 							carousel
 								slide(ng-repeat='img in entity.imgs')
 									img(ng-src="{{img}}" style="margin:auto;")
-							a(ui-sref="entitydetail({ id: entity.id })") Inspect
+							
 
 										
 footer.footer
