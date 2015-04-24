@@ -3,6 +3,7 @@ div(ng-include='"components/navbar/navbar.html"')
 .container
 	.row
 		.entity-summary.col-md-3
+			
 			.panel.panel-default
 				.panel-heading Entity Profile
 				.panel-body
@@ -10,24 +11,26 @@ div(ng-include='"components/navbar/navbar.html"')
 					p Names: {{entity.names}}
 					p {{ads.length}} Ads
 					p {{reviews.length}} Reviews
-		.col-md-9
-			| Calendar goes here.
 
-	.row
-		.col-md-3
 			.panel.panel-default(style="height: 300px")
 				.panel-heading Map
 				.panel-body
 					|map goes here
+			
 		.col-md-9
-			.panel.panel-default(ng-repeat='ad in ads' style="height: 600px")
-				.panel-title.h1 {{ad.title}}
-				.panel-body
-					p {{ad.phone}}
-					p {{ad.text}}
-					carousel
-						slide(ng-repeat='img in ad.imgs')
-							img(ng-src="{{img}}" style="margin:auto;")
+			cal-heatmap(config="{domain:'year',range:1,cellSize:15}")
+
+			hr
+
+			tabset
+				tab(heading='Ads')
+					include ./partials/ads.jade
+				tab(heading='Images')
+					include ./partials/images.jade
+				tab(heading='Annotations')
+					include ./partials/annotations.jade
+
+
 footer.footer
 	.container
 		p Qadium 2015

@@ -24,6 +24,13 @@ angular.module('memexLinkerApp')
     	}
     ];
 
+    $scope.photos = [
+    	{
+    		title:'photo title',
+    		src:'https://placekitten.com/g/602/300'
+    	}
+    ];
+
     $scope.reviews = [];
 
     $scope.id = $stateParams.id;

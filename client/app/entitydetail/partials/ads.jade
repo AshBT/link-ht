@@ -1,0 +1,8 @@
+.panel.panel-default(ng-repeat='ad in ads' style="height: 600px")
+				.panel-title.h1 {{ad.title}}
+				.panel-body
+					p {{ad.phone}}
+					p {{ad.text}}
+					carousel
+						slide(ng-repeat='img in ad.imgs')
+							img(ng-src="{{img}}" style="margin:auto;")
