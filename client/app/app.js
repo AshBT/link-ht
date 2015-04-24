@@ -7,7 +7,6 @@ angular.module('memexLinkerApp', [
   'btford.socket-io',
   'ui.router',
   'ui.bootstrap',
-  'calHeatmap',
   'akoenig.deckgrid'
 ])
   .config(function ($stateProvider, $urlRouterProvider, $locationProvider, $httpProvider) {
