@@ -622,6 +622,32 @@ module.exports = function (grunt) {
     ]);
   });
 
+grunt.registerTask('prod', function (target) {
+    if (target === 'dist') {
+      return grunt.task.run([
+        'build', 
+        'env:all',
+        'env:prod',
+        'express:prod',
+        'wait',
+        'express-keepalive'
+        ]);
+    }
+
+    grunt.task.run([
+      'clean:server',
+      'env:all',
+      'injector:sass', 
+      'concurrent:server',
+      'injector',
+      'wiredep',
+      'autoprefixer',
+      'express:dev',
+      'wait',
+      'express-keepalive'
+    ]);
+  });
+
   grunt.registerTask('server', function () {
     grunt.log.warn('The `server` task has been deprecated. Use `grunt serve` to start a server.');
     grunt.task.run(['serve']);
