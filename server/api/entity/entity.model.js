@@ -1,16 +1,5 @@
 'use strict';
 
-// var mongoose = require('mongoose'),
-//     Schema = mongoose.Schema;
-
-// var EntitySchema = new Schema({
-//   name: String,
-//   info: String,
-//   active: Boolean
-// });
-
-// module.exports = mongoose.model('Entity', EntitySchema);
-
 var neo4j = require('neo4j');
 var db = new neo4j.GraphDatabase(
     process.env['NEO4J_URL'] ||
@@ -45,7 +34,7 @@ Entity.prototype.del = function (callback) {
     ].join('\n')
 
     var params = {
-        userId: this.id
+        id: this.id
     };
 
     db.query(query, params, function (err) {
@@ -81,7 +70,7 @@ Entity.create = function (data, callback) {
     // construct a new instance of our class with the data, so it can
     // validate and extend it, etc., if we choose to do that in the future:
     var node = db.createNode(data);
-    var user = new Entity(node);
+    var entity = new Entity(node);
 
     // but we do the actual persisting with a Cypher query, so we can also
     // apply a label at the same time. (the save() method doesn't support

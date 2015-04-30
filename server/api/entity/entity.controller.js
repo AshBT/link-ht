@@ -5,10 +5,6 @@ var Entity = require('./entity.model');
 
 // Get list of entities
 exports.index = function(req, res) {
-  // Entity.find(function (err, entities) {
-  //   if(err) { return handleError(res, err); }
-  //   return res.json(200, entities);
-  // });
   Entity.getAll(function(err, entities){
     if(err) {
       console.log(err);
@@ -20,16 +16,11 @@ exports.index = function(req, res) {
 
 // Get a single entity
 exports.show = function(req, res) {
-  Entity.get(req,params.id, function(err, entity) {
+  Entity.get(req.params.id, function(err, entity) {
     if(err) return handleError(res, err);
     if(!entity) return res.send(404);
     return res.json(entity);
   });
-  // Entity.findById(req.params.id, function (err, entity) {
-  //   if(err) { return handleError(res, err); }
-  //   if(!entity) { return res.send(404); }
-  //   return res.json(entity);
-  // });
 };
 
 // Creates a new entity in the DB.
