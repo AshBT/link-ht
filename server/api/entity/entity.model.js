@@ -54,7 +54,8 @@ Entity.get = function (id, callback) {
 Entity.getAll = function (callback) {
     var query = [
         'MATCH (entity:Entity)',
-        'RETURN entity'
+        'RETURN entity',
+        'LIMIT 10'
     ].join('\n');
     db.query(query, null, function (err, results) {
         if (err) return callback(err);

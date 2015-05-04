@@ -7,7 +7,8 @@ angular.module('memexLinkerApp', [
   'btford.socket-io',
   'ui.router',
   'ui.bootstrap',
-  'akoenig.deckgrid'
+  'akoenig.deckgrid',
+  'ngLodash'
 ])
   .config(function ($stateProvider, $urlRouterProvider, $locationProvider, $httpProvider) {
     $urlRouterProvider
