@@ -19,8 +19,7 @@ div(ng-include='"components/navbar/navbar.html"')
 								a.button.btn-primary.btn-lg.pull-right(ui-sref="entitydetail({ id: entity.id })") Inspect
 								.panel-title {{entity.phone}} 
 						.panel-body
-							p Phone: {{entity.id | tel}}
-							p Name: {{entity.name}}
+							p Phone: {{entity.phone | tel}}
 							p Last active: {{entity.nPosts}}
 							p Number of posts:
 							carousel

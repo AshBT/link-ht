@@ -23,6 +23,14 @@ exports.show = function(req, res) {
   });
 };
 
+exports.byPhone = function(req, res) {
+  console.log('Getting ads by phone for ' + req.params.id);
+  Entity.byPhone(req.params.id, function(err, ads) {
+    if(err) return handleError(res, err);
+      return res.json(ads);
+  });
+}
+
 // Creates a new entity in the DB.
 exports.create = function(req, res) {
   Entity.create(req.body, function(err, entity) {

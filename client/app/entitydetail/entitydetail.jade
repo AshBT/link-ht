@@ -7,8 +7,10 @@ div(ng-include='"components/navbar/navbar.html"')
 			.panel.panel-default
 				.panel-heading Entity Profile
 				.panel-body
-					p Phone: {{entity.phone}}
-					p Names: {{entity.names}}
+					p Phone: {{entity.phone | tel}}
+					p Ages: {{entity.ages.join(', ')}}
+					p Cities: {{entity.cities.join(', ')}}
+					p Ethnicities: {{entity.ethnicities.join(', ')}}
 					p {{ads.length}} Ads
 					p {{reviews.length}} Reviews
 

@@ -8,7 +8,11 @@ angular.module('memexLinkerApp')
         console.log(res);
         $scope.entities = lodash.map(res, function(e){
             var nodeData = e._node._data.data;
-            return {'id' : nodeData.identifier};
+            var nodeMetaData = e._node._data.metadata;
+            return {
+              'id': nodeMetaData.id,
+              'phone' : nodeData.identifier
+            };
         });
         console.log($scope.entities);
     });

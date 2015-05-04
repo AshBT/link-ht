@@ -51,6 +51,26 @@ Entity.get = function (id, callback) {
     });
 };
 
+Entity.byPhone = function(id, callback) {
+    //match (e:Entity)-[:BY_PHONE]-(ad:Ad) where id(e) = 9480 return ad
+    console.log(id);
+    var query = [
+        'MATCH (e:Entity)-[:BY_PHONE]-(ad:Ad)',
+        'WHERE ID(e) = {id}',
+        'RETURN ad'
+    ].join('\n');
+
+    var params = {
+        id: Number(id)
+    }
+
+    db.query(query, params, function(err, results){
+        if (err) return callback(err);
+        var ads = results;
+        callback(null, ads)
+    });
+}
+
 Entity.getAll = function (callback) {
     var query = [
         'MATCH (entity:Entity)',
