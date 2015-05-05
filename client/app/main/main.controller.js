@@ -4,60 +4,53 @@ angular.module('memexLinkerApp')
   .controller('MainCtrl', function ($scope, $http, socket, lodash) {
     $scope.entities = [];
 
-    $http.get('/api/entities').success(function(res) {
-        console.log(res);
-        $scope.entities = lodash.map(res, function(e){
-            var nodeData = e._node._data.data;
-            var nodeMetaData = e._node._data.metadata;
-            return {
-              'id': nodeMetaData.id,
-              'phone' : nodeData.identifier
-            };
-        });
-        console.log($scope.entities);
+    // $http.get('/api/entities').success(function(res) {
+    //     console.log(res);
+    //     $scope.entities = lodash.map(res, function(e){
+    //         var nodeData = e._node._data.data;
+    //         var nodeMetaData = e._node._data.metadata;
+    //         return {
+    //           'id': nodeMetaData.id,
+    //           'phone' : nodeData.identifier
+    //         };
+    //     });
+    //     console.log($scope.entities);
+    //     // get other data (e.g. ads) for each entity
+    // });
+
+
+  $http.get('/api/entities').success(function(res) {
+    console.log(res);
+    var entities = lodash.map(res, function(e){
+      var nodeData = e._node._data.data;
+      var nodeMetaData = e._node._data.metadata;
+      return {
+        'id': nodeMetaData.id,
+        'phone' : nodeData.identifier
+      };
+
     });
 
-    // $scope.awesomeThings = [];
+    lodash.map(entities, function(entity) {
+          //entity.id
+          // get ads for this id
+          $http.get('api/entities/' + entity.id + '/byphone').success(function(res){
+            var ads = lodash.map(res, function(element){ 
+              return element.ad._data.data;
+            });
+            var postTimes = lodash.map(ads, function(ad){
+                return ad.posttime;
+              });
+            $scope.entities.push({
+              id: entity.id,
+              phone: entity.phone,
+              nPosts: ads.length,
+              postTimes : postTimes
+            });
 
-    // $http.get('/api/things').success(function(awesomeThings) {
-    //   $scope.awesomeThings = awesomeThings;
-    //   socket.syncUpdates('thing', $scope.awesomeThings);
-    // });
+          });
 
-    // $scope.addThing = function() {
-    //   if($scope.newThing === '') {
-    //     return;
-    //   }
-    //   $http.post('/api/things', { name: $scope.newThing });
-    //   $scope.newThing = '';
-    // };
-
-    // $scope.deleteThing = function(thing) {
-    //   $http.delete('/api/things/' + thing._id);
-    // };
-
-    // $scope.$on('$destroy', function () {
-    //   socket.unsyncUpdates('thing');
-    // });
-
-  //   $scope.entities = [{
-  //                       id:1,
-  //                       name:'Ada E. Yonath',
-  //                       nPosts: '3',
-  //                       phone:'123.456.7890',
-  //                       imgs: ['https://placekitten.com/g/600/300',
-  //                               'https://placekitten.com/g/601/300',
-  //                               'https://placekitten.com/g/602/300',
-  //                               ]
-  //                     },
-  //                     {
-  //                       id:0,
-  //                       name:'Dorothy C. Hodgkin',
-  //                       nPosts: '4',
-  //                       phone:'555.456.7890',
-  //                       imgs: ['https://placekitten.com/g/200/300']
-  //                     }];
+        });
+    });
+   
    });
-
-
-
