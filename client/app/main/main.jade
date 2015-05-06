@@ -23,9 +23,8 @@ div(ng-include='"components/navbar/navbar.html"')
 							p Post times: {{entity.postTimes.join(', ')}} 
 							p Number of posts: {{entity.nPosts}}
 							carousel
-								slide(ng-repeat='img in entity.imgs')
-									img(ng-src="{{img}}" style="margin:auto;")
+								slide(ng-repeat='img in entity.imageUrls')
+									img(ng-src="{{img}}" style="max-height:300px; margin:0 auto;")
 																	
-footer.footer
 	.container
 		p Qadium 2015
