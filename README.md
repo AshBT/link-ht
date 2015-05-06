@@ -11,7 +11,7 @@ For OS X, Homebrew is the recommended way to install the project requirements.
 - Grunt: `npm instal -g grunt-cli`
 - Sass: `brew install ruby && gem install sass`
 - Jade: `npm install jade --global`
-- Neo4j: `brew install neo4j`
+- Neo4j, version 2.1: `brew install neo4j` http://neo4j.com/download/other-releases/
 - Mongo: `brew install mongodb`
 
 Start mongo. The app will use the server and DB declared in `server/config/environment`. 
