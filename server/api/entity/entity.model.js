@@ -71,11 +71,42 @@ Entity.byPhone = function(id, callback) {
     });
 }
 
+Entity.byImage = function(id, callback) {
+    var query = [
+        'MATCH (e:Entity)-[:BY_IMG]-(ad:Ad)',
+        'WHERE ID(e) = {id} and not (e)-[:BY_PHONE]-(ad)',
+        'Return ad'
+    ].join('\n');
+
+    // var query = [
+    //     'MATCH (e:Entity)-[:BY_IMG]->(a:Ad)',
+    //     'WHERE ID(e) = {id} and r.reason = "contains-similar" and not (e)-[:BY_PHONE]->(a)',
+    //     'Return a'
+    // ].join('\n');
+
+    // var query = [
+    //     'MATCH (e:Entity)-[r:BY_IMG]->(a:Ad)',
+    //     'WHERE ID(e) = {id} and r.reason = "contains-similar" and not (e)-[:BY_PHONE]->(a)',
+    //     'Return a'
+    // ].join('\n');
+
+    var params = {
+        id: Number(id)
+    }
+
+    db.query(query, params, function(err, results){
+        if (err) return callback(err);
+        var ads = results;
+        console.log('Found ' + ads.length + ' ads related by image.');
+        callback(null, ads)
+    });
+}
+
 Entity.getAll = function (callback) {
     var query = [
         'MATCH (entity:Entity)',
         'RETURN entity',
-        'LIMIT 10'
+        'LIMIT 100'
     ].join('\n');
     db.query(query, null, function (err, results) {
         if (err) return callback(err);

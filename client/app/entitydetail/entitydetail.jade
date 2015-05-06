@@ -25,9 +25,9 @@ div(ng-include='"components/navbar/navbar.html"')
 			hr
 
 			tabset
-				tab(heading='Ads within Entity')
+				tab(heading='{{ads.length}} Ads within Entity')
 					include ./partials/ads.jade
-				tab(heading='Suggested Ads')
+				tab(heading='{{suggestedAds.length}} Suggested Ads')
 					include ./partials/images.jade
 				//tab(heading='Annotations')
 				//	include ./partials/annotations.jade

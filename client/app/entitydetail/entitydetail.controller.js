@@ -11,7 +11,7 @@ angular.module('memexLinkerApp')
     
     $scope.ads = [];
     $scope.photos = [];
-    $scope.reviews = [];
+    $scope.suggestedAds = [];
     $scope.id = $stateParams.id;
 
      $scope.entity = {
@@ -36,10 +36,26 @@ angular.module('memexLinkerApp')
               'data' : nodeData
             };            
         });
-        console.log($scope.ads);
+        //console.log($scope.ads);
         updateEntity();
 
     });
+
+    $http.get('api/entities/' + $scope.id + '/byimage').success(function(res){
+        $scope.suggestedAds = lodash.map(res, function(element){
+            console.log(element);
+            var nodeData = element.ad._data.data;
+            var nodeMetaData = element.ad._data.metadata;
+            return {
+              'id': nodeMetaData.id,
+              'data' : nodeData
+            };            
+        });
+        console.log('Suggested Ads (similar image):');
+        console.log($scope.suggestedAds);
+        updateEntity();
+    });
+
 
     function updateEntity() {
         $scope.entity.ages = lodash.uniq(

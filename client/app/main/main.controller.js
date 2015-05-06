@@ -16,6 +16,7 @@ angular.module('memexLinkerApp')
 
     // Aggregate details from ads belonging to this entity.
     lodash.map(entities, function(entity) {
+
           $http.get('api/entities/' + entity.id + '/byphone').success(function(res){
             var ads = lodash.map(res, function(element){ 
               return element.ad._data.data;
@@ -36,15 +37,36 @@ angular.module('memexLinkerApp')
               return ! lodash.isUndefined(element);
             });
 
-            var entitySummary = {
-              id: entity.id,
-              phone: entity.phone,
-              nPosts: ads.length,
-              postTimes : postTimes,
-              imageUrls: imageUrls
-            };
-            console.log(entitySummary);
-            $scope.entities.push(entitySummary);
+          // TODO: this should be done asynchronously.
+          $http.get('api/entities/' + entity.id + '/byimage').success(function(res){
+            console.log(res.length);
+              var nSuggested = res.length;
+              // var suggestedAds = lodash.map(res, function(element){
+              //   var nodeData = element.ad._data.data;
+              //   var nodeMetaData = element.ad._data.metadata;
+              //   return {
+              //     'id': nodeMetaData.id,
+              //     'data' : nodeData
+              //   };            
+              // });
+              // console.log('Suggested Ads (similar image):');
+              // console.log($scope.suggestedAds);
+
+              var entitySummary = {
+                id: entity.id,
+                phone: entity.phone,
+                nPosts: ads.length,
+                nSuggested: nSuggested,
+                postTimes : postTimes,
+                imageUrls: imageUrls
+              };
+              console.log(entitySummary);
+              $scope.entities.push(entitySummary);
+
+            });            
+
+
+            
           });
         });
 
