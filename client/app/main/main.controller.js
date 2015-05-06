@@ -5,7 +5,6 @@ angular.module('memexLinkerApp')
     $scope.entities = [];
 
   $http.get('/api/entities').success(function(res) {
-    console.log(res);
     var entities = lodash.map(res, function(e){
       var nodeData = e._node._data.data;
       var nodeMetaData = e._node._data.metadata;

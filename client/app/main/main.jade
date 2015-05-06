@@ -17,7 +17,7 @@ div(ng-include='"components/navbar/navbar.html"')
 					.panel.panel-default(ng-repeat="entity in entities | orderBy:'-nPosts' | filter:filterText" style="height: 600px")
 						.panel-heading.clear-fix		
 								a.button.btn-primary.btn-lg.pull-right(ui-sref="entitydetail({ id: entity.id })") Inspect
-								.panel-title {{entity.phone}} 
+								.panel-title {{entity.phone | tel}} 
 						.panel-body
 							p Phone: {{entity.phone | tel}}
 							p Post times: {{entity.postTimes.join(', ')}} 
