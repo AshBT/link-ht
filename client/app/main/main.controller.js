@@ -32,6 +32,9 @@ angular.module('memexLinkerApp')
               }),
               true
             );
+            imageUrls = lodash.filter(imageUrls, function(element){
+              return ! lodash.isUndefined(element);
+            });
 
             var entitySummary = {
               id: entity.id,

@@ -7,5 +7,5 @@
 					
 
 					carousel
-						slide(ng-repeat='img in ad.imgs')
-							img(ng-src="{{img}}" style="margin:auto;")
+						slide(ng-repeat='img in ad.data.image_locations')
+							img(ng-src="{{img}}" style="max-height:300px; margin:0 auto;")
