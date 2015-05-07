@@ -9,6 +9,7 @@ angular.module('memexLinkerApp')
         console.log(Auth.getCurrentUser().name);    
     }
     
+    $scope.blur = true;
     $scope.ads = [];
     $scope.photos = [];
     $scope.suggestedAds = [];

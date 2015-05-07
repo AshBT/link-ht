@@ -19,6 +19,12 @@ div(ng-include='"components/navbar/navbar.html"')
 				.panel-body
 					|map goes here
 			
+			.panel.panel-default
+				.panel-heading Options
+				.panel-body
+					label Blur Images:
+						input(type="checkbox" ng-model="blur")
+			
 		.col-md-9
 			//cal-heatmap(config="{domain:'year',range:1,cellSize:15}")
 
@@ -29,9 +35,6 @@ div(ng-include='"components/navbar/navbar.html"')
 					include ./partials/ads.jade
 				tab(heading='{{suggestedAds.length}} Suggested Ads')
 					include ./partials/images.jade
-				//tab(heading='Annotations')
-				//	include ./partials/annotations.jade
-
 
 footer.footer
 	.container

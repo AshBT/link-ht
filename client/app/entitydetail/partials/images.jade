@@ -14,4 +14,6 @@ div(ngif='suggestedAds.length===0')
 					//- 		img(ng-src="{{img}}" style="max-height:300px; margin:0 auto;")
 					row
 						col-md-3(ng-repeat='img in ad.data.image_locations')					
-							img.responsive(ng-src="{{img}}" style="max-height:100px; margin:0 auto;")						
+							img.responsive(ng-src="{{img}}" 
+								style="max-height:100px; margin:0 auto;"
+								ng-class="{blurry: blur == true, clear: blur != true}")						

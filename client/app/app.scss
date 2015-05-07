@@ -23,3 +23,22 @@ $fa-font-path: "/bower_components/font-awesome/fonts";
 @import 'main/main.scss';
 @import 'modal/modal.scss';
 // endinjector
+
+$blur: 3px;
+.blurry {
+	filter: blur($blur);
+	// Browser Specific
+	-webkit-filter: blur($blur);
+	-moz-filter: blur($blur);
+	-o-filter: blur($blur);
+	-ms-filter: blur($blur);
+}
+
+.clear {
+	filter: blur(0);
+	// Browser Specific
+	-webkit-filter: blur(0);
+	-moz-filter: blur(0);
+	-o-filter: blur(0);
+	-ms-filter: blur(0);
+}
