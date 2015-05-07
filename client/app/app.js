@@ -8,7 +8,8 @@ angular.module('memexLinkerApp', [
   'ui.router',
   'ui.bootstrap',
   'akoenig.deckgrid',
-  'ngLodash'
+  'ngLodash',
+  'calHeatmap'
 ])
   .config(function ($stateProvider, $urlRouterProvider, $locationProvider, $httpProvider) {
     $urlRouterProvider
