@@ -21,12 +21,12 @@ angular.module('memexLinkerApp')
             var ads = lodash.map(res, function(element){ 
               return element.ad._data.data;
             });
-            //console.log('Ads');
-            //console.log(ads);
             var postTimes = lodash.map(ads, function(ad){
                 // TODO: 
                 return new Date(ad.posttime);
               });
+            var lastPostTime = lodash.max(postTimes);
+            console.log(lastPostTime);
             var imageUrls = lodash.flatten(
               lodash.map(ads, function(ad) {
                 return ad.image_locations;
@@ -58,6 +58,7 @@ angular.module('memexLinkerApp')
                 nPosts: ads.length,
                 nSuggested: nSuggested,
                 postTimes : postTimes,
+                lastPostTime: lastPostTime,
                 imageUrls: imageUrls
               };
               console.log(entitySummary);

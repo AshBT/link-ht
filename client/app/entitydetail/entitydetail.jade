@@ -12,7 +12,6 @@ div(ng-include='"components/navbar/navbar.html"')
 					p Cities: {{entity.cities.join(', ')}}
 					p Ethnicities: {{entity.ethnicities.join(', ')}}
 					p {{ads.length}} Ads
-					p {{reviews.length}} Reviews
 
 			.panel.panel-default(style="height: 300px")
 				.panel-heading Map
@@ -26,6 +25,7 @@ div(ng-include='"components/navbar/navbar.html"')
 						input(type="checkbox" ng-model="blur")
 			
 		.col-md-9
+
 			cal-heatmap(config="{domain:'year',range:1,cellSize:15}")
 
 			hr
@@ -33,8 +33,10 @@ div(ng-include='"components/navbar/navbar.html"')
 			tabset
 				tab(heading='{{ads.length}} Ads within Entity')
 					include ./partials/ads.jade
+				//- tab(heading='Entity Images')
+				//- 	include ./partials/images.jade
 				tab(heading='{{suggestedAds.length}} Suggested Ads')
-					include ./partials/images.jade
+					include ./partials/suggested.jade
 
 footer.footer
 	.container

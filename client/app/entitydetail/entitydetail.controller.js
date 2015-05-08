@@ -4,10 +4,10 @@
 angular.module('memexLinkerApp')
   .controller('EntitydetailCtrl', function ($scope, $http, $stateParams, lodash, Auth) {
 
-    console.log('Logged in? ' + Auth.isLoggedIn());
-    if (Auth.isLoggedIn()) {
-        console.log(Auth.getCurrentUser().name);    
-    }
+    // console.log('Logged in? ' + Auth.isLoggedIn());
+    // if (Auth.isLoggedIn()) {
+    //     console.log(Auth.getCurrentUser().name);    
+    // }
     
     $scope.blur = true;
     $scope.ads = [];
@@ -15,12 +15,18 @@ angular.module('memexLinkerApp')
     $scope.suggestedAds = [];
     $scope.id = $stateParams.id;
 
-     $scope.entity = {
+    $scope.entity = {
         phone:'',
         cities:[],
         ages:[],
         ethnicities:[],
         heights:[]
+    };
+
+    $scope.getHost = function (url) {
+        var parser = document.createElement('a');
+        parser.href = url;
+        return parser.host;
     };
 
     $http.get('/api/entities/' + $scope.id).success(function(res) {
@@ -29,7 +35,7 @@ angular.module('memexLinkerApp')
 
     $http.get('api/entities/' + $scope.id + '/byphone').success(function(res){
         $scope.ads = lodash.map(res, function(element){
-            console.log(element);
+            //console.log(element);
             var nodeData = element.ad._data.data;
             var nodeMetaData = element.ad._data.metadata;
             return {
@@ -37,14 +43,12 @@ angular.module('memexLinkerApp')
               'data' : nodeData
             };            
         });
-        //console.log($scope.ads);
         updateEntity();
 
     });
 
     $http.get('api/entities/' + $scope.id + '/byimage').success(function(res){
         $scope.suggestedAds = lodash.map(res, function(element){
-            console.log(element);
             var nodeData = element.ad._data.data;
             var nodeMetaData = element.ad._data.metadata;
             return {
@@ -52,13 +56,11 @@ angular.module('memexLinkerApp')
               'data' : nodeData
             };            
         });
-        console.log('Suggested Ads (similar image):');
-        console.log($scope.suggestedAds);
         updateEntity();
     });
 
-
     function updateEntity() {
+        console.log($scope.ads);
         $scope.entity.ages = lodash.uniq(
             lodash.map($scope.ads, function(ad) {
                 return ad.data.age;

@@ -14,14 +14,14 @@ div(ng-include='"components/navbar/navbar.html"')
 			.panel.panel-default
 				.panel-heading {{entities.length}} Entities
 				.panel-body
-					//.panel.panel-default(ng-repeat="entity in entities | orderBy:'-nPosts' | filter:filterText" style="height: 600px")
 					.panel.panel-default(ng-repeat="entity in entities | orderBy:'-nSuggested' | filter:filterText")
 						.panel-heading.clear-fix		
 								a.button.btn-primary.btn-lg.pull-right(ui-sref="entitydetail({ id: entity.id })") Inspect
 								.panel-title {{entity.phone | tel}} 
 						.panel-body
 							p Phone: {{entity.phone | tel}}
-							p Post times: {{entity.postTimes.join(', ')}} 
+							// p Post times: {{entity.postTimes.join(', ')}} 
+							p Last post time: {{entity.lastPostTime.toDateString()}}
 							p Number of posts: {{entity.nPosts}}
 							p Number of suggested posts: {{entity.nSuggested}}
 							//- carousel
