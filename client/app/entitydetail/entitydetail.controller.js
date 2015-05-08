@@ -11,7 +11,10 @@ angular.module('memexLinkerApp')
     
     $scope.blur = true;
     $scope.ads = [];
-    $scope.photos = [];
+    //$scope.photos = [];
+
+    $scope.imageUrls = [];
+
     $scope.suggestedAds = [];
     $scope.id = $stateParams.id;
 
@@ -76,6 +79,16 @@ angular.module('memexLinkerApp')
                 return ad.data.ethnicity;
             })
         );
+
+        $scope.imageUrls = lodash.flatten(
+              lodash.map($scope.ads, function(ad) {
+                return ad.data.image_locations;
+              }),
+              true
+            );
+        $scope.imageUrls = lodash.filter($scope.imageUrls, function(element){
+          return ! lodash.isUndefined(element);
+        });
     } 
 
   });

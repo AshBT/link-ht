@@ -1,0 +1,5 @@
+row
+	col-md-3(ng-repeat='img in imageUrls')					
+		img.responsive(ng-src="{{img}}" 
+			style="max-height:200px; margin:0 auto;"
+			ng-class="{blurry: blur == true, clear: blur != true}")

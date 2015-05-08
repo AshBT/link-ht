@@ -33,8 +33,8 @@ div(ng-include='"components/navbar/navbar.html"')
 			tabset
 				tab(heading='{{ads.length}} Ads within Entity')
 					include ./partials/ads.jade
-				//- tab(heading='Entity Images')
-				//- 	include ./partials/images.jade
+				tab(heading='{{imageUrls.length}} Entity Images')
+					include ./partials/images.jade
 				tab(heading='{{suggestedAds.length}} Suggested Ads')
 					include ./partials/suggested.jade
 
