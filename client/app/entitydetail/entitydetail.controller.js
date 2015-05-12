@@ -26,6 +26,8 @@ angular.module('memexLinkerApp')
         heights:[]
     };
 
+    $scope.map = { center: { latitude: 37.7, longitude: -122.4167 }, zoom: 8 };
+
     $scope.getHost = function (url) {
         var parser = document.createElement('a');
         parser.href = url;

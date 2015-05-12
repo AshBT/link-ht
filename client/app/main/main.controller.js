@@ -26,7 +26,6 @@ angular.module('memexLinkerApp')
                 return new Date(ad.posttime);
               });
             var lastPostTime = lodash.max(postTimes);
-            console.log(lastPostTime);
             var imageUrls = lodash.flatten(
               lodash.map(ads, function(ad) {
                 return ad.image_locations;
@@ -39,7 +38,6 @@ angular.module('memexLinkerApp')
 
           // TODO: this should be done asynchronously.
           $http.get('api/entities/' + entity.id + '/byimage').success(function(res){
-            console.log(res.length);
               var nSuggested = res.length;
               // var suggestedAds = lodash.map(res, function(element){
               //   var nodeData = element.ad._data.data;
@@ -49,8 +47,6 @@ angular.module('memexLinkerApp')
               //     'data' : nodeData
               //   };            
               // });
-              // console.log('Suggested Ads (similar image):');
-              // console.log($scope.suggestedAds);
 
               var entitySummary = {
                 id: entity.id,
@@ -61,13 +57,9 @@ angular.module('memexLinkerApp')
                 lastPostTime: lastPostTime,
                 imageUrls: imageUrls
               };
-              console.log(entitySummary);
+              //console.log(entitySummary);
               $scope.entities.push(entitySummary);
-
             });            
-
-
-            
           });
         });
 

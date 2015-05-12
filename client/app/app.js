@@ -7,6 +7,7 @@ angular.module('memexLinkerApp', [
   'btford.socket-io',
   'ui.router',
   'ui.bootstrap',
+  'uiGmapgoogle-maps',
   'akoenig.deckgrid',
   'ngLodash',
   'calHeatmap'
