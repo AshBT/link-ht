@@ -2,12 +2,12 @@
 
 // TODO: inject an entity service, and use it to get the entity object
 angular.module('memexLinkerApp')
-  .controller('EntitydetailCtrl', function ($scope, $http, $stateParams, lodash, Auth) {
+.controller('EntitydetailCtrl', function ($scope, $http, $stateParams, lodash, Auth) {
 
-    // console.log('Logged in? ' + Auth.isLoggedIn());
-    // if (Auth.isLoggedIn()) {
-    //     console.log(Auth.getCurrentUser().name);    
-    // }
+    console.log('Logged in? ' + Auth.isLoggedIn());
+    if (Auth.isLoggedIn()) {
+        console.log(Auth.getCurrentUser().name);    
+    }
     
     $scope.blur = true;
     $scope.ads = [];
@@ -43,9 +43,10 @@ angular.module('memexLinkerApp')
             var nodeMetaData = element.ad._data.metadata;
             return {
               'id': nodeMetaData.id,
-              'data' : nodeData
-            };            
-        });
+              'data' : nodeData,
+              'metaData' : nodeMetaData
+          };            
+      });
         updateEntity();
 
     });
@@ -57,8 +58,8 @@ angular.module('memexLinkerApp')
             return {
               'id': nodeMetaData.id,
               'data' : nodeData
-            };            
-        });
+          };            
+      });
         updateEntity();
     });
 
@@ -68,27 +69,27 @@ angular.module('memexLinkerApp')
             lodash.map($scope.ads, function(ad) {
                 return ad.data.age;
             })
-        );
+            );
         $scope.entity.cities = lodash.uniq(
             lodash.map($scope.ads, function(ad) {
                 return ad.data.city;
             })
-        );
+            );
         $scope.entity.ethnicities = lodash.uniq(
             lodash.map($scope.ads, function(ad) {
                 return ad.data.ethnicity;
             })
-        );
+            );
 
         $scope.imageUrls = lodash.flatten(
-              lodash.map($scope.ads, function(ad) {
-                return ad.data.image_locations;
-              }),
-              true
-            );
+          lodash.map($scope.ads, function(ad) {
+            return ad.data.image_locations;
+        }),
+          true
+          );
         $scope.imageUrls = lodash.filter($scope.imageUrls, function(element){
           return ! lodash.isUndefined(element);
-        });
+      });
     } 
 
-  });
+});
