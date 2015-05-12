@@ -86,12 +86,16 @@ angular.module('memexLinkerApp')
             lodash.map($scope.ads, function(ad) {
                 return ad.data.city;
             })
-            );
+        );
+
         $scope.entity.ethnicities = lodash.uniq(
             lodash.map($scope.ads, function(ad) {
                 return ad.data.ethnicity;
             })
-            );
+        );
+        $scope.entity.ethnicities = lodash.filter($scope.entity.ethnicities, function(element){
+            return ! lodash.isEmpty(element);
+        });
 
         $scope.imageUrls = lodash.flatten(
           lodash.map($scope.ads, function(ad) {

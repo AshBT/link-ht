@@ -9,8 +9,8 @@ div(ng-include='"components/navbar/navbar.html"')
 				.panel-body
 					p Phone: {{entity.phone | tel}}
 					p Ages: {{entity.ages.join(', ')}}
-					p Cities: {{entity.cities.join(', ')}}
-					p Ethnicities: {{entity.ethnicities.join(', ')}}
+					p Cities: {{entity.cities.join(', ') | capitalize}}
+					p Ethnicities: {{entity.ethnicities.join(', ') | capitalize}}
 					p {{ads.length}} Ads
 
 			.panel.panel-default(style="height: 300px")
