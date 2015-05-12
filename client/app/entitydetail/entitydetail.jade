@@ -16,7 +16,12 @@ div(ng-include='"components/navbar/navbar.html"')
 			.panel.panel-default(style="height: 300px")
 				.panel-heading Map
 				.panel-body
-					<ui-gmap-google-map center='map.center' zoom='map.zoom'></ui-gmap-google-map>			
+					ui-gmap-google-map(center='map.center', zoom='map.zoom')
+					button(ng-click='expandMap()') 
+						|Expand Map
+
+
+					
 			.panel.panel-default
 				.panel-heading Options
 				.panel-body

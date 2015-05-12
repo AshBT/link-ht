@@ -26,12 +26,22 @@ angular.module('memexLinkerApp')
         heights:[]
     };
 
-    $scope.map = { center: { latitude: 37.7, longitude: -122.4167 }, zoom: 8 };
+    $scope.map = { 
+        center: { 
+            latitude: 37.7,
+            longitude: -122.4167
+             },
+        zoom: 8 
+    };
 
     $scope.getHost = function (url) {
         var parser = document.createElement('a');
         parser.href = url;
         return parser.host;
+    };
+
+    $scope.expandMap = function() {
+        console.log('Expand the map!');
     };
 
     $http.get('/api/entities/' + $scope.id).success(function(res) {
@@ -92,6 +102,15 @@ angular.module('memexLinkerApp')
         $scope.imageUrls = lodash.filter($scope.imageUrls, function(element){
           return ! lodash.isUndefined(element);
       });
+
+        // TODO: center the map and add markers
     } 
 
 });
+
+angular.module('memexLinkerApp').
+  filter('capitalize', function() {
+    return function(input, all) {
+      return (!!input) ? input.replace(/([^\W_]+[^\s-]*) */g, function(txt){return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase();}) : '';
+    };
+  });
