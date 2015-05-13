@@ -2,7 +2,7 @@
 
 // TODO: inject an entity service, and use it to get the entity object
 angular.module('memexLinkerApp')
-.controller('EntitydetailCtrl', function ($scope, $http, $stateParams, lodash, Auth) {
+.controller('EntitydetailCtrl', function ($scope, $http, $stateParams, $q, lodash, Auth) {
 
     console.log('Logged in? ' + Auth.isLoggedIn());
     if (Auth.isLoggedIn()) {
@@ -26,13 +26,7 @@ angular.module('memexLinkerApp')
         heights:[]
     };
 
-    $scope.map = { 
-        center: { 
-            latitude: 37.7,
-            longitude: -122.4167
-             },
-        zoom: 8 
-    };
+    $scope.map = {};
 
     $scope.getHost = function (url) {
         var parser = document.createElement('a');
@@ -84,7 +78,8 @@ angular.module('memexLinkerApp')
             );
         $scope.entity.cities = lodash.uniq(
             lodash.map($scope.ads, function(ad) {
-                return ad.data.city;
+                var city = ad.data.city;
+                return city;
             })
         );
 
@@ -107,8 +102,63 @@ angular.module('memexLinkerApp')
           return ! lodash.isUndefined(element);
       });
 
-        // TODO: center the map and add markers
+        //TODO: center the map and add markers
+        if (! lodash.isEmpty($scope.entity.cities)) {
+
+            var promise = geocodeCity($scope.entity.cities[0]);
+            promise.then(function(point) {
+              console.log(point);
+              $scope.map = {
+                center: {
+                    latitude: point.latitude,
+                    longitude: point.longitude
+                },
+                zoom: 8
+              };
+            }, function(reason) {
+              console.log('Failed');
+              console.log(reason);
+            }, function(update) {
+              alert('Got notification: ' + update);
+            });
+
+            // var latLng = geocodeCity($scope.entity.cities[0]);
+            // console.log('Geocoded:');
+            // console.log(latLng);
+            // console.log(typeof(latLng.latitude));
+            // $scope.map = { 
+            //     center: { 
+            //         latitude: latLng.latitude,
+            //         longitude: latLng.longitude
+            //     },
+            //     zoom: 8 
+            // };
+        }
     } 
+
+    var geocoder = new google.maps.Geocoder();
+    function geocodeCity(cityName) {
+        var deferred = $q.defer();
+        
+        geocoder.geocode( { 'address': cityName }, function(results, status) {
+
+            if (status === google.maps.GeocoderStatus.OK && results.length > 0) {
+                var location = results[0].geometry.location;
+                deferred.resolve({
+                    latitude: parseFloat(location.lat()),
+                    longitude: parseFloat(location.lng())
+                });
+
+            } else {
+                deferred.resolve({
+                    latitude: 0,
+                    longitude: 0
+                });
+            }
+        });
+        return deferred.promise;
+    }  
+
 
 });
 
