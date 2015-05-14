@@ -1,0 +1,28 @@
+div(ng-include='"components/navbar/navbar.html"')
+
+.container
+	
+	.row
+		.entity-search.col-md-3
+			.panel.panel-default
+				.panel-heading Ad Search
+				.panel-body
+					| Filter: 
+					input(ng-model="filterText")
+		
+		.entity-panel.col-md-9
+			.panel.panel-default(ng-repeat='ad in ads | limitTo:10')
+				.panel-heading {{ad.title}}
+				.panel-body
+					p {{getHost(ad.url)}} -- {{ad.posttime}}
+					p {{ad.text}}
+					p: a(href='{{ad.data.url}}') View post
+
+					//- carousel
+					//- 	slide(ng-repeat='img in ad.data.image_locations')
+					//- 		img(ng-src="{{img}}" style="max-height:300px; margin:0 auto;")
+					row
+						col-md-3(ng-repeat='img in ad.image_locations')					
+							img.responsive(ng-src="{{img}}" 
+								style="max-height:100px; margin:0 auto;"
+								ng-class="{blurry: blur == true, clear: blur != true}")

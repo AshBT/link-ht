@@ -2,19 +2,17 @@
 
 // TODO: inject an entity service, and use it to get the entity object
 angular.module('memexLinkerApp')
-.controller('EntitydetailCtrl', function ($scope, $http, $stateParams, $q, lodash, Auth) {
+.controller('EntitydetailCtrl', function ($scope, $http, $stateParams, $q, $modal, lodash, Auth) {
 
     console.log('Logged in? ' + Auth.isLoggedIn());
     if (Auth.isLoggedIn()) {
         console.log(Auth.getCurrentUser().name);    
     }
     
+    $scope.map = {};
     $scope.blur = true;
     $scope.ads = [];
-    //$scope.photos = [];
-
     $scope.imageUrls = [];
-
     $scope.suggestedAds = [];
     $scope.id = $stateParams.id;
 
@@ -26,17 +24,47 @@ angular.module('memexLinkerApp')
         heights:[]
     };
 
-    $scope.map = {};
-
     $scope.getHost = function (url) {
         var parser = document.createElement('a');
         parser.href = url;
         return parser.host;
     };
 
-    $scope.expandMap = function() {
-        console.log('Expand the map!');
+
+    // ---- Map Modal ------- //
+
+    $scope.lat = 34.834442;
+    $scope.lng = -82.3686479;
+
+    $scope.expandMap = function () {
+        var modalInstance = $modal.open({
+            templateUrl:'/app/entitydetail/partials/mapdetail.html',
+            controller: ModalInstanceCtrl,
+            resolve: {
+                lat: function () {
+                    return $scope.lat;
+                },
+                lng: function () {
+                    return $scope.lng;
+                }
+            }
+        });
     };
+
+    var ModalInstanceCtrl = function ($scope, $modalInstance, lat, lng) {
+        $scope.lat = lat;
+        $scope.lng = lng;
+
+        $scope.ok = function() {
+            $modalInstance.close();
+        };
+
+        $scope.cancel = function () {
+            $modalInstance.dismiss('cancel');
+        };
+    };
+
+    // ---- Map Modal ------- //
 
     $http.get('/api/entities/' + $scope.id).success(function(res) {
         $scope.entity.phone = res._node._data.data.identifier;
@@ -81,13 +109,13 @@ angular.module('memexLinkerApp')
                 var city = ad.data.city;
                 return city;
             })
-        );
+            );
 
         $scope.entity.ethnicities = lodash.uniq(
             lodash.map($scope.ads, function(ad) {
                 return ad.data.ethnicity;
             })
-        );
+            );
         $scope.entity.ethnicities = lodash.filter($scope.entity.ethnicities, function(element){
             return ! lodash.isEmpty(element);
         });
@@ -102,7 +130,7 @@ angular.module('memexLinkerApp')
           return ! lodash.isUndefined(element);
       });
 
-        //TODO: center the map and add markers
+        //TODO: Add markers
         if (! lodash.isEmpty($scope.entity.cities)) {
 
             var promise = geocodeCity($scope.entity.cities[0]);
@@ -114,25 +142,12 @@ angular.module('memexLinkerApp')
                     longitude: point.longitude
                 },
                 zoom: 8
-              };
-            }, function(reason) {
-              console.log('Failed');
-              console.log(reason);
-            }, function(update) {
-              alert('Got notification: ' + update);
-            });
-
-            // var latLng = geocodeCity($scope.entity.cities[0]);
-            // console.log('Geocoded:');
-            // console.log(latLng);
-            // console.log(typeof(latLng.latitude));
-            // $scope.map = { 
-            //     center: { 
-            //         latitude: latLng.latitude,
-            //         longitude: latLng.longitude
-            //     },
-            //     zoom: 8 
-            // };
+            };
+        }, function(reason) {
+          console.log('Failed');
+      }, function(update) {
+          console.log('Alert');
+      });
         }
     } 
 
@@ -162,9 +177,24 @@ angular.module('memexLinkerApp')
 
 });
 
+// TODO: put this under components
 angular.module('memexLinkerApp').
-  filter('capitalize', function() {
+filter('capitalize', function() {
     return function(input, all) {
       return (!!input) ? input.replace(/([^\W_]+[^\s-]*) */g, function(txt){return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase();}) : '';
-    };
-  });
+  };
+});
+
+  // Please note that $modalInstance represents a modal window (instance) dependency.
+// It is not the same as the $modal service used above.
+
+angular.module('memexLinkerApp').controller('ModalInstanceCtrl', function ($scope, $modalInstance) {
+
+  $scope.ok = function () {
+    $modalInstance.close();
+};
+
+$scope.cancel = function () {
+    $modalInstance.dismiss('cancel');
+};
+});

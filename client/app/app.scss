@@ -20,7 +20,9 @@ $fa-font-path: "/bower_components/font-awesome/fonts";
 @import 'account/login/login.scss';
 @import 'admin/admin.scss';
 @import 'entitydetail/entitydetail.scss';
+@import 'imagestream/imagestream.scss';
 @import 'main/main.scss';
+@import 'posts/posts.scss';
 @import 'modal/modal.scss';
 // endinjector
 
@@ -59,3 +61,5 @@ $blur: 3px;
 }
 
 .angular-google-map-container { height: 200px; }
+
+  map, div[map] {display:block; width:450px; height:300px;}

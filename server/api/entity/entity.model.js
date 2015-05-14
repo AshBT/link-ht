@@ -53,7 +53,7 @@ Entity.get = function (id, callback) {
 
 Entity.byPhone = function(id, callback) {
     //match (e:Entity)-[:BY_PHONE]-(ad:Ad) where id(e) = 9480 return ad
-    console.log(id);
+    //console.log(id);
     var query = [
         'MATCH (e:Entity)-[:BY_PHONE]-(ad:Ad)',
         'WHERE ID(e) = {id}',
@@ -97,7 +97,7 @@ Entity.byImage = function(id, callback) {
     db.query(query, params, function(err, results){
         if (err) return callback(err);
         var ads = results;
-        console.log('Found ' + ads.length + ' ads related by image.');
+        //console.log('Found ' + ads.length + ' ads related by image.');
         callback(null, ads)
     });
 }

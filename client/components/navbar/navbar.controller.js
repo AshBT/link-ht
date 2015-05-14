@@ -3,8 +3,16 @@
 angular.module('memexLinkerApp')
   .controller('NavbarCtrl', function ($scope, $location, Auth) {
     $scope.menu = [{
-      'title': 'Home',
+      'title': 'Entity Search',
       'link': '/'
+    },
+    {
+      'title': 'Ad Stream',
+      'link': '/posts'
+    },
+    {
+      'title': 'Image Stream',
+      'link': '/imagestream'
     }];
 
     $scope.isCollapsed = true;
