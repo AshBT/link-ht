@@ -24,7 +24,6 @@ exports.show = function(req, res) {
 };
 
 exports.byPhone = function(req, res) {
-  //console.log('Getting ads by phone for ' + req.params.id);
   Entity.byPhone(req.params.id, function(err, ads) {
     if(err) return handleError(res, err);
       return res.json(ads);
@@ -32,7 +31,6 @@ exports.byPhone = function(req, res) {
 }
 
 exports.byImage = function(req, res) {
-  //console.log('Getting ads by image for ' + req.params.id);
   Entity.byImage(req.params.id, function(err, ads) {
     if(err) return handleError(res, err);
       return res.json(ads);

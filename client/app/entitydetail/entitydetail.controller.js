@@ -4,10 +4,6 @@
 angular.module('memexLinkerApp')
 .controller('EntitydetailCtrl', function ($scope, $http, $stateParams, $q, $modal, lodash, Auth) {
 
-    console.log('Logged in? ' + Auth.isLoggedIn());
-    if (Auth.isLoggedIn()) {
-        console.log(Auth.getCurrentUser().name);    
-    }
     
     $scope.map = {};
     $scope.blur = true;
@@ -15,6 +11,13 @@ angular.module('memexLinkerApp')
     $scope.imageUrls = [];
     $scope.suggestedAds = [];
     $scope.id = $stateParams.id;
+    $scope.user = null;
+
+    //console.log('Logged in? ' + Auth.isLoggedIn());
+    if (Auth.isLoggedIn()) {
+        $scope.user = Auth.getCurrentUser();
+        console.log($scope.user);     
+    }
 
     $scope.entity = {
         phone:'',
@@ -49,6 +52,11 @@ angular.module('memexLinkerApp')
                 }
             }
         });
+    };
+
+    $scope.linkToEntity = function(ad) {
+        console.log('User ' + $scope.user.name + ' links Ad ' + ad.id +' to Entity ' + $scope.id);
+        console.log(ad);
     };
 
     var ModalInstanceCtrl = function ($scope, $modalInstance, lat, lng) {
@@ -91,7 +99,8 @@ angular.module('memexLinkerApp')
             var nodeMetaData = element.ad._data.metadata;
             return {
               'id': nodeMetaData.id,
-              'data' : nodeData
+              'data' : nodeData,
+              'suggestedByImage' : true
           };            
       });
         updateEntity();
