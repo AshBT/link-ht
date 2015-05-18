@@ -52,7 +52,6 @@ Entity.get = function (id, callback) {
 };
 
 Entity.linked = function(id, callback) {
-    //match (e:Entity)-[:BY_PHONE]-(ad:Ad) where id(e) = 9480 return ad
     var query = [
         'MATCH (e:Entity)-[r:BY_PHONE|BY_USER]-(ad:Ad)',
         'WHERE ID(e) = {id}',
@@ -71,7 +70,6 @@ Entity.linked = function(id, callback) {
 }
 
 Entity.byPhone = function(id, callback) {
-    //match (e:Entity)-[:BY_PHONE]-(ad:Ad) where id(e) = 9480 return ad
     var query = [
         'MATCH (e:Entity)-[:BY_PHONE]-(ad:Ad)',
         'WHERE ID(e) = {id}',

@@ -70,6 +70,7 @@ angular.module('memexLinkerApp')
             console.log(data);
             // this callback will be called asynchronously
             // when the response is available
+            updateLinked();
           }).
           error(function(data, status, headers, config) {
             console.log(data);
@@ -97,34 +98,41 @@ angular.module('memexLinkerApp')
         $scope.entity.phone = res._node._data.data.identifier;
     });
 
-    $http.get('api/entities/' + $scope.id + '/linked').success(function(res){
-        $scope.ads = _.map(res, function(element){
-            var nodeData = element.ad._data.data;
-            var nodeMetaData = element.ad._data.metadata;
-            return {
-              'id': nodeMetaData.id,
-              'data' : nodeData,
-              'metaData' : nodeMetaData
-          };            
-      });
-        updateEntity();
 
-    });
+    function updateLinked() {
+        console.log('updateLinked');
+        $http.get('api/entities/' + $scope.id + '/linked').success(function(res){
+            $scope.ads = _.map(res, function(element){
+                var nodeData = element.ad._data.data;
+                var nodeMetaData = element.ad._data.metadata;
+                return {
+                  'id': nodeMetaData.id,
+                  'data' : nodeData,
+                  'metaData' : nodeMetaData
+              };            
+          });
+            updateEntity();
 
-    $http.get('api/entities/' + $scope.id + '/byimage').success(function(res){
-        $scope.suggestedAds = _.map(res, function(element){
-            var nodeData = element.ad._data.data;
-            var nodeMetaData = element.ad._data.metadata;
-            return {
-              'id': nodeMetaData.id,
-              'data' : nodeData,
-              'suggestedByImage' : true
-          };            
-      });
-        updateEntity();
-    });
+        });
+    }
+
+    function updateSuggested() {
+        $http.get('api/entities/' + $scope.id + '/byimage').success(function(res){
+            $scope.suggestedAds = _.map(res, function(element){
+                var nodeData = element.ad._data.data;
+                var nodeMetaData = element.ad._data.metadata;
+                return {
+                  'id': nodeMetaData.id,
+                  'data' : nodeData,
+                  'suggestedByImage' : true
+              };            
+          });
+            updateEntity();
+        });
+    }
 
     function updateEntity() {
+        console.log('updateEntity');
         console.log($scope.ads);
         $scope.entity.ages = _.uniq(
             _.map($scope.ads, function(ad) {
@@ -199,7 +207,10 @@ angular.module('memexLinkerApp')
             }
         });
         return deferred.promise;
-    }  
+    } 
+
+    updateLinked();
+    updateSuggested(); 
 });
 
 // TODO: put this under components
