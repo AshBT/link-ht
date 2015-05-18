@@ -71,6 +71,7 @@ angular.module('memexLinkerApp')
             // this callback will be called asynchronously
             // when the response is available
             updateLinked();
+            updateSuggested();
           }).
           error(function(data, status, headers, config) {
             console.log(data);
