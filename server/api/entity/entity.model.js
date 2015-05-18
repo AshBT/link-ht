@@ -9,7 +9,7 @@ var db = new neo4j.GraphDatabase(
 
 var Entity = module.exports = function Entity(_node) {
 	this._node = _node;
-}
+}   
 
 // public instance properties:
 
@@ -51,6 +51,25 @@ Entity.get = function (id, callback) {
     });
 };
 
+Entity.linked = function(id, callback) {
+    //match (e:Entity)-[:BY_PHONE]-(ad:Ad) where id(e) = 9480 return ad
+    var query = [
+        'MATCH (e:Entity)-[r:BY_PHONE|BY_USER]-(ad:Ad)',
+        'WHERE ID(e) = {id}',
+        'RETURN ad'
+    ].join('\n');
+
+    var params = {
+        id: Number(id)
+    }
+
+    db.query(query, params, function(err, results){
+        if (err) return callback(err);
+        var ads = results;
+        callback(null, ads)
+    });
+}
+
 Entity.byPhone = function(id, callback) {
     //match (e:Entity)-[:BY_PHONE]-(ad:Ad) where id(e) = 9480 return ad
     var query = [
@@ -70,10 +89,12 @@ Entity.byPhone = function(id, callback) {
     });
 }
 
+
+// Suggested ads, based on image similarity
 Entity.byImage = function(id, callback) {
     var query = [
         'MATCH (e:Entity)-[:BY_IMG]-(ad:Ad)',
-        'WHERE ID(e) = {id} and not (e)-[:BY_PHONE]-(ad)',
+        'WHERE ID(e) = {id} and not (e)-[:BY_PHONE]-(ad) and not (e)-[:BY_USER]-(ad) ',
         'Return ad'
     ].join('\n');
 

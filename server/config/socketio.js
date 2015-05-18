@@ -18,6 +18,7 @@ function onConnect(socket) {
   });
 
   // Insert sockets below
+  //require('../api/relationship/relationship.socket').register(socket);
   //require('../api/ad/ad.socket').register(socket);
   //require('../api/entity/entity.socket').register(socket);
 }

@@ -3,8 +3,8 @@
 // TODO: inject an entity service, and use it to get the entity object
 angular.module('memexLinkerApp')
 .controller('EntitydetailCtrl', function ($scope, $http, $stateParams, $q, $modal, lodash, Auth) {
+    var _ = lodash;
 
-    
     $scope.map = {};
     $scope.blur = true;
     $scope.ads = [];
@@ -13,7 +13,6 @@ angular.module('memexLinkerApp')
     $scope.id = $stateParams.id;
     $scope.user = null;
 
-    //console.log('Logged in? ' + Auth.isLoggedIn());
     if (Auth.isLoggedIn()) {
         $scope.user = Auth.getCurrentUser();
         console.log($scope.user);     
@@ -32,7 +31,6 @@ angular.module('memexLinkerApp')
         parser.href = url;
         return parser.host;
     };
-
 
     // ---- Map Modal ------- //
 
@@ -54,9 +52,30 @@ angular.module('memexLinkerApp')
         });
     };
 
+    // Link Ad to Entity by user-confirmed image similarity.
     $scope.linkToEntity = function(ad) {
-        console.log('User ' + $scope.user.name + ' links Ad ' + ad.id +' to Entity ' + $scope.id);
-        console.log(ad);
+        console.log('link Ad ' + ad.id +' to Entity ' + $scope.id);
+        //console.log(ad);
+        // Simple POST request example (passing data) :
+        var data = {
+            idA: _.parseInt($scope.id),
+            idB: ad.id,
+            relType: 'BY_IMG',
+            properties: {
+                userName: 'test_user'
+            }
+        };
+        $http.post('/api/relationships', data).
+          success(function(data, status, headers, config) {
+            console.log(data);
+            // this callback will be called asynchronously
+            // when the response is available
+          }).
+          error(function(data, status, headers, config) {
+            console.log(data);
+            // called asynchronously if an error occurs
+            // or server returns response with an error status.
+          });
     };
 
     var ModalInstanceCtrl = function ($scope, $modalInstance, lat, lng) {
@@ -78,9 +97,8 @@ angular.module('memexLinkerApp')
         $scope.entity.phone = res._node._data.data.identifier;
     });
 
-    $http.get('api/entities/' + $scope.id + '/byphone').success(function(res){
-        $scope.ads = lodash.map(res, function(element){
-            //console.log(element);
+    $http.get('api/entities/' + $scope.id + '/linked').success(function(res){
+        $scope.ads = _.map(res, function(element){
             var nodeData = element.ad._data.data;
             var nodeMetaData = element.ad._data.metadata;
             return {
@@ -94,7 +112,7 @@ angular.module('memexLinkerApp')
     });
 
     $http.get('api/entities/' + $scope.id + '/byimage').success(function(res){
-        $scope.suggestedAds = lodash.map(res, function(element){
+        $scope.suggestedAds = _.map(res, function(element){
             var nodeData = element.ad._data.data;
             var nodeMetaData = element.ad._data.metadata;
             return {
@@ -108,39 +126,39 @@ angular.module('memexLinkerApp')
 
     function updateEntity() {
         console.log($scope.ads);
-        $scope.entity.ages = lodash.uniq(
-            lodash.map($scope.ads, function(ad) {
+        $scope.entity.ages = _.uniq(
+            _.map($scope.ads, function(ad) {
                 return ad.data.age;
             })
             );
-        $scope.entity.cities = lodash.uniq(
-            lodash.map($scope.ads, function(ad) {
+        $scope.entity.cities = _.uniq(
+            _.map($scope.ads, function(ad) {
                 var city = ad.data.city;
                 return city;
             })
             );
 
-        $scope.entity.ethnicities = lodash.uniq(
-            lodash.map($scope.ads, function(ad) {
+        $scope.entity.ethnicities = _.uniq(
+            _.map($scope.ads, function(ad) {
                 return ad.data.ethnicity;
             })
             );
         $scope.entity.ethnicities = lodash.filter($scope.entity.ethnicities, function(element){
-            return ! lodash.isEmpty(element);
+            return ! _.isEmpty(element);
         });
 
-        $scope.imageUrls = lodash.flatten(
-          lodash.map($scope.ads, function(ad) {
+        $scope.imageUrls = _.flatten(
+          _.map($scope.ads, function(ad) {
             return ad.data.image_locations;
         }),
           true
           );
-        $scope.imageUrls = lodash.filter($scope.imageUrls, function(element){
-          return ! lodash.isUndefined(element);
+        $scope.imageUrls = _.filter($scope.imageUrls, function(element){
+          return ! _.isUndefined(element);
       });
 
         //TODO: Add markers
-        if (! lodash.isEmpty($scope.entity.cities)) {
+        if (! _.isEmpty($scope.entity.cities)) {
 
             var promise = geocodeCity($scope.entity.cities[0]);
             promise.then(function(point) {
@@ -182,8 +200,6 @@ angular.module('memexLinkerApp')
         });
         return deferred.promise;
     }  
-
-
 });
 
 // TODO: put this under components
@@ -194,16 +210,3 @@ filter('capitalize', function() {
   };
 });
 
-  // Please note that $modalInstance represents a modal window (instance) dependency.
-// It is not the same as the $modal service used above.
-
-angular.module('memexLinkerApp').controller('ModalInstanceCtrl', function ($scope, $modalInstance) {
-
-  $scope.ok = function () {
-    $modalInstance.close();
-};
-
-$scope.cancel = function () {
-    $modalInstance.dismiss('cancel');
-};
-});

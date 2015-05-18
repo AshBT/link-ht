@@ -23,6 +23,16 @@ exports.show = function(req, res) {
   });
 };
 
+// All ads linked to this entity
+exports.linked = function(req, res) {
+  console.log('linked: ' + req.params.id);
+  Entity.linked(req.params.id, function(err, ads) {
+    if(err) return handleError(res, err);
+      return res.json(ads);
+  });
+}
+
+// Ads linked to this entity by phone
 exports.byPhone = function(req, res) {
   Entity.byPhone(req.params.id, function(err, ads) {
     if(err) return handleError(res, err);
@@ -30,6 +40,8 @@ exports.byPhone = function(req, res) {
   });
 }
 
+
+// Ads suggested by image similarity
 exports.byImage = function(req, res) {
   Entity.byImage(req.params.id, function(err, ads) {
     if(err) return handleError(res, err);
