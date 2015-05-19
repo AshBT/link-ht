@@ -7,30 +7,37 @@ angular.module('memexLinkerApp')
 
     $scope.entities = [];
 
-  $http.get('/api/entities').success(function(res) {
-    var entities = _.map(res, function(e){
-      var nodeData = e._node._data.data;
-      var nodeMetaData = e._node._data.metadata;
-      return {
-        'id': nodeMetaData.id,
-        'phone' : nodeData.identifier
-      };
-    });
+    $http.get('/api/entities').success(function(res) {
+      var entities = _.map(res, function(e){
+        // var _id = e._node._id;
+        // var labels = e._node.labels;
+        // var properties = e._node.properties;
+        return {
+          'id': e._node._id,
+          'phone' : e._node.properties.identifier
+        };
+      });
 
-    // Aggregate details from ads belonging to this entity.
+    //Aggregate details from ads belonging to each entity.
     lodash.map(entities, function(entity) {
 
           $http.get('api/entities/' + entity.id + '/byphone').success(function(res){
             var ads = _.map(res, function(element){ 
-              return element.ad._data.data;
+              //console.log(element);
+              var ad = {
+                'id':element.ad._id,
+                'labels':element.ad.labels,
+                'properties':element.ad.properties
+              };
+              return ad;
             });
             var postTimes = _.map(ads, function(ad){
-                return new Date(ad.posttime);
+                return new Date(ad.properties.posttime);
               });
             var lastPostTime = _.max(postTimes);
             var imageUrls = lodash.flatten(
               _.map(ads, function(ad) {
-                return ad.image_locations;
+                return ad.properties.image_locations;
               }),
               true
             );
@@ -41,14 +48,6 @@ angular.module('memexLinkerApp')
           // TODO: this should be done asynchronously.
           $http.get('api/entities/' + entity.id + '/byimage').success(function(res){
               var nSuggested = res.length;
-              // var suggestedAds = lodash.map(res, function(element){
-              //   var nodeData = element.ad._data.data;
-              //   var nodeMetaData = element.ad._data.metadata;
-              //   return {
-              //     'id': nodeMetaData.id,
-              //     'data' : nodeData
-              //   };            
-              // });
 
               var entitySummary = {
                 id: entity.id,
@@ -62,8 +61,7 @@ angular.module('memexLinkerApp')
               $scope.entities.push(entitySummary);
             });            
           });
-        });
-
     });
-   
-   });
+
+  });
+});
