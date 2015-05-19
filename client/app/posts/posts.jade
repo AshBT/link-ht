@@ -12,14 +12,14 @@ div(ng-include='"components/navbar/navbar.html"')
 		
 		.entity-panel.col-md-9
 			.panel.panel-default(ng-repeat='ad in ads | limitTo:10')
-				.panel-heading {{ad.title}}
+				.panel-heading {{ad.properties.title}}
 				.panel-body
-					p {{getHost(ad.url)}} -- {{ad.posttime}}
-					p {{ad.text}}
-					p: a(href='{{ad.data.url}}') View post
+					p {{getHost(ad.properties.url)}} -- {{ad.properties.posttime}}
+					p {{ad.properties.text}}
+					p: a(href='{{ad.properties.url}}') View post
 
 					row
-						col-md-3(ng-repeat='img in ad.image_locations')					
+						col-md-3(ng-repeat='img in ad.properties.image_locations')					
 							img.responsive(ng-src="{{img}}" 
 								style="max-height:100px; margin:0 auto;"
 								ng-class="{blurry: blur == true, clear: blur != true}")

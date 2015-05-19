@@ -1,12 +1,5 @@
 'use strict';
 
-// var neo4j = require('neo4j');
-// var db = new neo4j.GraphDatabase(
-//     process.env['NEO_HOST'] ||
-//     process.env['GRAPHENEDB_URL'] ||
-//     'http://localhost:7474'
-// );
-
 var neo4j = require('neo4j');
 
 var NEO_HOST = process.env['NEO_HOST'] || 'http://localhost:7474';
@@ -21,9 +14,6 @@ var db = new neo4j.GraphDatabase({
     agent: null,    // optional http.Agent instance, for custom socket pooling
 });
 
-
-// user: neo4j
-//neo4j.52.8.52.176.xip.io
 
 var Entity = module.exports = function Entity(_node) {
 	this._node = _node;
@@ -63,7 +53,6 @@ Entity.prototype.del = function (callback) {
 // static methods:
 
 Entity.get = function (id, callback) {
-    console.log('Entity.get');
     var query = [
         'MATCH (entity:Entity)',
         'WHERE ID(entity) = {id}',
@@ -79,8 +68,6 @@ Entity.get = function (id, callback) {
             console.log(err);
             return callback(err);
         }
-        console.log('results:');
-        console.log(results);
         callback(null, new Entity(results[0]['entity']));
     });
 

@@ -1,11 +1,19 @@
 'use strict';
 
 var neo4j = require('neo4j');
-var db = new neo4j.GraphDatabase(
-    process.env['NEO4J_URL'] ||
-    process.env['GRAPHENEDB_URL'] ||
-    'http://localhost:7474'
-);
+
+var NEO_HOST = process.env['NEO_HOST'] || 'http://localhost:7474';
+var NEO_PASS = process.env['NEO_PASS'];
+var NEO_USER = process.env['NEO_USER'];
+
+var db = new neo4j.GraphDatabase({
+    url: 'http://localhost:7474',
+    auth: {username: NEO_USER, password: NEO_PASS},     // optional; see below for more details
+    headers: {},    // optional defaults, e.g. User-Agent
+    proxy: null,    // optional URL
+    agent: null,    // optional http.Agent instance, for custom socket pooling
+});
+
 
 var Relationship = module.exports = function Relationship(_node) {
 	this._node = _node;
