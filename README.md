@@ -8,7 +8,7 @@ For OS X, Homebrew is the recommended way to install the project requirements.
 
 - Node: `brew install node`
 - Bower: `npm install -g bower`
-- Grunt: `npm instal -g grunt-cli`
+- Grunt: `npm install -g grunt-cli`
 - Sass: `brew install ruby && gem install sass`
 - Jade: `npm install jade --global`
 - Neo4j, version 2.1: `brew install neo4j` http://neo4j.com/download/other-releases/
@@ -33,4 +33,5 @@ bower install
 npm install
 grunt serve
 ```
+
 
