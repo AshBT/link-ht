@@ -2,7 +2,7 @@
 //- 	p No suggested ads.
 
 .panel.panel-default(ng-repeat='ad in suggestedAds')
-	.panel-title.h1 {{ad.data.title}}
+	#head2.panel-title.h1 {{ad.data.title}}
 	.panel-body
 		p {{getHost(ad.data.url)}} -- {{ad.data.posttime}}
 		p {{ad.data.text}}

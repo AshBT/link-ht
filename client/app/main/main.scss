@@ -7,11 +7,30 @@
     margin-top: -20px;
 }
 
+
+
 #banner h1 {
     font-size: 60px;
     line-height: 1;
     letter-spacing: -1px;
 }
+
+#box {
+    border-color: #ADEBFF;
+}
+#head1 {
+    background: #5CBDFF;
+    font-size: 20px;
+
+}
+#head2 {
+    background: #CCCCCC;
+    font-size: 16px;    
+}
+#head3 {
+    background: #ADEBFF;    
+}
+
 
 .hero-unit {
     position: relative;
@@ -27,6 +46,7 @@
     padding: 30px 0;
     margin-top: 70px;
     border-top: 1px solid #E5E5E5;
+    background-color: #FFFFFF;
 }
 
 .glyphicon {

@@ -26,6 +26,49 @@ $fa-font-path: "/bower_components/font-awesome/fonts";
 @import 'modal/modal.scss';
 // endinjector
 
+
+/* navbar */
+.navbar-default {
+    background-color: #00007A;
+    border-color: #E7E7E7;
+}
+/* title */
+.navbar-default .navbar-brand {
+    color: #FFFFFF;
+    font-size: 22px;
+}
+.navbar-default .navbar-brand:hover,
+.navbar-default .navbar-brand:focus {
+    color: #FFFFFF;
+    font-size: 22px;
+
+}
+
+.navbar-default .navbar-nav > li > a {
+    color: #FFFFFF;
+    font-size: 18px;
+}
+.navbar-default .navbar-nav > li > a:hover,
+.navbar-default .navbar-nav > li > a:focus {
+    color: #FFFFFF;
+    font-size: 20px;
+}
+
+.navbar-default .navbar-nav > .active > a, 
+.navbar-default .navbar-nav > .active > a:hover, 
+.navbar-default .navbar-nav > .active > a:focus {
+    color: #000000;
+    font-size: 20px;
+    background-color: #6699FF;
+}
+
+body {
+  background : #ADEBFF;
+  & .sub {
+    background: #000;
+  }
+}
+
 $blur: 3px;
 .blurry {
 	filter: blur($blur);

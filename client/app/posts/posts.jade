@@ -3,16 +3,28 @@ div(ng-include='"components/navbar/navbar.html"')
 .container
 	
 	.row
-		.entity-search.col-md-3
-			.panel.panel-default
-				.panel-heading Ad Search
+		.entity-search.col-md-12
+			#box.panel.panel-default
+				#head1.panel-heading Ad Search
 				.panel-body
 					| Filter: 
 					input(ng-model="filterText")
+					br
+					br
+					label Blur Images:
+						input(type="checkbox" ng-model="blur")
 		
+		.entity-panel.col-md-3
+			.panel.panel-default(ng-repeat='ad in ads | limitTo:10')
+				#head2.panel-heading Hi
+				p 1
+				p 2
+				p 3
+				
+
 		.entity-panel.col-md-9
 			.panel.panel-default(ng-repeat='ad in ads | limitTo:10')
-				.panel-heading {{ad.title}}
+				#head2.panel-heading {{ad.title}}
 				.panel-body
 					p {{getHost(ad.url)}} -- {{ad.posttime}}
 					p {{ad.text}}

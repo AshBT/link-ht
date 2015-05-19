@@ -1,9 +1,9 @@
 .panel.panel-default(ng-repeat='ad in ads')
-	.panel-title.h1 {{ad.data.title}}
+	#head2.panel-heading  {{getHost(ad.data.url)}} -- {{ad.data.posttime}}
 	.panel-body
-		p {{getHost(ad.data.url)}} -- {{ad.data.posttime}}
-		p {{ad.data.text}}
-		p: a(href='{{ad.data.url}}') View post
+		p Title: {{ad.data.title}}
+		p Text: {{ad.data.text}}
+		p: a(href='{{ad.data.url}}') View original post
 
 		//- carousel
 		//- 	slide(ng-repeat='img in ad.data.image_locations')

@@ -9,6 +9,7 @@ angular.module('memexLinkerApp')
     $scope.blur = true;
     $scope.ads = [];
     $scope.imageUrls = [];
+    $scope.face_image_url = [];
     $scope.suggestedAds = [];
     $scope.id = $stateParams.id;
     $scope.user = null;
@@ -165,6 +166,18 @@ angular.module('memexLinkerApp')
         $scope.imageUrls = _.filter($scope.imageUrls, function(element){
           return ! _.isUndefined(element);
       });
+        $scope.face_image_url = _.flatten(
+          _.map($scope.ads, function(ad) {
+            return ad.data.face_image_url;
+        }),
+        true
+          );
+        $scope.face_image_url = _.filter($scope.face_image_url, function(element){
+          return ! _.isUndefined(element);
+      })
+
+
+        ;
 
         //TODO: Add markers
         if (! _.isEmpty($scope.entity.cities)) {

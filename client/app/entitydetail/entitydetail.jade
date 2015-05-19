@@ -1,20 +1,46 @@
 div(ng-include='"components/navbar/navbar.html"')
 
 .container
-	.row
+	.row 
 		.entity-summary.col-md-3
 			
-			.panel.panel-default
-				.panel-heading Entity Profile
+			#box.panel.panel-default
+				#head1.panel-heading Profile Picture 
+				.panel-body
+					col-md-3(ng-repeat='img in ad.data.face_image_url')					
+						img.responsive(ng-src="{{img}}" 
+							style="max-height:100px; margin:0 auto;"
+					ng-class="{blurry: blur == true, clear: blur != true}")
+					br
+					label Blur Images:
+					input(type="checkbox" ng-model="blur")
+					br 
+					button.btn-success() Save Entity
+
+			#box.panel.panel-default
+				#head1.panel-heading Attributes
 				.panel-body
 					p Phone: {{entity.phone | tel}}
 					p Ages: {{entity.ages.join(', ')}}
-					p Cities: {{entity.cities.join(', ') | capitalize}}
+					p Cities: {{math.min(entity.ages)}}
 					p Ethnicities: {{entity.ethnicities.join(', ') | capitalize}}
-					p {{ads.length}} Ads
+					p Ads: {{ads.length}} 
+					p Hourly Price Range: {{math.min(entity.price)}} -- {{math.max(entity.price)}}
+					p Mode Price: {{math.mode(entity.price)}}
+					p Height: {{entity.height.join(', ')}}
+					p Weight: {{entity.weight.join(', ')}}
+					p Eyes: {{entity.eyes.join(', ')}}
+					p Hair: {{entity.hair.join(', ')}}
 
-			.panel.panel-default(style="height: 300px")
-				.panel-heading Map
+			#box.panel.panel-default
+				#head1.panel-heading Notes
+				.panel-body
+					p User A: "..."
+					p User B: "..."
+					p User C: "..."
+
+			#box.panel.panel-default(style="height: 300px")
+				#head1.panel-heading Map
 				.panel-body
 					ui-gmap-google-map(center='map.center', zoom='map.zoom')
 					button(ng-click='expandMap()') 
@@ -22,26 +48,35 @@ div(ng-include='"components/navbar/navbar.html"')
 
 
 					
-			.panel.panel-default
-				.panel-heading Options
+			#box.panel.panel-default
+				#head1.panel-heading Cities
 				.panel-body
-					label Blur Images:
-						input(type="checkbox" ng-model="blur")
+					p {{entity.cities.join(', ') | capitalize}}
+					p And more cities listed here
+					p Because some have lots of cities
+					
 			
 		.col-md-9
-
-			cal-heatmap(config="{domain:'year',range:1,cellSize:15}")
+			#box.panel.panel-default
+				#head1.panel-heading Calendar -- Active since November 2, 2012
+				cal-heatmap(config="{domain:'year',range:1,cellSize:14}")
 
 			hr
 
+
+
+
 			tabset
-				tab(heading='{{ads.length}} Ads within Entity')
+				tab(heading='{{ads.length}} Ads and Reviews')
 					include ./partials/ads.jade
-				tab(heading='{{imageUrls.length}} Entity Images')
+				tab(heading='{{imageUrls.length}} Images')
 					include ./partials/images.jade
-				tab(heading='{{suggestedAds.length}} Suggested Ads')
+				tab(heading='{{suggestedAds.length}} Similar Ads')
 					include ./partials/suggested.jade
+
+
 
 footer.footer
 	.container
-		p Qadium 2015
+		p Designed and Developed by Qadium 2015. All code is open source.
+		p About Help Terms Privacy 

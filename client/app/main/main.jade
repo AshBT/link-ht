@@ -4,29 +4,55 @@ div(ng-include='"components/navbar/navbar.html"')
 
 	.row
 		.entity-search.col-md-3
-			.panel.panel-default
-				.panel-heading Entity Search
+			#box.panel.panel-default
+				#head1.panel-heading Entity Search
 				.panel-body
 					span.glyphicon.glyphicon-search 
 					input(ng-model="filterText")
+					br
+					br
+					label Blur Images:
+						input(type="checkbox" ng-model="blur")
+
+			#box.panel.panel-default
+				#head1.panel-heading Aggregate Results
+				.panel-body
+					p Ads: {{entities.length}}
+					p Reviews: {{reviews.length}} 
+					p Pictures: {{entities.imageUrls.length}}
+					p Phones: {{phones.length}} 
+					p Age Range: {{math.min(entity.age)}} -- {{math.max(entity.age)}}
+					p Price Range: {{math.min(entity.price)}} -- {{math.max(entity.price)}}
+					p Cities: {{cities.length}}
+					p Ethnicities: {{ethnicities.length}}
+					p Websites: {{websites.length}}
 
 		.entity-panel.col-md-9
-			.panel.panel-default
-				.panel-heading {{entities.length}} Entities
-				.panel-body
+			#box.panel.panel-default
+				#head1.panel-heading {{entities.length}} Entities
+				#head3.panel-body
 					.panel.panel-default(ng-repeat="entity in entities | orderBy:'-nSuggested' | filter:filterText")
-						.panel-heading.clear-fix		
+						#head2.panel-heading.clear-fix		
 								a.button.btn-primary.btn-lg.pull-right(ui-sref="entitydetail({ id: entity.id })") Inspect
-								.panel-title {{entity.phone | tel}} 
+								.panel-title 
+									strong {{entity.phone | tel}}
+									|  -- Last post time: {{entity.lastPostTime.toDateString()}}
 						.panel-body
-							p Phone: {{entity.phone | tel}}
+							//p Phone: {{entity.phone | tel}}
 							// p Post times: {{entity.postTimes.join(', ')}} 
-							p Last post time: {{entity.lastPostTime.toDateString()}}
-							p Number of posts: {{entity.nPosts}}
-							p Number of suggested posts: {{entity.nSuggested}}
-							//- carousel
-							//- 	slide(ng-repeat='img in entity.imageUrls')
-							//- 		img(ng-src="{{img}}" style="max-height:300px; margin:0 auto;")
+							//p Last post time: {{entity.lastPostTime.toDateString()}}
+							p Posts: {{entity.nPosts}}
+							p Posts with similar images: {{entity.nSuggested}}
+							p Images: {{entity.imageUrls.length}}
+							row
+								col-md-3(ng-repeat='img in entity.imageUrls')					
+									img.responsive(ng-src="{{img}}" 
+										style="max-height:50px; margin:0 auto;"
+										ng-class="{blurry: blur == true, clear: blur != true}")
+							//carousel
+							//	slide(ng-repeat='img in entity.imageUrls')
+							//		img(ng-src="{{img}}" style="max-height:200px; margin:0 auto;")
 																	
-	.container
-		p Qadium 2015
+	footer.footer
+		center Designed and Developed by Qadium 2015. All code is open source.
+		center About Help Terms Privacy 

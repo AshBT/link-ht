@@ -13,7 +13,12 @@ angular.module('memexLinkerApp')
     {
       'title': 'Image Stream',
       'link': '/imagestream'
-    }];
+    },
+    {
+      'title': 'Saved Entities',
+      'link': '/savedentities'
+    }]
+    ;
 
     $scope.isCollapsed = true;
     $scope.isLoggedIn = Auth.isLoggedIn;
