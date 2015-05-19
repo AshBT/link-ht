@@ -113,7 +113,8 @@ angular.module('memexLinkerApp')
               var ad = {
                 'id':element.ad._id,
                 'labels':element.ad.labels,
-                'properties':element.ad.properties
+                'properties':element.ad.properties,
+                'suggestedByImage':true
               };
               return ad;
             });
