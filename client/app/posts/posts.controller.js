@@ -6,10 +6,15 @@ angular.module('memexLinkerApp')
     $scope.ads = [];
 
     $http.get('/api/ads/').success(function(res) {
-        $scope.ads = lodash.map(res, function(element){ 
-              return element._node._data.data;
+    	$scope.ads = _.map(res, function(element){ 
+    		console.log(element);
+              var ad = {
+                'id':element._node._id,
+                'labels':element._node.labels,
+                'properties':element._node.properties
+              };
+              return ad;
             });
-        console.log($scope.ads);
     });
 
   });

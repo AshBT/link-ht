@@ -1,11 +1,19 @@
 'use strict';
 
 var neo4j = require('neo4j');
-var db = new neo4j.GraphDatabase(
-    process.env['NEO4J_URL'] ||
-    process.env['GRAPHENEDB_URL'] ||
-    'http://localhost:7474'
-);
+
+var NEO_HOST = process.env['NEO_HOST'] || 'http://localhost:7474';
+var NEO_PASS = process.env['NEO_PASS'];
+var NEO_USER = process.env['NEO_USER'];
+
+var db = new neo4j.GraphDatabase({
+    url: 'http://localhost:7474',
+    auth: {username: NEO_USER, password: NEO_PASS},     // optional; see below for more details
+    headers: {},    // optional defaults, e.g. User-Agent
+    proxy: null,    // optional URL
+    agent: null,    // optional http.Agent instance, for custom socket pooling
+});
+
 
 var Ad = module.exports = function Ad(_node) {
 	this._node = _node;
@@ -34,10 +42,10 @@ Ad.prototype.del = function (callback) {
     ].join('\n')
 
     var params = {
-        id: this.id
+        id: Number(this.id)
     };
 
-    db.query(query, params, function (err) {
+    db.cypher({query:query, params:params}, function (err) {
         callback(err);
     });
 };
@@ -45,9 +53,26 @@ Ad.prototype.del = function (callback) {
 // static methods:
 
 Ad.get = function (id, callback) {
-    db.getNodeById(id, function (err, node) {
-        if (err) return callback(err);
-        callback(null, new Ad(node));
+    // db.getNodeById(id, function (err, node) {
+    //     if (err) return callback(err);
+    //     callback(null, new Ad(node));
+    // });
+    var query = [
+        'MATCH (ad:Ad)',
+        'WHERE ID(ad) = {id}',
+        'RETURN ad'
+    ].join('\n')
+
+    var params = {
+        id: Number(id)
+    };
+
+    db.cypher({query:query, params:params}, function (err, results) {
+        if (err) {
+            console.log(err);
+            return callback(err);
+        }
+        callback(null, new Ad(results[0]['ad']));
     });
 };
 
@@ -56,7 +81,7 @@ Ad.getAll = function (callback) {
         'MATCH (ad:Ad)',
         'RETURN ad'
     ].join('\n');
-    db.query(query, null, function (err, results) {
+    db.cypher(query, function (err, results) {
         if (err) return callback(err);
         var ads = results.map(function (result) {
             return new Ad(result['ad']);
@@ -69,8 +94,8 @@ Ad.getAll = function (callback) {
 Ad.create = function (data, callback) {
     // construct a new instance of our class with the data, so it can
     // validate and extend it, etc., if we choose to do that in the future:
-    var node = db.createNode(data);
-    var ad = new Ad(node);
+    //var node = db.createNode(data);
+    //var ad = new Ad(node);
 
     // but we do the actual persisting with a Cypher query, so we can also
     // apply a label at the same time. (the save() method doesn't support
@@ -84,7 +109,7 @@ Ad.create = function (data, callback) {
         data: data
     };
 
-    db.query(query, params, function (err, results) {
+    db.cypher({query:query, params:params}, function (err, results) {
         if (err) return callback(err);
         var ad = new Ad(results[0]['ad']);
         callback(null, ad);

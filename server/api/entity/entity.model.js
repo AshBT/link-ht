@@ -1,11 +1,19 @@
 'use strict';
 
 var neo4j = require('neo4j');
-var db = new neo4j.GraphDatabase(
-    process.env['NEO4J_URL'] ||
-    process.env['GRAPHENEDB_URL'] ||
-    'http://localhost:7474'
-);
+
+var NEO_HOST = process.env['NEO_HOST'] || 'http://localhost:7474';
+var NEO_PASS = process.env['NEO_PASS'];
+var NEO_USER = process.env['NEO_USER'];
+
+var db = new neo4j.GraphDatabase({
+    url: 'http://localhost:7474',
+    auth: {username: NEO_USER, password: NEO_PASS},     // optional; see below for more details
+    headers: {},    // optional defaults, e.g. User-Agent
+    proxy: null,    // optional URL
+    agent: null,    // optional http.Agent instance, for custom socket pooling
+});
+
 
 var Entity = module.exports = function Entity(_node) {
 	this._node = _node;
@@ -37,7 +45,7 @@ Entity.prototype.del = function (callback) {
         id: this.id
     };
 
-    db.query(query, params, function (err) {
+    db.cypher({query:query, params:params}, function (err) {
         callback(err);
     });
 };
@@ -45,10 +53,24 @@ Entity.prototype.del = function (callback) {
 // static methods:
 
 Entity.get = function (id, callback) {
-    db.getNodeById(id, function (err, node) {
-        if (err) return callback(err);
-        callback(null, new Entity(node));
+    var query = [
+        'MATCH (entity:Entity)',
+        'WHERE ID(entity) = {id}',
+        'RETURN entity'
+    ].join('\n')
+
+    var params = {
+        id: Number(id)
+    };
+
+    db.cypher({query:query, params:params}, function (err, results) {
+        if (err) {
+            console.log(err);
+            return callback(err);
+        }
+        callback(null, new Entity(results[0]['entity']));
     });
+
 };
 
 Entity.linked = function(id, callback) {
@@ -62,7 +84,7 @@ Entity.linked = function(id, callback) {
         id: Number(id)
     }
 
-    db.query(query, params, function(err, results){
+    db.cypher({query:query, params:params}, function(err, results){
         if (err) return callback(err);
         var ads = results;
         callback(null, ads)
@@ -80,7 +102,7 @@ Entity.byPhone = function(id, callback) {
         id: Number(id)
     }
 
-    db.query(query, params, function(err, results){
+    db.cypher({query:query, params:params}, function(err, results){
         if (err) return callback(err);
         var ads = results;
         callback(null, ads)
@@ -100,7 +122,7 @@ Entity.byImage = function(id, callback) {
         id: Number(id)
     }
 
-    db.query(query, params, function(err, results){
+    db.cypher({query:query, params:params}, function(err, results){
         if (err) return callback(err);
         var ads = results;
         callback(null, ads)
@@ -113,10 +135,19 @@ Entity.getAll = function (callback) {
         'RETURN entity',
         'LIMIT 100'
     ].join('\n');
-    db.query(query, null, function (err, results) {
+    // db.query(query, null, function (err, results) {
+    //     if (err) return callback(err);
+    //     var entities = results.map(function (result) {
+    //         return new Entity(result['entity']);
+    //     });
+    //     callback(null, entities);
+    // });
+    db.cypher(query, function(err, results) {
         if (err) return callback(err);
-        var entities = results.map(function (result) {
-            return new Entity(result['entity']);
+        console.log(results);
+        //{entity: { _id: 28380, labels: [Object], properties: [Object] }}
+        var entities = results.map(function(result){
+            return new Entity(result.entity);
         });
         callback(null, entities);
     });
@@ -141,7 +172,7 @@ Entity.create = function (data, callback) {
         data: data
     };
 
-    db.query(query, params, function (err, results) {
+    db.cypher({query:query, params:params}, function (err, results) {
         if (err) return callback(err);
         var entity = new Entity(results[0]['entity']);
         callback(null, entity);

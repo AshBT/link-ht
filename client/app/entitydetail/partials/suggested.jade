@@ -2,14 +2,16 @@
 //- 	p No suggested ads.
 
 .panel.panel-default(ng-repeat='ad in suggestedAds')
-	#head2.panel-title.h1 {{ad.data.title}}
+
+	#head2.panel-title.h1 {{ad.properties.title}}
+
 	.panel-body
-		p {{getHost(ad.data.url)}} -- {{ad.data.posttime}}
-		p {{ad.data.text}}
-		p: a(href='{{ad.data.url}}') View post
+		p {{getHost(ad.properties.url)}} -- {{ad.properties.posttime}}
+		p {{ad.properties.text}}
+		p: a(href='{{ad.properties.url}}') View post
 
 		row
-			col-md-3(ng-repeat='img in ad.data.image_locations')					
+			col-md-3(ng-repeat='img in ad.properties.image_locations')					
 				img.responsive(ng-src="{{img}}" 
 					style="max-height:100px; margin:0 auto;"
 					ng-class="{blurry: blur == true, clear: blur != true}")

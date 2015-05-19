@@ -56,8 +56,6 @@ angular.module('memexLinkerApp')
     // Link Ad to Entity by user-confirmed image similarity.
     $scope.linkToEntity = function(ad) {
         console.log('link Ad ' + ad.id +' to Entity ' + $scope.id);
-        //console.log(ad);
-        // Simple POST request example (passing data) :
         var data = {
             idA: _.parseInt($scope.id),
             idB: ad.id,
@@ -68,16 +66,11 @@ angular.module('memexLinkerApp')
         };
         $http.post('/api/relationships', data).
           success(function(data, status, headers, config) {
-            console.log(data);
-            // this callback will be called asynchronously
-            // when the response is available
             updateLinked();
             updateSuggested();
           }).
           error(function(data, status, headers, config) {
             console.log(data);
-            // called asynchronously if an error occurs
-            // or server returns response with an error status.
           });
     };
 
@@ -97,60 +90,61 @@ angular.module('memexLinkerApp')
     // ---- Map Modal ------- //
 
     $http.get('/api/entities/' + $scope.id).success(function(res) {
-        $scope.entity.phone = res._node._data.data.identifier;
+        $scope.entity.phone = res._node.properties.identifier;
     });
 
 
     function updateLinked() {
-        console.log('updateLinked');
         $http.get('api/entities/' + $scope.id + '/linked').success(function(res){
-            $scope.ads = _.map(res, function(element){
-                var nodeData = element.ad._data.data;
-                var nodeMetaData = element.ad._data.metadata;
-                return {
-                  'id': nodeMetaData.id,
-                  'data' : nodeData,
-                  'metaData' : nodeMetaData
-              };            
-          });
+            $scope.ads = _.map(res, function(element){ 
+              var ad = {
+                'id':element.ad._id,
+                'labels':element.ad.labels,
+                'properties':element.ad.properties
+              };
+              return ad;
+            });
             updateEntity();
-
         });
     }
 
     function updateSuggested() {
         $http.get('api/entities/' + $scope.id + '/byimage').success(function(res){
-            $scope.suggestedAds = _.map(res, function(element){
-                var nodeData = element.ad._data.data;
-                var nodeMetaData = element.ad._data.metadata;
-                return {
-                  'id': nodeMetaData.id,
-                  'data' : nodeData,
-                  'suggestedByImage' : true
-              };            
-          });
+            $scope.suggestedAds = _.map(res, function(element){ 
+              var ad = {
+                'id':element.ad._id,
+                'labels':element.ad.labels,
+                'properties':element.ad.properties
+              };
+              return ad;
+            });
             updateEntity();
         });
     }
 
     function updateEntity() {
-        console.log('updateEntity');
-        console.log($scope.ads);
         $scope.entity.ages = _.uniq(
             _.map($scope.ads, function(ad) {
-                return ad.data.age;
+                return ad.properties.age;
             })
             );
+        $scope.entity.ages = lodash.filter($scope.entity.ages, function(element){
+            return ! _.isEmpty(element);
+        });
+
         $scope.entity.cities = _.uniq(
             _.map($scope.ads, function(ad) {
-                var city = ad.data.city;
+                var city = ad.properties.city;
                 return city;
             })
             );
+        $scope.entity.cities = lodash.filter($scope.entity.cities, function(element){
+            return ! _.isEmpty(element);
+        });
 
         $scope.entity.ethnicities = _.uniq(
             _.map($scope.ads, function(ad) {
-                return ad.data.ethnicity;
+                return ad.properties.ethnicity;
             })
             );
         $scope.entity.ethnicities = lodash.filter($scope.entity.ethnicities, function(element){
@@ -159,7 +153,7 @@ angular.module('memexLinkerApp')
 
         $scope.imageUrls = _.flatten(
           _.map($scope.ads, function(ad) {
-            return ad.data.image_locations;
+            return ad.properties.image_locations;
         }),
           true
           );

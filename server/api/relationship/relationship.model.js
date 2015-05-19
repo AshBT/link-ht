@@ -1,11 +1,19 @@
 'use strict';
 
 var neo4j = require('neo4j');
-var db = new neo4j.GraphDatabase(
-    process.env['NEO4J_URL'] ||
-    process.env['GRAPHENEDB_URL'] ||
-    'http://localhost:7474'
-);
+
+var NEO_HOST = process.env['NEO_HOST'] || 'http://localhost:7474';
+var NEO_PASS = process.env['NEO_PASS'];
+var NEO_USER = process.env['NEO_USER'];
+
+var db = new neo4j.GraphDatabase({
+    url: 'http://localhost:7474',
+    auth: {username: NEO_USER, password: NEO_PASS},     // optional; see below for more details
+    headers: {},    // optional defaults, e.g. User-Agent
+    proxy: null,    // optional URL
+    agent: null,    // optional http.Agent instance, for custom socket pooling
+});
+
 
 var Relationship = module.exports = function Relationship(_node) {
 	this._node = _node;
@@ -37,7 +45,7 @@ Relationship.prototype.del = function (callback) {
         id: this.id
     };
 
-    db.query(query, params, function (err) {
+    db.cypher({query:query, params:params}, function (err) {
         callback(err);
     });
 };
@@ -60,7 +68,7 @@ Relationship.getAll = function (callback) {
         'RETURN relationship',
         'LIMIT 100'
     ].join('\n');
-    db.query(query, null, function (err, results) {
+    db.cypher(query, function (err, results) {
         if (err) return callback(err);
         var relationships = results.map(function (result) {
             return new Relationship(result['relationship']);
@@ -74,21 +82,7 @@ Relationship.create = function (data, callback) {
 
 	console.log('Creating relationship...');
     console.log(data);
-    // construct a new instance of our class with the data, so it can
-    // validate and extend it, etc., if we choose to do that in the future:
-    //var node = db.createRelationship(data);
-    //var relationship = new Relationship(node);
-
-    // but we do the actual persisting with a Cypher query, so we can also
-    // apply a label at the same time. (the save() method doesn't support
-    // that, since it uses Neo4j's REST API, which doesn't support that.)
-  //   var query = [
-  //   	'MATCH (a),(b)',
-		// 'WHERE a.id = {idA} AND b.id = {idB}',
-		// 'CREATE (a)-[relationship:BY_IMG]->(b)',
-		// 'RETURN relationship'
-  //   ].join('\n');
-
+ 
     var query = [
     	'MATCH (a),(b)',
 		'WHERE id(a) = {idA} AND id(b) = {idB}',
@@ -105,7 +99,7 @@ Relationship.create = function (data, callback) {
     console.log('params:')
     console.log(params);
 
-    db.query(query, params, function (err, results) {
+    db.cypher({query:query, params:params}, function (err, results) {
         if (err) return callback(err);
         console.log(results);
         var relationship = new Relationship(results[0]['relationship']);
