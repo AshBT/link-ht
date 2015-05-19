@@ -55,7 +55,7 @@ Entity.prototype.del = function (callback) {
         id: this.id
     };
 
-    db.cypher(query, params, function (err) {
+    db.cypher({query:query, params:params}, function (err) {
         callback(err);
     });
 };
@@ -63,10 +63,27 @@ Entity.prototype.del = function (callback) {
 // static methods:
 
 Entity.get = function (id, callback) {
-    db.getNodeById(id, function (err, node) {
-        if (err) return callback(err);
-        callback(null, new Entity(node));
+    console.log('Entity.get');
+    var query = [
+        'MATCH (entity:Entity)',
+        'WHERE ID(entity) = {id}',
+        'RETURN entity'
+    ].join('\n')
+
+    var params = {
+        id: Number(id)
+    };
+
+    db.cypher({query:query, params:params}, function (err, results) {
+        if (err) {
+            console.log(err);
+            return callback(err);
+        }
+        console.log('results:');
+        console.log(results);
+        callback(null, new Entity(results[0]['entity']));
     });
+
 };
 
 Entity.linked = function(id, callback) {
@@ -80,7 +97,7 @@ Entity.linked = function(id, callback) {
         id: Number(id)
     }
 
-    db.cypher(query, params, function(err, results){
+    db.cypher({query:query, params:params}, function(err, results){
         if (err) return callback(err);
         var ads = results;
         callback(null, ads)
@@ -168,7 +185,7 @@ Entity.create = function (data, callback) {
         data: data
     };
 
-    db.cypher(query, params, function (err, results) {
+    db.cypher({query:query, params:params}, function (err, results) {
         if (err) return callback(err);
         var entity = new Entity(results[0]['entity']);
         callback(null, entity);
