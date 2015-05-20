@@ -3,6 +3,9 @@
 angular.module('memexLinkerApp')
   .controller('PostsCtrl', function ($scope, $http, lodash) {
 
+    $scope.logo = "http://icons.iconarchive.com/icons/icons8/ios7/256/Very-Basic-Paper-Clip-icon.png";
+    $scope.blur = true;
+
     $scope.ads = [];
 
     $http.get('/api/ads/').success(function(res) {

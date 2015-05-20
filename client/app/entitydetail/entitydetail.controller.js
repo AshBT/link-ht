@@ -4,6 +4,7 @@
 angular.module('memexLinkerApp')
 .controller('EntitydetailCtrl', function ($scope, $http, $stateParams, $q, $modal, lodash, Auth) {
     var _ = lodash;
+    $scope.logo = "http://icons.iconarchive.com/icons/icons8/ios7/256/Very-Basic-Paper-Clip-icon.png";
 
     $scope.map = {};
     $scope.blur = true;
