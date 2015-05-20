@@ -12,9 +12,14 @@ RUN gem install sass
 
 COPY . /app
 WORKDIR /app
+RUN rm -rf node_modules
 
 RUN bower --allow-root --config.interactive=false install
 RUN npm install
+RUN grunt build
+WORKDIR /app/dist
 
-EXPOSE 8080
-CMD ["grunt","prod"]
+ENV NODE_ENV production
+EXPOSE 9000
+#CMD ["grunt","prod"]
+CMD ["node", "server/app.js"]
