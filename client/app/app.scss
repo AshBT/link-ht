@@ -29,8 +29,8 @@ $fa-font-path: "/bower_components/font-awesome/fonts";
 
 /* navbar */
 .navbar-default {
-    background-color: #00007A;
-    border-color: #E7E7E7;
+    background-color: #17A697;
+    border-color: #17A697;
 }
 /* title */
 .navbar-default .navbar-brand {
@@ -59,11 +59,11 @@ $fa-font-path: "/bower_components/font-awesome/fonts";
 .navbar-default .navbar-nav > .active > a:focus {
     color: #000000;
     font-size: 20px;
-    background-color: #6699FF;
+    background-color: #BFD4D9;
 }
 
 body {
-  background : #ADEBFF;
+  background : #638CA6;
   & .sub {
     background: #000;
   }
