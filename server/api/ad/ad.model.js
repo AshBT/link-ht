@@ -3,12 +3,12 @@
 var neo4j = require('neo4j');
 
 var NEO_HOST = process.env['NEO_HOST'] || 'http://localhost:7474';
-var NEO_PASS = process.env['NEO_PASS'];
-var NEO_USER = process.env['NEO_USER'];
+var NEO_USER = process.env['NEO_USER'] || 'neo4j';
+var NEO_PASS = process.env['NEO_PASS'] || 'password';
 
 var db = new neo4j.GraphDatabase({
-    url: 'http://localhost:7474',
-    auth: {username: NEO_USER, password: NEO_PASS},     // optional; see below for more details
+    url: NEO_HOST,
+    auth: {username: NEO_USER, password: NEO_PASS},     // optional
     headers: {},    // optional defaults, e.g. User-Agent
     proxy: null,    // optional URL
     agent: null,    // optional http.Agent instance, for custom socket pooling
