@@ -25,7 +25,8 @@ angular.module('memexLinkerApp')
         city:[],
         age:[],
         ethnicities:[],
-        heights:[]
+        heights:[],
+
     };
 
     $scope.getHost = function (url) {
@@ -93,6 +94,9 @@ angular.module('memexLinkerApp')
     $http.get('/api/entities/' + $scope.id).success(function(res) {
         $scope.entity.phone = res._node.properties.identifier;
         $scope.entity.city = res._node.properties.city;
+        $scope.entity.face_image_url = res._node.properties.face_image_url;
+        //$scope.entity.imageUrls = res._node.properties.face_image_url;
+        $scope.entity.n_faces = res._node.properties.n_faces;
 
     });
 

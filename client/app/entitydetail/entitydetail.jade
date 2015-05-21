@@ -5,24 +5,44 @@ div(ng-include='"components/navbar/navbar.html"')
 		.entity-summary.col-md-3
 			
 			#box.panel.panel-default
-				#head1.panel-heading Profile Picture 
+				#head1.panel-heading Profile Picture
 				.panel-body
-					col-md-3(ng-repeat='img in ad.properties.image_locations')				
-						img.responsive(ng-src="{{img}}" 
+					p a: {{face_image_url}}
+					//Why Can't I get face_image_url to work?
+					col-md-3(ng-repeat='img in imageUrls')
+						img.responsive(ng-src="{{img}}"
 							style="max-height:50px; margin:0 auto;"
-					ng-class="{blurry: blur == true, clear: blur != true}")
+							ng-class="{blurry: blur == true, clear: blur != true}")
+					br 
 					br
 					label Blur Images:
 					input(type="checkbox" ng-model="blur")
 					br 
 					button.btn-success() Save Entity
+			#box.panel.panel-default
+				#head1.panel-heading Identifiers
+				.panel-body
+					p Phone: {{entity.phone | tel}}
+					p e-mail: {{entity.imageUrls }}
+					p Address:
+					p Names:
+					p Twitter: <input type="text" name="userName" ng-model="user.name" required> 
+					p Instagram: @htvictim
+					// <input type="text" name="userName" ng-model="user.name" required>
+					p Youtube: <input type="text" name="userName" ng-model="user.name" required>
+					p Yelp: <input type="text" name="userName" ng-model="user.name" required>
+
+			#box.panel.panel-default(style="height: 300px")
+				#head1.panel-heading Map
+				.panel-body
+					ui-gmap-google-map(center='map.center', zoom='map.zoom')
+					button(ng-click='expandMap()') 
+						|Expand Map
 
 			#box.panel.panel-default
 				#head1.panel-heading Attributes
 				.panel-body
-					p Phone: {{entity.phone | tel}}
 					p Ages: {{entity.age.join(', ')}}
-					p Cities: {{entity.cities}}
 					p Ethnicities: {{entity.ethnicities.join(', ') | capitalize}}
 					p Ads: {{ads.length}} 
 					p Hourly Price Range: {{math.min(entity.price)}} -- {{math.max(entity.price)}}
@@ -32,19 +52,9 @@ div(ng-include='"components/navbar/navbar.html"')
 					p Eyes: {{entity.eyes.join(', ')}}
 					p Hair: {{entity.hair.join(', ')}}
 
-			#box.panel.panel-default
-				#head1.panel-heading Notes
-				.panel-body
-					p User A: "..."
-					p User B: "..."
-					p User C: "..."
 
-			#box.panel.panel-default(style="height: 300px")
-				#head1.panel-heading Map
-				.panel-body
-					ui-gmap-google-map(center='map.center', zoom='map.zoom')
-					button(ng-click='expandMap()') 
-						|Expand Map
+
+			
 
 
 					
@@ -70,6 +80,8 @@ div(ng-include='"components/navbar/navbar.html"')
 						include ./partials/images.jade
 					tab(heading='{{suggestedAds.length}} Similar Ads')
 						include ./partials/suggested.jade
+					tab(heading='0 Annotations')
+						include ./partials/annotations.jade
 
 
 

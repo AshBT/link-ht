@@ -3,11 +3,11 @@
 
 .panel.panel-default(ng-repeat='ad in suggestedAds')
 
-	#head2.panel-title.h1 {{ad.properties.title}}
+	#head2.panel-heading.h1 {{ad.properties.sources_id}} at {{ad.properties.posttime}}
 
 	.panel-body
-		p {{ad.properties.sources_id}} -- {{ad.properties.posttime}}
-		p {{ad.properties.text}}
+		p Title: {{ad.properties.title}}
+		p Text: {{ad.properties.text}}
 		p: a(href='{{ad.properties.url}}') View post
 
 		row
@@ -20,7 +20,7 @@
 		span.glyphicon.glyphicon-user(ng-if='ad.suggestedByUsername')
 		span.glyphicon.glyphicon-film(ng-if='ad.suggestedByVideo')
 		span.glyphicon.glyphicon-earphone(ng-if='ad.suggestedByPhone')
-		
+
 		.pull-right
 			button.btn-primary(ng-click='linkToEntity(ad)') 
 				|Link to Entity
