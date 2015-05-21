@@ -22,8 +22,8 @@ angular.module('memexLinkerApp')
 
     $scope.entity = {
         phone:'',
-        cities:[],
-        ages:[],
+        city:[],
+        age:[],
         ethnicities:[],
         heights:[]
     };
@@ -92,6 +92,8 @@ angular.module('memexLinkerApp')
 
     $http.get('/api/entities/' + $scope.id).success(function(res) {
         $scope.entity.phone = res._node.properties.identifier;
+        $scope.entity.city = res._node.properties.city;
+
     });
 
 

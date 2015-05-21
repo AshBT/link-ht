@@ -13,26 +13,35 @@ div(ng-include='"components/navbar/navbar.html"')
 					br
 					label Blur Images:
 						input(type="checkbox" ng-model="blur")
-		
-		.entity-panel.col-md-3
-			.panel.panel-default(ng-repeat='ad in ads | limitTo:10')
-				#head2.panel-heading Hi
-				p 1
-				p 2
-				p 3
-				
+	.row(ng-repeat='ad in ads | limitTo:10')
+		.entity-search.col-md-12
+			.entity-panel.col-md-4
+				.panel.panel-default
+					#head2.panel-heading 
+						strong
+							Phone: {{ad.properties.phone | tel}}
 
-		.entity-panel.col-md-9
-			.panel.panel-default(ng-repeat='ad in ads | limitTo:10')
+					.panel-body
+						//Below should post entity properties for the ad to its right
+						//If an ad is part of two entities, then the entity column should simply //say ad contains two entities
+						a.button.btn-danger.btn-lg.pull-right(ui-sref="entitydetail({ id: entity.id })") Inspect
+						p Ads:
+						p Images:
+						p Active Since:
+						p Age Range:
+						p Price Range:
+						p Websites:
+			.entity-panel.col-md-8
+				.panel.panel-default
 
-				#head2.panel-heading {{ad.properties.title}}
-				.panel-body
-					p {{getHost(ad.properties.url)}} -- {{ad.properties.posttime}}
-					p {{ad.properties.text}}
-					p: a(href='{{ad.properties.url}}') View post
+					#head2.panel-heading {{ad.properties.sources_id}} at {{ad.properties.posttime}}
+					.panel-body
+						p Title: {{ad.properties.title}}
+						p Text: {{ad.properties.text}}
+						p: a(href='{{ad.properties.url}}') View post
 
-					row
-						col-md-3(ng-repeat='img in ad.properties.image_locations')					
-							img.responsive(ng-src="{{img}}" 
-								style="max-height:100px; margin:0 auto;"
-								ng-class="{blurry: blur == true, clear: blur != true}")
+						row
+							col-md-3(ng-repeat='img in ad.properties.image_locations')					
+								img.responsive(ng-src="{{img}}" 
+									style="max-height:100px; margin:0 auto;"
+									ng-class="{blurry: blur == true, clear: blur != true}")

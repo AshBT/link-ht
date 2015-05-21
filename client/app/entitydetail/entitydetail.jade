@@ -7,9 +7,9 @@ div(ng-include='"components/navbar/navbar.html"')
 			#box.panel.panel-default
 				#head1.panel-heading Profile Picture 
 				.panel-body
-					col-md-3(ng-repeat='img in ad.data.face_image_url')					
+					col-md-3(ng-repeat='img in ad.properties.image_locations')				
 						img.responsive(ng-src="{{img}}" 
-							style="max-height:100px; margin:0 auto;"
+							style="max-height:50px; margin:0 auto;"
 					ng-class="{blurry: blur == true, clear: blur != true}")
 					br
 					label Blur Images:
@@ -21,8 +21,8 @@ div(ng-include='"components/navbar/navbar.html"')
 				#head1.panel-heading Attributes
 				.panel-body
 					p Phone: {{entity.phone | tel}}
-					p Ages: {{entity.ages.join(', ')}}
-					p Cities: {{math.min(entity.ages)}}
+					p Ages: {{entity.age.join(', ')}}
+					p Cities: {{entity.cities}}
 					p Ethnicities: {{entity.ethnicities.join(', ') | capitalize}}
 					p Ads: {{ads.length}} 
 					p Hourly Price Range: {{math.min(entity.price)}} -- {{math.max(entity.price)}}
@@ -62,17 +62,14 @@ div(ng-include='"components/navbar/navbar.html"')
 				cal-heatmap(config="{domain:'year',range:1,cellSize:14}")
 
 			hr
-
-
-
-
-			tabset
-				tab(heading='{{ads.length}} Ads and Reviews')
-					include ./partials/ads.jade
-				tab(heading='{{imageUrls.length}} Images')
-					include ./partials/images.jade
-				tab(heading='{{suggestedAds.length}} Similar Ads')
-					include ./partials/suggested.jade
+			#box.panel.panel-default
+				tabset
+					tab(heading='{{ads.length}} Ads and Reviews')
+						include ./partials/ads.jade
+					tab(heading='{{imageUrls.length}} Images')
+						include ./partials/images.jade
+					tab(heading='{{suggestedAds.length}} Similar Ads')
+						include ./partials/suggested.jade
 
 
 
