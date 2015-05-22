@@ -37,7 +37,17 @@ angular.module('memexLinkerApp')
             var postTimes = _.map(ads, function(ad){
                 return new Date(ad.properties.posttime);
               });
+            var age = _.map(ads, function(ad){
+                //console.log(ad.properties.age);
+                return ad.properties.age;
+              });
+            var age = _.uniq(age);
+            age.sort();
             var lastPostTime = _.max(postTimes);
+            var firstPostTime = _.min(postTimes);
+            var minAges = _.min(age);
+            var maxAges = _.max(age);
+
             var imageUrls = lodash.flatten(
               _.map(ads, function(ad) {
                 return ad.properties.image_locations;
@@ -59,6 +69,10 @@ angular.module('memexLinkerApp')
                 nSuggested: nSuggested,
                 postTimes : postTimes,
                 lastPostTime: lastPostTime,
+                firstPostTime: firstPostTime,
+                age: age,
+                minAges: minAges,
+                maxAges: maxAges,
                 imageUrls: imageUrls
               };
               $scope.entities.push(entitySummary);

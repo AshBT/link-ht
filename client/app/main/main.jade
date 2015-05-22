@@ -40,10 +40,10 @@ div(ng-include='"components/navbar/navbar.html"')
 							.panel-body
 								a.button.btn-primary.btn-lg.pull-right(ui-sref="entitydetail({ id: entity.id })") Inspect
 								p Ads: {{entity.nPosts}}
-								p Active since:
-								p Listed age range:
-								p Listed price range:
-								p Websites:
+								p Active since: {{entity.firstPostTime.toDateString()}}
+								p Listed ages: {{entity.age.join(', ')}}
+								p Listed price range: {{entity.postTimes}}
+								p Websites: {{entity.age}}
 								p Ads related by image: {{entity.nSuggested}}
 								p Ads related by text: {{entity.nSuggested}}
 								p Ads related by phone co-occurence: {{entity.nSuggested}}		
