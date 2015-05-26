@@ -28,6 +28,12 @@ Start neo4j
 neo4j start
 ```
 
+# Fixing the cal Heatmap error:
+```
+nano client/bower_components/angular-cal-heatmap-directive/bower.json
+```
+Change the line that says cal-heatmap.js to calHeatmap.js
+
 # Running the app
 
 ```
