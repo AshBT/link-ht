@@ -66,7 +66,7 @@ Relationship.getAll = function (callback) {
     var query = [
         'MATCH ()-[relationship]-()',
         'RETURN relationship',
-        'LIMIT 100'
+        'LIMIT 200'
     ].join('\n');
     db.cypher(query, function (err, results) {
         if (err) return callback(err);

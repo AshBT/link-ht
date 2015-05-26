@@ -77,14 +77,7 @@ angular.module('memexLinkerApp')
             var city = _.map(ads, function(ad){
                 return ad.properties.city;
               });
-            var n_faces = _.map(ads, function(ad){
-                return ad.properties.n_faces;
-              });
-            var n_faces = n_faces.filter(function(n){ return n != undefined });
-
-            var n_faces = n_faces.reduce(function(a, b) {
-              return a + b;
-            });
+         
 
 
             var imageUrls = lodash.flatten(
@@ -98,6 +91,19 @@ angular.module('memexLinkerApp')
             imageUrls = _.filter(imageUrls, function(element){
               return ! _.isUndefined(element);
             });
+
+            var face = lodash.flatten(
+              _.map(ads, function(ad) {
+                return ad.properties.face_image_url;
+              }),
+              true
+            );
+            
+            var face = _.uniq(face)
+            face = _.filter(face, function(element){
+              return ! _.isUndefined(element);
+            });
+            var n_faces= face.length
 
           // TODO: this should be done asynchronously.
           $http.get('api/entities/' + entity.id + '/byimage').success(function(res){

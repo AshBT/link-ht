@@ -134,7 +134,7 @@ Entity.getAll = function (callback) {
     var query = [
         'MATCH (entity:Entity)',
         'RETURN entity',
-        'LIMIT 100'
+        'LIMIT 200'
     ].join('\n');
     // db.query(query, null, function (err, results) {
     //     if (err) return callback(err);
