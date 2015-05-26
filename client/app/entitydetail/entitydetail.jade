@@ -60,7 +60,7 @@ div(ng-include='"components/navbar/navbar.html"')
 		.col-md-9
 			#box.panel.panel-default
 				#head1.panel-heading Calendar -- Active since November 2, 2012
-				cal-heatmap(config="{domain:'year',range:1,cellSize:14}")
+				cal-heatmap(config="{data:heatmapState.data, start:heatmapState.start, legend:heatmapState.legend, domain:heatmapState.domain, subDomain:heatmapState.subDomain,range:1,cellSize:14}")
 
 			hr
 			#box.panel.panel-default

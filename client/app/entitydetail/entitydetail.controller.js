@@ -15,6 +15,22 @@ angular.module('memexLinkerApp')
     $scope.id = $stateParams.id;
     $scope.user = null;
 
+    $scope.heatmapState = {
+        start: new Date(2000, 0),
+        domain : 'year',
+        subDomain : 'day',
+        legend: [2, 4, 6, 10],
+        range : 1,
+        data : {
+                946719001: 0,
+                946721450: 5,
+                946721875: 10,
+                946727172: 4,
+                946728141: 4,
+                946733771: 2
+            }
+    };
+
     if (Auth.isLoggedIn()) {
         $scope.user = Auth.getCurrentUser();
         console.log($scope.user);     
@@ -117,6 +133,15 @@ angular.module('memexLinkerApp')
               };
               return ad;
             });
+            console.log($scope.ads);
+
+            // map ad dates to Unix timestamps, and save them for use with the heatmap
+            // ad.properties.posttime
+            // "2013-10-31T00:00:00"
+
+            
+
+
             updateEntity();
         });
     }
