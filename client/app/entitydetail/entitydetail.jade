@@ -7,30 +7,16 @@ div(ng-include='"components/navbar/navbar.html"')
 			#box.panel.panel-default
 				#head1.panel-heading Profile Picture
 				.panel-body
-					p a: {{face_image_url}}
-					//Why Can't I get face_image_url to work?
-					col-md-3(ng-repeat='img in imageUrls')
+					col-md-3(ng-repeat='img in face_image_url')
 						img.responsive(ng-src="{{img}}"
-							style="max-height:50px; margin:0 auto;"
+							style="max-height:80px; margin:0 auto;"
 							ng-class="{blurry: blur == true, clear: blur != true}")
 					br 
 					br
 					label Blur Images:
 					input(type="checkbox" ng-model="blur")
 					br 
-					button.btn-success() Save Entity
-			#box.panel.panel-default
-				#head1.panel-heading Identifiers
-				.panel-body
-					p Phone: {{entity.phone | tel}}
-					p e-mail: {{entity.imageUrls }}
-					p Address:
-					p Names:
-					p Twitter: <input type="text" name="userName" ng-model="user.name" required> 
-					p Instagram: @htvictim
-					// <input type="text" name="userName" ng-model="user.name" required>
-					p Youtube: <input type="text" name="userName" ng-model="user.name" required>
-					p Yelp: <input type="text" name="userName" ng-model="user.name" required>
+					button.btn-success() Save Entity 
 
 			#box.panel.panel-default(style="height: 300px")
 				#head1.panel-heading Map
@@ -40,32 +26,37 @@ div(ng-include='"components/navbar/navbar.html"')
 						|Expand Map
 
 			#box.panel.panel-default
-				#head1.panel-heading Attributes
+				#head1.panel-heading Attributes **Only Show relevant**
 				.panel-body
+					p Names: {{entity.name.join(', ') | capitalize}}
 					p Ages: {{entity.age.join(', ')}}
 					p Ethnicities: {{entity.ethnicities.join(', ') | capitalize}}
 					p Ads: {{ads.length}} 
-					p Hourly Price Range: {{math.min(entity.price)}} -- {{math.max(entity.price)}}
-					p Mode Price: {{math.mode(entity.price)}}
+					p Hourly Price Range: {{entity.price}}
+					p Mode Price: {{entity.price}}
 					p Height: {{entity.height.join(', ')}}
 					p Weight: {{entity.weight.join(', ')}}
 					p Eyes: {{entity.eyes.join(', ')}}
 					p Hair: {{entity.hair.join(', ')}}
 
 
-
+			#box.panel.panel-default
+				#head1.panel-heading Identifiers
+				.panel-body
+					p Phone: {{entity.phone | tel}}
+					p e-mail: {{entity.email[0].join(', ') }}
+					p Address: <input type="text" name="twitter" ng-model="twitter" required>
+					p Twitter: <input type="text" name="twitter" ng-model="twitter" required> 
+					p Instagram: <input type="text" name="instagram" ng-model="instagram" required>
+					p Youtube: <input type="text" name="youtube" ng-model="youtube" required>
+					p Yelp: <input type="text" name="yelp" ng-model="yelp" required>
+					button.btn-primary() Submit New Attributes 
 			
-
-
-					
 			#box.panel.panel-default
 				#head1.panel-heading Cities
 				.panel-body
-					p {{entity.cities.join(', ') | capitalize}}
-					p And more cities listed here
-					p Because some have lots of cities
-					
-			
+					p {{entity.cities.join('\n ') | capitalize}}
+						
 		.col-md-9
 			#box.panel.panel-default
 				#head1.panel-heading Calendar -- Active since November 2, 2012

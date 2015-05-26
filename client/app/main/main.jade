@@ -41,12 +41,15 @@ div(ng-include='"components/navbar/navbar.html"')
 								a.button.btn-primary.btn-lg.pull-right(ui-sref="entitydetail({ id: entity.id })") Inspect
 								p Ads: {{entity.nPosts}}
 								p Active since: {{entity.firstPostTime.toDateString()}}
+								p Listed names: {{entity.name.join(', ') | capitalize}}
 								p Listed ages: {{entity.age.join(', ')}}
-								p Listed price range: {{entity.postTimes}}
-								p Websites: {{entity.age}}
+								p Listed price range: {{entity.priceRange}}
+								p Cities: {{entity.city.join(', ') | capitalize}}
+								p Websites: {{entity.sourcesid.join(', ')}} 
+								p Face pictures: {{entity.n_faces}}
 								p Ads related by image: {{entity.nSuggested}}
-								p Ads related by text: {{entity.nSuggested}}
-								p Ads related by phone co-occurence: {{entity.nSuggested}}		
+								p Ads related by text:
+								p Ads related by phone co-occurence: 	
 					.entity-panel.col-md-8
 						.panel.panel-default
 							#head2.panel-heading.clear-fix		
@@ -55,9 +58,19 @@ div(ng-include='"components/navbar/navbar.html"')
 										strong
 											Most Most recent post: {{entity.sources_id}} at {{entity.lastPostTime.toDateString()}}
 							.panel-body
-								p Recent Title:
-								p Recent Ad Text: 
-								p All Images: {{entity.imageUrls.length}}
+								p 
+								strong
+									Recent Title: 
+								| {{entity.title[0]}}
+								p 
+								strong
+									Recent Ad Text:
+								| {{entity.text[0]}}
+								p 
+								strong
+									All Images: 
+								| {{entity.imageUrls.length}}
+								br
 								row
 									col-md-3(ng-repeat='img in entity.imageUrls')					
 										img.responsive(ng-src="{{img}}" 

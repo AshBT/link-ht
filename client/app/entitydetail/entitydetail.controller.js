@@ -22,10 +22,16 @@ angular.module('memexLinkerApp')
 
     $scope.entity = {
         phone:'',
+        email:[],
+        name:[],
         city:[],
         age:[],
         ethnicities:[],
-        heights:[],
+        height:[],
+        weight:[],
+        eyes:[],
+        hair:[],
+        price:'',
 
     };
 
@@ -93,9 +99,9 @@ angular.module('memexLinkerApp')
 
     $http.get('/api/entities/' + $scope.id).success(function(res) {
         $scope.entity.phone = res._node.properties.identifier;
+        $scope.entity.email = res._node.properties.email;
+        $scope.entity.name = res._node.properties.name;
         $scope.entity.city = res._node.properties.city;
-        $scope.entity.face_image_url = res._node.properties.face_image_url;
-        //$scope.entity.imageUrls = res._node.properties.face_image_url;
         $scope.entity.n_faces = res._node.properties.n_faces;
 
     });
@@ -131,15 +137,6 @@ angular.module('memexLinkerApp')
     }
 
     function updateEntity() {
-        $scope.entity.ages = _.uniq(
-            _.map($scope.ads, function(ad) {
-                return ad.properties.age;
-            })
-            );
-        $scope.entity.ages = lodash.filter($scope.entity.ages, function(element){
-            return ! _.isEmpty(element);
-        });
-
         $scope.entity.cities = _.uniq(
             _.map($scope.ads, function(ad) {
                 var city = ad.properties.city;
@@ -159,6 +156,80 @@ angular.module('memexLinkerApp')
             return ! _.isEmpty(element);
         });
 
+        $scope.entity.age = _.uniq(
+            _.map($scope.ads, function(ad) {
+                return ad.properties.age;
+            })
+            );
+        $scope.entity.age = lodash.filter($scope.entity.age, function(element){
+            return ! _.isEmpty(element);
+        });
+
+        $scope.entity.price = _.uniq(
+            _.map($scope.rate60, function(ad) {
+                return ad.properties.rate60;
+            })
+            );
+        $scope.entity.price = lodash.filter($scope.entity.rate60, function(element){
+            return ! _.isEmpty(element);
+        });
+
+        $scope.entity.name = _.uniq(
+            _.map($scope.ads, function(ad) {
+                return ad.properties.name;
+            })
+            );
+        $scope.entity.name = lodash.filter($scope.entity.name, function(element){
+            return ! _.isEmpty(element);
+        });
+
+        $scope.entity.email = _.uniq(
+            _.map($scope.ads, function(ad) {
+                return ad.properties.email;
+            })
+            );
+        $scope.entity.email = lodash.filter($scope.entity.email, function(element){
+            return ! _.isEmpty(element);
+        });
+
+        $scope.entity.height = _.uniq(
+            _.map($scope.ads, function(ad) {
+                return ad.properties.height;
+            })
+            );
+        $scope.entity.height = lodash.filter($scope.entity.height, function(element){
+            return ! _.isEmpty(element);
+        });
+
+        $scope.entity.weight = _.uniq(
+            _.map($scope.ads, function(ad) {
+                return ad.properties.weight;
+            })
+            );
+        $scope.entity.weight= lodash.filter($scope.entity.weight, function(element){
+            return ! _.isEmpty(element);
+        });
+
+        $scope.entity.eyes = _.uniq(
+            _.map($scope.ads, function(ad) {
+                return ad.properties.eyes;
+            })
+            );
+        $scope.entity.eyes = lodash.filter($scope.entity.eyes, function(element){
+            return ! _.isEmpty(element);
+        });
+
+        $scope.entity.hair= _.uniq(
+            _.map($scope.ads, function(ad) {
+                return ad.properties.hair;
+            })
+            );
+        $scope.entity.hair = lodash.filter($scope.entity.hair, function(element){
+            return ! _.isEmpty(element);
+        });
+
+
+
         $scope.imageUrls = _.flatten(
           _.map($scope.ads, function(ad) {
             return ad.properties.image_locations;
@@ -168,9 +239,11 @@ angular.module('memexLinkerApp')
         $scope.imageUrls = _.filter($scope.imageUrls, function(element){
           return ! _.isUndefined(element);
       });
+
+
         $scope.face_image_url = _.flatten(
           _.map($scope.ads, function(ad) {
-            return ad.data.face_image_url;
+            return ad.properties.face_image_url;
         }),
         true
           );

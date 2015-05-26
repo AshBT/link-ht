@@ -1,6 +1,17 @@
 //.panel.panel-default(ng-repeat='comment in annotations')
 .panel.panel-default
 	#head2.panel-heading.h1  User -- Date
-
 	.panel-body
-		p Some comments
+		p Add general comments
+		p Add ad id 
+		p Add json
+
+	.panel-footer.clearfix
+		span.glyphicon.glyphicon-user(popover="Suggested by image similarity" popover-trigger="mouseenter" popover-placement="right")
+
+		.pull-right
+			button.btn-primary(ng-click='') 
+				|Add to  Entity
+			br
+			button.btn-danger(ng-click='') 
+				|Remove from Entity
