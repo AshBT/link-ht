@@ -3,6 +3,16 @@
 angular.module('memexLinkerApp')
 .directive('entityHeatmap', function ($http) {
     function link(scope, el) {
+
+        scope.previous = function() {
+            cal.previous();
+
+        };
+
+        scope.next = function() {
+            cal.next();
+        };
+
         var config = scope.config;
         var elemenent = el[0];
         var cal = new CalHeatMap();
@@ -49,10 +59,11 @@ angular.module('memexLinkerApp')
         });
 
         cal.update('api/entities/' + config.entityId + '/linked');
+
 }
 
 return {
-    template: '<div id="cal-heatmap" config="config"></div>',
+    template: '<div id="cal-heatmap" config="config"></div> <button type="button" class="btn" ng-click="previous()">Previous</button> <button type="button" class="btn" ng-click="next()">Next</button>',
     restrict: 'E',
     link: link,
     scope: { 
