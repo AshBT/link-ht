@@ -15,21 +15,44 @@ angular.module('memexLinkerApp')
     $scope.id = $stateParams.id;
     $scope.user = null;
 
-    $scope.heatmapState = {
-        start: new Date(2000, 0),
+    // $scope.heatmapConfig = {
+    //     entityId: $scope.id,
+    //     start: new Date(2013, 0),
+    //     domain : 'year',
+    //     subDomain : 'day',
+    //     legend: [2, 4, 6, 10],
+    //     range : 1,
+    //     // mapping from Unix timestamp, in seconds, to number of ads at that timestamp.
+    //     // data : {
+    //     //         946719001: 0,
+    //     //         946721450: 5,
+    //     //         946721875: 10,
+    //     //         946727172: 4,
+    //     //         946728141: 4,
+    //     //         946733771: 2
+    //     //     }
+    //     data : {}
+    // };
+
+    $scope.heatmap2Config = {
+        entityId: $scope.id,
+        start: new Date(2013, 0),
         domain : 'year',
+        cellSize: 14,
         subDomain : 'day',
         legend: [2, 4, 6, 10],
         range : 1,
-        data : {
-                946719001: 0,
-                946721450: 5,
-                946721875: 10,
-                946727172: 4,
-                946728141: 4,
-                946733771: 2
-            }
+        // mapping from Unix timestamp, in seconds, to number of ads at that timestamp.
+        // data : {
+        //         946719001: 0,
+        //         946721450: 5,
+        //         946721875: 10,
+        //         946727172: 4,
+        //         946728141: 4,
+        //         946733771: 2
+        //     }
     };
+
 
     if (Auth.isLoggedIn()) {
         $scope.user = Auth.getCurrentUser();
@@ -133,15 +156,6 @@ angular.module('memexLinkerApp')
               };
               return ad;
             });
-            console.log($scope.ads);
-
-            // map ad dates to Unix timestamps, and save them for use with the heatmap
-            // ad.properties.posttime
-            // "2013-10-31T00:00:00"
-
-            
-
-
             updateEntity();
         });
     }
@@ -186,7 +200,7 @@ angular.module('memexLinkerApp')
                 return ad.properties.age;
             })
             );
-        $scope.entity.age = lodash.filter($scope.entity.age, function(element){
+        $scope.entity.age = _.filter($scope.entity.age, function(element){
             return ! _.isEmpty(element);
         });
 
@@ -195,7 +209,7 @@ angular.module('memexLinkerApp')
                 return ad.properties.rate60;
             })
             );
-        $scope.entity.price = lodash.filter($scope.entity.rate60, function(element){
+        $scope.entity.price = _.filter($scope.entity.rate60, function(element){
             return ! _.isEmpty(element);
         });
 
@@ -204,7 +218,7 @@ angular.module('memexLinkerApp')
                 return ad.properties.name;
             })
             );
-        $scope.entity.name = lodash.filter($scope.entity.name, function(element){
+        $scope.entity.name = _.filter($scope.entity.name, function(element){
             return ! _.isEmpty(element);
         });
 
@@ -213,7 +227,7 @@ angular.module('memexLinkerApp')
                 return ad.properties.email;
             })
             );
-        $scope.entity.email = lodash.filter($scope.entity.email, function(element){
+        $scope.entity.email = _.filter($scope.entity.email, function(element){
             return ! _.isEmpty(element);
         });
 
@@ -222,7 +236,7 @@ angular.module('memexLinkerApp')
                 return ad.properties.height;
             })
             );
-        $scope.entity.height = lodash.filter($scope.entity.height, function(element){
+        $scope.entity.height = _.filter($scope.entity.height, function(element){
             return ! _.isEmpty(element);
         });
 
@@ -231,7 +245,7 @@ angular.module('memexLinkerApp')
                 return ad.properties.weight;
             })
             );
-        $scope.entity.weight= lodash.filter($scope.entity.weight, function(element){
+        $scope.entity.weight= _.filter($scope.entity.weight, function(element){
             return ! _.isEmpty(element);
         });
 
@@ -240,7 +254,7 @@ angular.module('memexLinkerApp')
                 return ad.properties.eyes;
             })
             );
-        $scope.entity.eyes = lodash.filter($scope.entity.eyes, function(element){
+        $scope.entity.eyes = _.filter($scope.entity.eyes, function(element){
             return ! _.isEmpty(element);
         });
 
@@ -249,11 +263,9 @@ angular.module('memexLinkerApp')
                 return ad.properties.hair;
             })
             );
-        $scope.entity.hair = lodash.filter($scope.entity.hair, function(element){
+        $scope.entity.hair = _.filter($scope.entity.hair, function(element){
             return ! _.isEmpty(element);
         });
-
-
 
         $scope.imageUrls = _.flatten(
           _.map($scope.ads, function(ad) {
@@ -274,10 +286,9 @@ angular.module('memexLinkerApp')
           );
         $scope.face_image_url = _.filter($scope.face_image_url, function(element){
           return ! _.isUndefined(element);
-      })
+      });
 
 
-        ;
 
         //TODO: Add markers
         if (! _.isEmpty($scope.entity.cities)) {
