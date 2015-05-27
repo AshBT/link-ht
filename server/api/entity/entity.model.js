@@ -164,7 +164,7 @@ Entity.getAll = function (callback) {
     // });
     db.cypher(query, function(err, results) {
         if (err) return callback(err);
-        console.log(results);
+        //console.log(results);
         //{entity: { _id: 28380, labels: [Object], properties: [Object] }}
         var entities = results.map(function(result){
             return new Entity(result.entity);

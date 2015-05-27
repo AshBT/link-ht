@@ -1,7 +1,7 @@
 'use strict';
 
 angular.module('memexLinkerApp')
-  .controller('MainCtrl', function ($scope, $http, socket, lodash) {
+  .controller('MainCtrl', function ($scope, $http, $q, socket, lodash) {
 
     var _ = lodash;
 
@@ -10,21 +10,28 @@ angular.module('memexLinkerApp')
     var input = [{key:"1", value:"Backpage"},{key:"key2", value:"value2"}];
     $scope.entities = [];
 
-    $http.get('/api/entities').success(function(res) {
-      var entities = _.map(res, function(e){
-        // var _id = e._node._id;
-        // var labels = e._node.labels;
-        // var properties = e._node.properties;
-        return {
-          'id': e._node._id,
-          'phone' : e._node.properties.identifier
-        };
+    /* 
+    * Returns the set of unique items, and removes undefined values.
+    */
+    function uniqueAndDefined(items) {
+      return _.filter(_.uniq(items), function(item) {
+        return ! _.isUndefined(item);
       });
+    }
 
-    //Aggregate details from ads belonging to each entity.
-    lodash.map(entities, function(entity) {
+    function collectAdProperty(ads, propertyName) {
+      return _.map(ads, function(ad) {
+        return ad.properties[propertyName];
+      });
+    }
 
-          $http.get('api/entities/' + entity.id + '/byphone').success(function(res){
+    /*
+    * entity: 
+    */ 
+    function summarizeEntity(entity) {
+      var deferred = $q.defer();
+      
+      $http.get('api/entities/' + entity.id + '/byphone').success(function(res){
             var ads = _.map(res, function(element){ 
               //console.log(element);
               var ad = {
@@ -39,13 +46,11 @@ angular.module('memexLinkerApp')
               });
             var lastPostTime = _.max(postTimes);
             var firstPostTime = _.min(postTimes);
-            var age = _.map(ads, function(ad){
-                return ad.properties.age;
-              });
-            var age = _.uniq(age);
-            age.sort();
+
+            var age = uniqueAndDefined(collectAdProperty(ads, 'age')).sort();
             var minAges = _.min(age);
             var maxAges = _.max(age);
+
             var rate60 = _.map(ads, function(ad){
                 return ad.properties.rate60;
               });
@@ -58,38 +63,19 @@ angular.module('memexLinkerApp')
               var priceRange = rate60[0][0] ;
             }  
 
-            var sourcesid = _.map(ads, function(ad){
-                return ad.properties.sources_id;
-              });
-            var sourcesid = _.uniq(sourcesid);
-            
-            var title = _.map(ads, function(ad){
-                return ad.properties.title;
-              });
-            var text = _.map(ads, function(ad){
-                return ad.properties.text;
-              });
-            var name = _.map(ads, function(ad){
-                return ad.properties.name;
-              });
-            var name = _.flatten(name);
-            var name = _.uniq(name);
-            var city = _.map(ads, function(ad){
-                return ad.properties.city;
-              });
-            var city = _.flatten(city);
-            var city = _.uniq(city);
-
-
-
-            var imageUrls = lodash.flatten(
+            var sourcesid = _.uniq(collectAdProperty(ads, 'sources_id'));
+            var title = collectAdProperty(ads, 'title');
+            var text = collectAdProperty(ads, 'text');
+            var name = uniqueAndDefined(collectAdProperty(ads, 'name'));
+            var city = uniqueAndDefined(collectAdProperty(ads, 'city'));
+         
+            var imageUrls = _.uniq(lodash.flatten(
               _.map(ads, function(ad) {
                 return ad.properties.image_locations;
               }),
               true
-            );
+            ));
             
-            var imageUrls = _.uniq(imageUrls)
             imageUrls = _.filter(imageUrls, function(element){
               return ! _.isUndefined(element);
             });
@@ -132,9 +118,29 @@ angular.module('memexLinkerApp')
                 city: city,
                 n_faces: n_faces
               };
-              $scope.entities.push(entitySummary);
+              deferred.resolve(entitySummary);
             });            
           });
+      
+      return deferred.promise;
+    }
+
+    $http.get('/api/entities').success(function(res) {
+      var entities = _.map(res, function(e){
+        return {
+          'id': e._node._id,
+          'phone' : e._node.properties.identifier
+        };
+      });
+
+    //Aggregate details from ads belonging to each entity.
+    _.forEach(entities, function(entity) {
+      summarizeEntity(entity).then(function(entitySummary) {
+        // success
+        $scope.entities.push(entitySummary);
+      }, function(reason) {
+        console.log('Failed for ' + reason);
+      });
     });
 
   });
