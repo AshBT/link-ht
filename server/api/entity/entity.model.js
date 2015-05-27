@@ -130,11 +130,30 @@ Entity.byImage = function(id, callback) {
     });
 }
 
+// Suggested ads, based on text similarity
+Entity.byText = function(id, callback) {
+    var query = [
+        'MATCH (e:Entity)-[:BY_TXT]-(ad:Ad)',
+        'WHERE ID(e) = {id} and not (e)-[:BY_PHONE]-(ad) and not (e)-[:BY_USER]-(ad) ',
+        'Return ad'
+    ].join('\n');
+
+    var params = {
+        id: Number(id)
+    }
+
+    db.cypher({query:query, params:params}, function(err, results){
+        if (err) return callback(err);
+        var ads = results;
+        callback(null, ads)
+    });
+}
+
 Entity.getAll = function (callback) {
     var query = [
         'MATCH (entity:Entity)',
         'RETURN entity',
-        'LIMIT 200'
+        'LIMIT 2000'
     ].join('\n');
     // db.query(query, null, function (err, results) {
     //     if (err) return callback(err);

@@ -95,7 +95,8 @@ angular.module('memexLinkerApp')
         $http.post('/api/relationships', data).
           success(function(data, status, headers, config) {
             updateLinked();
-            updateSuggested();
+            updateSuggestedText();
+            updateSuggestedImage();
           }).
           error(function(data, status, headers, config) {
             console.log(data);
@@ -141,8 +142,25 @@ angular.module('memexLinkerApp')
         });
     }
 
-    function updateSuggested() {
-        $http.get('api/entities/' + $scope.id + '/byimage').success(function(res){
+    function updateSuggestedText() {
+        $http.get('api/entities/' + $scope.id + '/byText').success(function(res){
+            $scope.suggestedAds = _.map(res, function(element){ 
+              var ad = {
+                'id':element.ad._id,
+                'labels':element.ad.labels,
+                'properties':element.ad.properties,
+                'suggestedByText':true
+              };
+              return ad;
+            });
+
+            updateEntity();
+        });
+
+    }
+
+    function updateSuggestedImage() {
+        $http.get('api/entities/' + $scope.id + '/byImage').success(function(res){
             $scope.suggestedAds = _.map(res, function(element){ 
               var ad = {
                 'id':element.ad._id,
@@ -152,9 +170,12 @@ angular.module('memexLinkerApp')
               };
               return ad;
             });
+
             updateEntity();
         });
+
     }
+
 
     function updateEntity() {
         $scope.entity.cities = _.uniq(
@@ -316,7 +337,8 @@ angular.module('memexLinkerApp')
     } 
 
     updateLinked();
-    updateSuggested(); 
+    updateSuggestedText();
+    updateSuggestedImage(); 
 });
 
 // TODO: put this under components
