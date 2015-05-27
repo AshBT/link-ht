@@ -9,8 +9,7 @@ angular.module('memexLinkerApp', [
   'ui.bootstrap',
   'uiGmapgoogle-maps',
   'akoenig.deckgrid',
-  'ngLodash',
-  'calHeatmap'
+  'ngLodash'
 ])
   .config(function ($stateProvider, $urlRouterProvider, $locationProvider, $httpProvider) {
     $urlRouterProvider
