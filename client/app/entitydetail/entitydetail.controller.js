@@ -7,6 +7,16 @@ angular.module('memexLinkerApp')
     $scope.logo = "http://icons.iconarchive.com/icons/icons8/ios7/256/Very-Basic-Paper-Clip-icon.png";
 
     $scope.map = {};
+    $scope.markers = [
+                 // {
+                 //   id: 583187,
+                 //   latitude: 46.7682,
+                 //   longitude: -71.3234,
+                 //   title: 'title'
+                 // }
+               ];
+
+
     $scope.blur = true;
     $scope.ads = [];
     $scope.imageUrls = [];
@@ -23,15 +33,6 @@ angular.module('memexLinkerApp')
         subDomain : 'day',
         legend: [2, 4, 6, 10],
         range : 1
-        // mapping from Unix timestamp, in seconds, to number of ads at that timestamp.
-        // data : {
-        //         946719001: 0,
-        //         946721450: 5,
-        //         946721875: 10,
-        //         946727172: 4,
-        //         946728141: 4,
-        //         946733771: 2
-        //     }
     };
 
 
@@ -98,7 +99,8 @@ angular.module('memexLinkerApp')
         $http.post('/api/relationships', data).
           success(function(data, status, headers, config) {
             updateLinked();
-            updateSuggested();
+            updateSuggestedText();
+            updateSuggestedImage();
           }).
           error(function(data, status, headers, config) {
             console.log(data);
@@ -144,8 +146,25 @@ angular.module('memexLinkerApp')
         });
     }
 
-    function updateSuggested() {
-        $http.get('api/entities/' + $scope.id + '/byimage').success(function(res){
+    function updateSuggestedText() {
+        $http.get('api/entities/' + $scope.id + '/byText').success(function(res){
+            $scope.suggestedAds = _.map(res, function(element){ 
+              var ad = {
+                'id':element.ad._id,
+                'labels':element.ad.labels,
+                'properties':element.ad.properties,
+                'suggestedByText':true
+              };
+              return ad;
+            });
+
+            updateEntity();
+        });
+
+    }
+
+    function updateSuggestedImage() {
+        $http.get('api/entities/' + $scope.id + '/byImage').success(function(res){
             $scope.suggestedAds = _.map(res, function(element){ 
               var ad = {
                 'id':element.ad._id,
@@ -155,9 +174,12 @@ angular.module('memexLinkerApp')
               };
               return ad;
             });
+
             updateEntity();
         });
+
     }
+
 
     function updateEntity() {
         $scope.entity.cities = _.uniq(
@@ -296,19 +318,39 @@ angular.module('memexLinkerApp')
 
             var promise = geocodeCity($scope.entity.cities[0]);
             promise.then(function(point) {
-              console.log(point);
-              $scope.map = {
-                center: {
-                    latitude: point.latitude,
-                    longitude: point.longitude
-                },
-                zoom: 8
-            };
-        }, function(reason) {
-          console.log('Failed');
-      }, function(update) {
-          console.log('Alert');
-      });
+                console.log(point);
+                $scope.map = {
+                    center: {
+                        latitude: point.latitude,
+                        longitude: point.longitude
+                    },
+                    zoom: 8
+                };
+            }, function(reason) {
+                console.log('Failed');
+            }, function(update) {
+                console.log('Alert');
+            });
+
+            _.forEach($scope.entity.cities, function(city, key) {
+                console.log(city, key);
+                geocodeCity(city)
+                    .then(function(point){
+                        console.log(point);
+                                         //   id: 583187,
+                 //   latitude: 46.7682,
+                 //   longitude: -71.3234,
+                 //   title: 'title'
+                        var m = {
+                            id:key,
+                            latitude: point.latitude,
+                            longitude: point.longitude,
+                            title: city
+                        };
+                        console.log(m);
+                        $scope.markers.push(m);
+                    });
+            });
         }
     } 
 
@@ -336,7 +378,8 @@ angular.module('memexLinkerApp')
     } 
 
     updateLinked();
-    updateSuggested(); 
+    updateSuggestedText();
+    updateSuggestedImage(); 
 });
 
 // TODO: put this under components

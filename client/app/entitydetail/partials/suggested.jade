@@ -17,6 +17,7 @@
 					ng-class="{blurry: blur == true, clear: blur != true}")
 	.panel-footer.clearfix
 		span.glyphicon.glyphicon-camera(ng-if='ad.suggestedByImage' popover="Suggested by image similarity" popover-trigger="mouseenter" popover-placement="right")
+		span.glyphicon.glyphicon-font(ng-if='ad.suggestedByText' popover="Suggested by text similarity" popover-trigger="mouseenter" popover-placement="right")
 		span.glyphicon.glyphicon-user(ng-if='ad.suggestedByUsername')
 		span.glyphicon.glyphicon-film(ng-if='ad.suggestedByVideo')
 		span.glyphicon.glyphicon-earphone(ng-if='ad.suggestedByPhone')

@@ -28,6 +28,7 @@ div(ng-include='"components/navbar/navbar.html"')
 				#head1.panel-heading Map
 				.panel-body
 					ui-gmap-google-map(center='map.center', zoom='map.zoom')
+						ui-gmap-markers(models='markers', coords="'self'", icon="'icon'")
 					button(ng-click='expandMap()') 
 						|Expand Map
 

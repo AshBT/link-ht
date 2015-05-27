@@ -49,6 +49,14 @@ exports.byImage = function(req, res) {
   });
 }
 
+// Ads suggested by text similarity
+exports.byText = function(req, res) {
+  Entity.byText(req.params.id, function(err, ads) {
+    if(err) return handleError(res, err);
+      return res.json(ads);
+  });
+}
+
 // Creates a new entity in the DB.
 exports.create = function(req, res) {
   Entity.create(req.body, function(err, entity) {
