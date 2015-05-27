@@ -7,7 +7,7 @@ angular.module('memexLinkerApp')
 
     $scope.logo = "http://icons.iconarchive.com/icons/icons8/ios7/256/Very-Basic-Paper-Clip-icon.png";
     $scope.blur = true;
-
+    var input = [{key:"1", value:"Backpage"},{key:"key2", value:"value2"}];
     $scope.entities = [];
 
     $http.get('/api/entities').success(function(res) {
@@ -72,12 +72,14 @@ angular.module('memexLinkerApp')
             var name = _.map(ads, function(ad){
                 return ad.properties.name;
               });
+            var name = _.flatten(name);
             var name = _.uniq(name);
-
             var city = _.map(ads, function(ad){
                 return ad.properties.city;
               });
-         
+            var city = _.flatten(city);
+            var city = _.uniq(city);
+
 
 
             var imageUrls = lodash.flatten(

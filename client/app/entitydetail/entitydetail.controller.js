@@ -51,7 +51,10 @@ angular.module('memexLinkerApp')
         weight:[],
         eyes:[],
         hair:[],
-        price:'',
+        price:[],
+        postTimes:[],
+        firstPostTime:'',
+
 
     };
 
@@ -167,6 +170,18 @@ angular.module('memexLinkerApp')
             return ! _.isEmpty(element);
         });
 
+        $scope.entity.postTimes = _.uniq(
+            _.map($scope.ads, function(ad) {
+                return (ad.properties.posttime);
+            })
+            );
+        $scope.entity.postTimes = lodash.filter($scope.entity.postTimes, function(element){
+            return ! _.isEmpty(element);
+        });
+
+        //$scope.entity.firstPostTime = _.min($scope.entity.postTimes);
+
+
         $scope.entity.ethnicities = _.uniq(
             _.map($scope.ads, function(ad) {
                 return ad.properties.ethnicity;
@@ -194,14 +209,19 @@ angular.module('memexLinkerApp')
             return ! _.isEmpty(element);
         });
 
-        $scope.entity.name = _.uniq(
-            _.map($scope.ads, function(ad) {
+
+
+        var names = _.map($scope.ads, function(ad) {
                 return ad.properties.name;
-            })
-            );
+            });
+        var flat_names = _.flatten(names)
+
+        $scope.entity.name = _.uniq(flat_names)
         $scope.entity.name = _.filter($scope.entity.name, function(element){
             return ! _.isEmpty(element);
         });
+
+
 
         $scope.entity.email = _.uniq(
             _.map($scope.ads, function(ad) {

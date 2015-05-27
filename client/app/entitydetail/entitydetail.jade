@@ -5,7 +5,7 @@ div(ng-include='"components/navbar/navbar.html"')
 		.entity-summary.col-md-3
 			
 			#box.panel.panel-default
-				#head1.panel-heading Profile Picture
+				#head1.panel-heading Entity: {{entity.phone | tel}}
 				.panel-body
 					col-md-3(ng-repeat='img in face_image_url')
 						img.responsive(ng-src="{{img}}"
@@ -13,10 +13,16 @@ div(ng-include='"components/navbar/navbar.html"')
 							ng-class="{blurry: blur == true, clear: blur != true}")
 					br 
 					br
+					p Names: {{entity.name.join(', ') | capitalize}}
 					label Blur Images:
 					input(type="checkbox" ng-model="blur")
 					br 
 					button.btn-success() Save Entity 
+			#box.panel.panel-default
+				#head1.panel-heading Automated Analysis
+				.panel-body
+					p e.g. Movement pattern analysis (i.e. lots of ads in many places, SF-NY pattern, etc.)
+					p e.g. Highlighted key words (relatively distinct tri-grams)
 
 			#box.panel.panel-default(style="height: 300px")
 				#head1.panel-heading Map
@@ -25,25 +31,12 @@ div(ng-include='"components/navbar/navbar.html"')
 					button(ng-click='expandMap()') 
 						|Expand Map
 
-			#box.panel.panel-default
-				#head1.panel-heading Attributes **Only Show relevant**
-				.panel-body
-					p Names: {{entity.name.join(', ') | capitalize}}
-					p Ages: {{entity.age.join(', ')}}
-					p Ethnicities: {{entity.ethnicities.join(', ') | capitalize}}
-					p Ads: {{ads.length}} 
-					p Hourly Price Range: {{entity.price}}
-					p Mode Price: {{entity.price}}
-					p Height: {{entity.height.join(', ')}}
-					p Weight: {{entity.weight.join(', ')}}
-					p Eyes: {{entity.eyes.join(', ')}}
-					p Hair: {{entity.hair.join(', ')}}
+
 
 
 			#box.panel.panel-default
-				#head1.panel-heading Identifiers
+				#head1.panel-heading Entity Identifiers
 				.panel-body
-					p Phone: {{entity.phone | tel}}
 					p e-mail: {{entity.email[0].join(', ') }}
 					p Address: <input type="text" name="twitter" ng-model="twitter" required>
 					p Twitter: <input type="text" name="twitter" ng-model="twitter" required> 
@@ -51,15 +44,25 @@ div(ng-include='"components/navbar/navbar.html"')
 					p Youtube: <input type="text" name="youtube" ng-model="youtube" required>
 					p Yelp: <input type="text" name="yelp" ng-model="yelp" required>
 					button.btn-primary() Submit New Attributes 
-			
+
 			#box.panel.panel-default
-				#head1.panel-heading Cities
+				#head1.panel-heading Entity Details
 				.panel-body
-					p {{entity.cities.join('\n ') | capitalize}}
+					p Ages: {{entity.age.join(', ')}}
+					p Ethnicities: {{entity.ethnicities.join(', ') | capitalize}}
+					p Hourly Price Range: {{entity.price}}
+					p Mode Price: {{entity.price}}
+					p Height: {{entity.height.join(', ')}}
+					p Weight: {{entity.weight.join(', ')}}
+					p Eyes: {{entity.eyes.join(', ')}}
+					p Hair: {{entity.hair.join(', ')}}
+					p Cities: {{entity.cities.join('\n ') | capitalize}}
+			
+			
 						
 		.col-md-9
 			#box.panel.panel-default
-				#head1.panel-heading Calendar -- Active since November 2, 2012
+				#head1.panel-heading Active Since {{entity.postTimes[0]}}
 				entity-heatmap(config='heatmapConfig', entityId='id')
 
 			hr

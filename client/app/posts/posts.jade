@@ -7,14 +7,36 @@ div(ng-include='"components/navbar/navbar.html"')
 			#box.panel.panel-default
 				#head1.panel-heading Filter Ad Stream -- X Ads in last 24 hours
 				.panel-body
-					| Filter: 
-					input(ng-model="filterText")
-					br
-					br
-					label Blur Images:
-						input(type="checkbox" ng-model="blur")
-	.row(ng-repeat='ad in ads | limitTo:10')
-		.entity-search.col-md-12
+					.entity-search.col-md-6
+						span.glyphicon.glyphicon-search 
+						input(ng-model="filterText")
+						br
+						br
+						label Blur Images:
+							input(type="checkbox" ng-model="blur")
+					.entity-search.col-md-6
+						.entity-search.col-md-6
+							p Placeholder
+						.entity-search.col-md-6
+							p Placeholder	
+		.entity-panel.col-md-12
+			.entity-panel.col-md-4
+				.panel.panel-default
+					#head1.panel-heading.clear-fix		
+						.panel-title 
+							strong 
+								p Entity Details Associated with Ad
+			.entity-panel.col-md-8
+				.panel.panel-default
+					#head1.panel-heading.clear-fix		
+						.panel-title 
+							strong
+								p Ads
+
+
+
+		
+		.entity-search.col-md-12(ng-repeat='ad in ads | limitTo:10')
 			.entity-panel.col-md-4
 				.panel.panel-default
 					#head2.panel-heading 
