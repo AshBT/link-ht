@@ -6,7 +6,6 @@ angular.module('memexLinkerApp')
 
         scope.previous = function() {
             cal.previous();
-
         };
 
         scope.next = function() {
