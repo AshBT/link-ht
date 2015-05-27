@@ -15,33 +15,14 @@ angular.module('memexLinkerApp')
     $scope.id = $stateParams.id;
     $scope.user = null;
 
-    // $scope.heatmapConfig = {
-    //     entityId: $scope.id,
-    //     start: new Date(2013, 0),
-    //     domain : 'year',
-    //     subDomain : 'day',
-    //     legend: [2, 4, 6, 10],
-    //     range : 1,
-    //     // mapping from Unix timestamp, in seconds, to number of ads at that timestamp.
-    //     // data : {
-    //     //         946719001: 0,
-    //     //         946721450: 5,
-    //     //         946721875: 10,
-    //     //         946727172: 4,
-    //     //         946728141: 4,
-    //     //         946733771: 2
-    //     //     }
-    //     data : {}
-    // };
-
-    $scope.heatmap2Config = {
+    $scope.heatmapConfig = {
         entityId: $scope.id,
         start: new Date(2013, 0),
         domain : 'year',
         cellSize: 14,
         subDomain : 'day',
         legend: [2, 4, 6, 10],
-        range : 1,
+        range : 1
         // mapping from Unix timestamp, in seconds, to number of ads at that timestamp.
         // data : {
         //         946719001: 0,

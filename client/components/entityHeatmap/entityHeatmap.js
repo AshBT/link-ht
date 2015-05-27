@@ -8,8 +8,6 @@ angular.module('memexLinkerApp')
         var cal = new CalHeatMap();
         cal.options.afterLoadData = function(data){
 
-            console.log('afterLoadData');
-            console.log(data);
             var ads = _.map(data, function(element){ 
                 var ad = {
                     'id':element.ad._id,
@@ -21,7 +19,6 @@ angular.module('memexLinkerApp')
 
             var dateMap = new HashMap();
             _.forEach(ads, function(ad) {
-                console.log(ad.properties.posttime);
                 var utcSeconds = parseInt(Date.parse(ad.properties.posttime)) / 1000;
                 if(dateMap.has(utcSeconds)) {
                     dateMap.set(utcSeconds, dateMap.get(utcSeconds)+1);
@@ -33,7 +30,6 @@ angular.module('memexLinkerApp')
             dateMap.forEach(function(count, timestamp) {
                 outputData[timestamp] = count;
             });
-            console.log(outputData);
             return outputData;
 
         };
