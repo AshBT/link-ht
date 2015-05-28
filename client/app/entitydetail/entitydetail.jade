@@ -51,13 +51,13 @@ div(ng-include='"components/navbar/navbar.html"')
 				.panel-body
 					p Ages: {{entity.age.join(', ')}}
 					p Ethnicities: {{entity.ethnicities.join(', ') | capitalize}}
-					p Hourly Price Range: {{entity.price}}
-					p Mode Price: {{entity.price}}
+					p Hourly Price Range: {{entity.minPrice}} to {{entity.maxPrice}}
+					p Mode Price: {{entity.modePrice}}
 					p Height: {{entity.height.join(', ')}}
 					p Weight: {{entity.weight.join(', ')}}
 					p Eyes: {{entity.eyes.join(', ')}}
 					p Hair: {{entity.hair.join(', ')}}
-					p Cities: {{entity.cities.join('\n ') | capitalize}}
+					p Cities: {{entity.cities.join(', ') | capitalize}}
 			
 			
 						

@@ -4,6 +4,41 @@ angular.module('memexLinkerApp')
 .controller('MainCtrl', function ($scope, $http, $q, socket, lodash) {
 
   var _ = lodash;
+  var source_map = new Array();
+
+  source_map[1] = 'Backpage';
+  source_map[2] = 'Craigslist';
+  source_map[3] = 'Classivox';
+  source_map[4] = 'MyProviderGuide';
+  source_map[5] = 'NaughtyReviews';
+  source_map[6] = 'RedBook';
+  source_map[7] = 'CityVibe';
+  source_map[8] = 'MassageTroll';
+  source_map[9] = 'RedBookForum';
+  source_map[10] = 'CityXGuide';
+  source_map[11] = 'CityXGuideForum';
+  source_map[12] = 'RubAds';
+  source_map[13] = 'Anunico';
+  source_map[14] = 'SipSap';
+  source_map[15] = 'EscortsInCollege';
+  source_map[16] = 'EscortPhoneList';
+  source_map[17] = 'EroticMugshots';
+  source_map[18] = 'EscortsAdsXXX';
+  source_map[19] = 'EscortsinCA';
+  source_map[20] = 'EscortsintheUS';
+  source_map[21] = 'LiveEscortReviws';
+  source_map[22] = 'MyProviderGuideForum';
+  source_map[23] = 'USASexGuide';
+  source_map[24] = 'EroticReview';
+  source_map[25] = 'AdultSearch';
+  source_map[26] = 'HappyMassage';
+  source_map[27] = 'UtopiaGuide';
+  source_map[28] = 'MissingKids';
+
+
+
+
+
 
   $scope.logo = 'http://icons.iconarchive.com/icons/icons8/ios7/256/Very-Basic-Paper-Clip-icon.png';
   $scope.blur = true;
@@ -11,11 +46,11 @@ angular.module('memexLinkerApp')
   $scope.entities = [];
 
     /* 
-    * Returns the set of unique items, and removes undefined values.
+    * Returns the set of unique, flattened items, and removes undefined values.
     */
     
-    function uniqueAndDefined(items) {
-      return _.filter(_.uniq(items), function(item) {
+    function uniqueFlatAndDefined(items) {
+      return _.filter(_.uniq(_.flatten(items)), function(item) {
         return ! _.isUndefined(item);
       });
     }
@@ -25,11 +60,7 @@ angular.module('memexLinkerApp')
       });
     }
 
-    function uniqueFlatAndDefined(items) {
-      return _.filter(_.uniq(_.flatten(items)), function(item) {
-        return ! _.isUndefined(item);
-      });
-    }
+    
 
     /*
     * entity: 
@@ -55,23 +86,25 @@ angular.module('memexLinkerApp')
         var age = uniqueFlatAndDefined(collectAdProperty(ads, 'age')).sort();
         var minAges = _.min(age);
         var maxAges = _.max(age);
-
-        var rate60 = _.map(ads, function(ad){
-          return ad.properties.rate60;
-        });
-        var rate60 = _.flatten(rate60);
-        var rate60 = _.uniq(rate60);
-
+        var rate60 = uniqueFlatAndDefined(collectAdProperty(ads, 'rate60'));
         var priceRange = 'Missing' ;
-
         if (rate60.length === 1 & rate60[0] != null) {
           var priceRange = rate60[0] ;
         }
         else if (rate60.length > 1) {
-        var priceRange = _.min(rate60) + '--' +  _.max(rate60);
+        var priceRange = _.min(rate60) + ' to ' +  _.max(rate60);
         }
+        var website=[]
+        var sourcesid = uniqueFlatAndDefined(collectAdProperty(ads, 'sources_id'));
+        for (var i = 0; i < sourcesid.length; i++) { 
+          website=website.concat(source_map[sourcesid[i]]);
+          console.log(website);
+        }
+        website = _.filter(_.uniq(website), function(element){
+          return ! _.isUndefined(element);
+        });
 
-        var sourcesid = _.uniq(collectAdProperty(ads, 'sources_id'));
+
         var title = collectAdProperty(ads, 'title');
         var text = collectAdProperty(ads, 'text');
         var name = uniqueFlatAndDefined(collectAdProperty(ads, 'name'));
@@ -88,7 +121,7 @@ angular.module('memexLinkerApp')
           return ! _.isUndefined(element);
         });
 
-        var face = uniqueAndDefined(lodash.flatten(
+        var face = uniqueFlatAndDefined(lodash.flatten(
           _.map(ads, function(ad) {
             return ad.properties.face_image_url;
           }),
@@ -119,7 +152,8 @@ angular.module('memexLinkerApp')
             text:text,
             name: name,
             city: city,
-            nFaces: nFaces
+            nFaces: nFaces,
+            website: website
           };
           deferred.resolve(entitySummary);
         });            

@@ -22,6 +22,17 @@ angular.module('memexLinkerApp')
       });
     }
 
+    function mode(arr) {
+    return arr.reduce(function(current, item) {
+        var val = current.numMapping[item] = (current.numMapping[item] || 0) + 1;
+        if (val > current.greatestFreq) {
+            current.greatestFreq = val;
+            current.mode = item;
+        }
+        return current;
+    }, {mode: null, greatestFreq: -Infinity, numMapping: {}}, arr).mode;
+};
+
     $scope.logo = "http://icons.iconarchive.com/icons/icons8/ios7/256/Very-Basic-Paper-Clip-icon.png";
 
     $scope.map = {};
@@ -212,20 +223,18 @@ angular.module('memexLinkerApp')
         $scope.entity.eyes = uniqueFlatAndDefined(collectAdProperty($scope.ads, 'eyes')).sort();
         $scope.entity.hair = uniqueFlatAndDefined(collectAdProperty($scope.ads, 'hair')).sort();
         $scope.entity.price = uniqueFlatAndDefined(collectAdProperty($scope.ads, 'rate60')).sort();
-
-
-        var names = _.map($scope.ads, function(ad) {
-                return ad.properties.name;
-            });
-        var flat_names = _.flatten(names)
-
-        $scope.entity.name = _.uniq(flat_names)
-        $scope.entity.name = _.filter($scope.entity.name, function(element){
-            return ! _.isEmpty(element);
-        });
-
-
-
+        var priceRange = 'Missing' ;
+        if ($scope.entity.price[0] != null) {
+            $scope.entity.minPrice = _.min($scope.entity.price)
+            $scope.entity.maxPrice = _.max($scope.entity.price)
+        }
+        else { 
+            $scope.entity.minPrice = "Missing"
+            $scope.entity.maxPrice = "Missing"
+        }
+        $scope.entity.modePrice = mode($scope.entity.price)
+        $scope.entity.name = uniqueFlatAndDefined(collectAdProperty($scope.ads, 'name')).sort();
+        //$scope.entity.email = uniqueFlatAndDefined(collectAdProperty($scope.ads, 'email')).sort();
         $scope.entity.email = _.uniq(
             _.map($scope.ads, function(ad) {
                 return ad.properties.email;
