@@ -4,6 +4,24 @@
 angular.module('memexLinkerApp')
 .controller('EntitydetailCtrl', function ($scope, $http, $stateParams, $q, $modal, lodash, Auth) {
     var _ = lodash;
+
+    function collectAdProperty(ads, propertyName) {
+      return _.map(ads, function(ad) {
+        return ad.properties[propertyName];
+      });
+    }
+
+    function uniqueFlatAndDefined(items) {
+      return _.filter(_.uniq(_.flatten(items)), function(item) {
+        return ! _.isUndefined(item);
+      });
+    }
+    function uniqueAndDefined(items) {
+      return _.filter(_.uniq(items), function(item) {
+        return ! _.isUndefined(item);
+      });
+    }
+
     $scope.logo = "http://icons.iconarchive.com/icons/icons8/ios7/256/Very-Basic-Paper-Clip-icon.png";
 
     $scope.map = {};
@@ -182,55 +200,18 @@ angular.module('memexLinkerApp')
 
 
     function updateEntity() {
-        $scope.entity.cities = _.uniq(
-            _.map($scope.ads, function(ad) {
-                var city = ad.properties.city;
-                return city;
-            })
-            );
-        $scope.entity.cities = lodash.filter($scope.entity.cities, function(element){
-            return ! _.isEmpty(element);
-        });
-
-        $scope.entity.postTimes = _.uniq(
-            _.map($scope.ads, function(ad) {
-                return (ad.properties.posttime);
-            })
-            );
-        $scope.entity.postTimes = lodash.filter($scope.entity.postTimes, function(element){
-            return ! _.isEmpty(element);
-        });
-
-        //$scope.entity.firstPostTime = _.min($scope.entity.postTimes);
+        
 
 
-        $scope.entity.ethnicities = _.uniq(
-            _.map($scope.ads, function(ad) {
-                return ad.properties.ethnicity;
-            })
-            );
-        $scope.entity.ethnicities = lodash.filter($scope.entity.ethnicities, function(element){
-            return ! _.isEmpty(element);
-        });
-
-        $scope.entity.age = _.uniq(
-            _.map($scope.ads, function(ad) {
-                return ad.properties.age;
-            })
-            );
-        $scope.entity.age = _.filter($scope.entity.age, function(element){
-            return ! _.isEmpty(element);
-        });
-
-        $scope.entity.price = _.uniq(
-            _.map($scope.rate60, function(ad) {
-                return ad.properties.rate60;
-            })
-            );
-        $scope.entity.price = _.filter($scope.entity.rate60, function(element){
-            return ! _.isEmpty(element);
-        });
-
+        $scope.entity.cities= uniqueFlatAndDefined(collectAdProperty($scope.ads, 'city')).sort();
+        $scope.entity.postTime= uniqueFlatAndDefined(collectAdProperty($scope.ads, 'posttime')).sort();
+        $scope.entity.age = uniqueFlatAndDefined(collectAdProperty($scope.ads, 'age')).sort();
+        $scope.entity.ethnicities = uniqueFlatAndDefined(collectAdProperty($scope.ads, 'ethnicity')).sort();
+        $scope.entity.height = uniqueFlatAndDefined(collectAdProperty($scope.ads, 'height')).sort();
+        $scope.entity.weight = uniqueFlatAndDefined(collectAdProperty($scope.ads, 'weight')).sort();
+        $scope.entity.eyes = uniqueFlatAndDefined(collectAdProperty($scope.ads, 'eyes')).sort();
+        $scope.entity.hair = uniqueFlatAndDefined(collectAdProperty($scope.ads, 'hair')).sort();
+        $scope.entity.price = uniqueFlatAndDefined(collectAdProperty($scope.ads, 'rate60')).sort();
 
 
         var names = _.map($scope.ads, function(ad) {
@@ -254,42 +235,7 @@ angular.module('memexLinkerApp')
             return ! _.isEmpty(element);
         });
 
-        $scope.entity.height = _.uniq(
-            _.map($scope.ads, function(ad) {
-                return ad.properties.height;
-            })
-            );
-        $scope.entity.height = _.filter($scope.entity.height, function(element){
-            return ! _.isEmpty(element);
-        });
-
-        $scope.entity.weight = _.uniq(
-            _.map($scope.ads, function(ad) {
-                return ad.properties.weight;
-            })
-            );
-        $scope.entity.weight= _.filter($scope.entity.weight, function(element){
-            return ! _.isEmpty(element);
-        });
-
-        $scope.entity.eyes = _.uniq(
-            _.map($scope.ads, function(ad) {
-                return ad.properties.eyes;
-            })
-            );
-        $scope.entity.eyes = _.filter($scope.entity.eyes, function(element){
-            return ! _.isEmpty(element);
-        });
-
-        $scope.entity.hair= _.uniq(
-            _.map($scope.ads, function(ad) {
-                return ad.properties.hair;
-            })
-            );
-        $scope.entity.hair = _.filter($scope.entity.hair, function(element){
-            return ! _.isEmpty(element);
-        });
-
+        
         $scope.imageUrls = _.flatten(
           _.map($scope.ads, function(ad) {
             return ad.properties.image_locations;

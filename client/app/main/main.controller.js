@@ -13,15 +13,21 @@ angular.module('memexLinkerApp')
     /* 
     * Returns the set of unique items, and removes undefined values.
     */
+    
     function uniqueAndDefined(items) {
       return _.filter(_.uniq(items), function(item) {
         return ! _.isUndefined(item);
       });
     }
-
     function collectAdProperty(ads, propertyName) {
       return _.map(ads, function(ad) {
         return ad.properties[propertyName];
+      });
+    }
+
+    function uniqueFlatAndDefined(items) {
+      return _.filter(_.uniq(_.flatten(items)), function(item) {
+        return ! _.isUndefined(item);
       });
     }
 
@@ -46,28 +52,30 @@ angular.module('memexLinkerApp')
         var lastPostTime = _.max(postTimes);
         var firstPostTime = _.min(postTimes);
 
-        var age = uniqueAndDefined(collectAdProperty(ads, 'age')).sort();
+        var age = uniqueFlatAndDefined(collectAdProperty(ads, 'age')).sort();
         var minAges = _.min(age);
         var maxAges = _.max(age);
 
         var rate60 = _.map(ads, function(ad){
           return ad.properties.rate60;
         });
-        rate60 = _.uniq(rate60);
+        var rate60 = _.flatten(rate60);
+        var rate60 = _.uniq(rate60);
 
-        var priceRange = _.min(rate60) + '--' +  _.max(rate60);
-        if (rate60[0] === null) {
-          priceRange = 'Missing' ;
+        var priceRange = 'Missing' ;
+
+        if (rate60.length === 1 & rate60[0] != null) {
+          var priceRange = rate60[0] ;
         }
-        else if (rate60.length === 1 & rate60[0] != null) {
-          priceRange = rate60[0][0] ;
-        }  
+        else if (rate60.length > 1) {
+        var priceRange = _.min(rate60) + '--' +  _.max(rate60);
+        }
 
         var sourcesid = _.uniq(collectAdProperty(ads, 'sources_id'));
         var title = collectAdProperty(ads, 'title');
         var text = collectAdProperty(ads, 'text');
-        var name = uniqueAndDefined(collectAdProperty(ads, 'name'));
-        var city = uniqueAndDefined(collectAdProperty(ads, 'city'));
+        var name = uniqueFlatAndDefined(collectAdProperty(ads, 'name'));
+        var city = uniqueFlatAndDefined(collectAdProperty(ads, 'city'));
 
         var imageUrls = _.uniq(lodash.flatten(
           _.map(ads, function(ad) {
