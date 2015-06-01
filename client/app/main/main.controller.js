@@ -175,6 +175,7 @@ $http.get('/api/entities').success(function(res) {
       summarizeEntity(entity).then(function(entitySummary) {
         // success
         $scope.entities.push(entitySummary);
+        console.log(entitySummary);
       }, function(reason) {
         console.log('Failed for ' + reason);
       });

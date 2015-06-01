@@ -7,26 +7,113 @@ div(ng-include='"components/navbar/navbar.html"')
 			#box.panel.panel-default
 				#head1.panel-heading Search Across Entities -- {{entities.length}} Entities Found
 				.panel-body
-					.entity-search.col-md-6
-						span.glyphicon.glyphicon-search 
-						input(ng-model="filterText")
-						br
-						br
-						label Blur Images:
-							input(type="checkbox" ng-model="blur")
-					.entity-search.col-md-6
-						.entity-search.col-md-6
+					.entity-search.col-md-4
+						.col-md-6
+							.glyphicon.glyphicon-earphone
+							| Phone number:
+						.col-md-6
+							input(ng-model="filterPhone")
+						.col-md-6
+							.glyphicon.glyphicon-font
+							| Ad text:
+						.col-md-6
+							input(ng-model="filterText")
+						.col-md-6
+							.glyphicon.glyphicon-address-book
+							| Name:
+						.col-md-6
+							input(ng-model="filterName")
+						.col-md-6
+							.glyphicon.glyphicon-uk-rat-18
+							| Age:
+						.col-md-6
+							input(ng-model="filterAge")
+						.col-md-6
+							.glyphicon.glyphicon-bank
+							| City:
+						.col-md-6
+							input(ng-model="filterCity")
+						.col-md-6
+							.glyphicon.glyphicon-family
+							| Ethnicity: 
+						.col-md-6
+							input(ng-model="filterEthnicity")
+						.col-md-6
+							.glyphicon.glyphicon-usd
+							| Minimum Price:
+						.col-md-6
+							input(ng-model="filterMinPrice")
+						.col-md-6
+							.glyphicon.glyphicon-usd
+							| Maximum Price:
+						.col-md-6
+							input(ng-model="filterMaxPrice")
+						.col-md-6
+							.glyphicon.glyphicon-usd
+							| Modal Price:
+						.col-md-6
+							input(ng-model="filterModePrice")
+						.col-md-6
+							.glyphicon.glyphicons-girl
+							| Hair Color:
+						.col-md-6
+							input(ng-model="filterHair")
+						.col-md-6
+							.glyphicon.glyphicon-earphone
+							| Eye Color:
+						.col-md-6
+							input(ng-model="filterEyes")
+						.col-md-6
+							.glyphicon.glyphicon-woman
+							| Bust Size:
+						.col-md-6
+							input(ng-model="filterBust")
+						.col-md-6
+							.glyphicon.glyphicon-woman
+							| Cup Size:
+						.col-md-6
+							input(ng-model="filterCup")
+						.col-md-6
+							.glyphicon.glyphicon-shop
+							| Incall:
+						.col-md-6
+							input(ng-model="filterIncall")
+						.col-md-6
+							.glyphicon.glyphicon-shop-window
+							| OutCall:
+						.col-md-6
+							input(ng-model="filterOutcall")
+						.col-md-6
+							.glyphicon.glyphicon-cluster
+							| Social Media Account:
+						.col-md-6
+							input(ng-model="socialMedia")
+						
+					.entity-search.col-md-4
+						.entity-search.col-md-12
+							button(ng-click="count = count+1" ng-init="count=0")  Search over ALL entities
+							br
+							br
+							p Right now, the button just increments: {{count}}
+							br
+							br
+						.entity-search.col-md-12
+							label Blur Images:  
+								input(type="checkbox" ng-model="blur")
+					
+					.entity-search.col-md-4
+						.entity-search.col-md-12
 							p Entities: {{entities.length}}
-							p Ads: 
-							p Pictures: 
-							p Phones: 
-							p Websites: 	
+							p Ads: {{reviews.length}} 
+							p Pictures: {{entities.imageUrls.length}}
+							p Phones: {{phones.length}} 
+							p Websites: {{websites.length}}	
 						.entity-search.col-md-6
-							p Age Range: 
-							p Price Range: 
-							p Cities: 
-							p Ethnicities: 
-							p Social Media Accounts:	
+							p Age Range: {{math.min(entity.age)}} -- {{math.max(entity.age)}}
+							p Price Range: {{math.min(entity.price)}} -- {{math.max(entity.price)}}
+							p Cities: {{cities.length}}
+							p Ethnicities: {{ethnicities.length}}
+							p Social Media Account:
 		.entity-panel.col-md-12
 			.entity-panel.col-md-4
 				.panel.panel-default
@@ -40,7 +127,7 @@ div(ng-include='"components/navbar/navbar.html"')
 						.panel-title 
 							strong
 								p Most Recent Post Associated with Entity
-		.entity-panel.col-md-12(ng-repeat="entity in entities | orderBy:'-nSuggested' | filter:filterText")
+		.entity-panel.col-md-12(ng-repeat="entity in entities | orderBy:'-nSuggested' | filter: { phone : filterText} ")
 			.entity-panel.col-md-4
 				.panel.panel-default
 					#head2.panel-heading.clear-fix			
