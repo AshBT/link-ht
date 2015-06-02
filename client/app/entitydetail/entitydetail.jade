@@ -2,7 +2,7 @@ div(ng-include='"components/navbar/navbar.html"')
 
 .container
 	.row 
-		.entity-summary.col-md-3
+		.col-md-3
 			.panel.panel-default
 				.panel-heading Entity: {{entity.phone | tel}}
 				.panel-body.vertical-layout
@@ -18,25 +18,22 @@ div(ng-include='"components/navbar/navbar.html"')
 						input(type="checkbox" ng-model="blur")
 					.item 
 						button.btn-success() Save Entity 
+			
 			.panel.panel-default
 				.panel-heading 
 					| Automated Analysis
-				.panel-
+				.panel-body
 					ul
 						li Movement pattern analysis (i.e. lots of ads in many places, SF-NY pattern, etc.)
 						li Highlighted key words (relatively distinct tri-grams)
 
-			.panel.panel-default(style="height: 300px")
+			.panel.panel-default(style="height: 400px")
 				.panel-heading Map
-				.panel-body
-					ui-gmap-google-map(center='map.center', zoom='map.zoom')
-						ui-gmap-markers(models='markers', coords="'self'", icon="'icon'")
-					//- button(ng-click='expandMap()') 
-					//- 	|Expand Map
+				ui-gmap-google-map(center='map.center', zoom='map.zoom')
+					ui-gmap-markers(models='markers', coords="'self'", icon="'icon'")
 
 			.panel.panel-default
 				.panel-heading Entity Identifiers
-				.panel-body
 					.vertical-layout
 
 						ul.nobullets.item
@@ -80,8 +77,6 @@ div(ng-include='"components/navbar/navbar.html"')
 						include ./partials/annotations.jade
 					tab(heading='0 Social Media Posts')
 						include ./partials/twitter.jade
-
-
 
 footer.footer
 	.container

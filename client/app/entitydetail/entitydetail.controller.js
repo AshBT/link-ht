@@ -33,7 +33,7 @@ angular.module('memexLinkerApp')
     }, {mode: null, greatestFreq: -Infinity, numMapping: {}}, arr).mode;
     }
 
-    $scope.logo = "http://icons.iconarchive.com/icons/icons8/ios7/256/Very-Basic-Paper-Clip-icon.png";
+    $scope.logo = 'http://icons.iconarchive.com/icons/icons8/ios7/256/Very-Basic-Paper-Clip-icon.png';
 
     $scope.map = {
         center: {
@@ -160,7 +160,6 @@ angular.module('memexLinkerApp')
         $scope.entity.name = res._node.properties.name;
         $scope.entity.city = res._node.properties.city;
         $scope.entity.n_faces = res._node.properties.n_faces;
-
     });
 
 

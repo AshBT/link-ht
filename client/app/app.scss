@@ -71,21 +71,21 @@ body {
 
 $blur: 3px;
 .blurry {
-	filter: blur($blur);
-	// Browser Specific
-	-webkit-filter: blur($blur);
-	-moz-filter: blur($blur);
-	-o-filter: blur($blur);
-	-ms-filter: blur($blur);
+    filter: blur($blur);
+    // Browser Specific
+    -webkit-filter: blur($blur);
+    -moz-filter: blur($blur);
+    -o-filter: blur($blur);
+    -ms-filter: blur($blur);
 }
 
 .clear {
-	filter: blur(0);
-	// Browser Specific
-	-webkit-filter: blur(0);
-	-moz-filter: blur(0);
-	-o-filter: blur(0);
-	-ms-filter: blur(0);
+    filter: blur(0);
+    // Browser Specific
+    -webkit-filter: blur(0);
+    -moz-filter: blur(0);
+    -o-filter: blur(0);
+    -ms-filter: blur(0);
 }
 
 .deckgrid[deckgrid]::before {
@@ -103,21 +103,15 @@ $blur: 3px;
     width: 25%;
 }
 
-.angular-google-map-container { height: 200px; }
-
-  map, div[map] {display:block; width:450px; height:300px;}
-
-ul.nobullets
-{
-    list-style-type: none;
-    margin: 0;
-    padding: 0;
-}
-
 .vertical-layout {
+    display: flex;
     flex-direction: column;
 }
 
 .item {
-    flex: 1;
+    flex: 1
 }
+
+.angular-google-map-container { height: 200px; }
+
+  map, div[map] {display:block; width:450px; height:300px;}
