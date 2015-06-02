@@ -3,11 +3,12 @@ div(ng-include='"components/navbar/navbar.html"')
 .container
 
 	.row
-		.entity-search.col-md-12
-			#box.panel.panel-default
-				#head1.panel-heading Search Across Entities -- {{entities.length}} Entities Found
+		.col-md-12
+			.panel.panel-default
+				.panel-heading 
+					h3 Search Across Entities -- {{entities.length}} Entities Found
 				.panel-body
-					.entity-search.col-md-4
+					.col-md-4
 						// city,age,maxAges,minAges,nFaces,nPosts,nSuggested,priceRange
 						.col-md-6
 							| Phone number:
@@ -42,53 +43,52 @@ div(ng-include='"components/navbar/navbar.html"')
 						.col-md-6
 							input(ng-model="socialMedia")
 						
-					.entity-search.col-md-4
-						.entity-search.col-md-12
-							button(ng-click="count = count+1" ng-init="count=0")  Search over ALL entities
-							br
+					.col-md-4
+						.col-md-12
+							button(ng-click="count = count+1" ng-init="count=0")  Search all entites
 							br
 							p Right now, the button just increments: {{count}}
 							br
 							br
-						.entity-search.col-md-12
+						.col-md-12
 							label Blur Images:  
 								input(type="checkbox" ng-model="blur")
 					
-					.entity-search.col-md-4
-						.entity-search.col-md-12
+					.col-md-4
+						.col-md-12
 							p Entities: {{entities.length}}
 							p Ads: {{reviews.length}} 
 							p Pictures: {{entities.imageUrls.length}}
 							p Phones: {{phones.length}} 
 							p Websites: {{websites.length}}	
-						.entity-search.col-md-6
+						.col-md-6
 							p Age Range: {{math.min(entity.age)}} -- {{math.max(entity.age)}}
 							p Price Range: {{math.min(entity.price)}} -- {{math.max(entity.price)}}
 							p Cities: {{cities.length}}
 							p Ethnicities: {{ethnicities.length}}
 							p Social Media Account:
-		.entity-panel.col-md-12
-			.entity-panel.col-md-4
-				.panel.panel-default
-					#head1.panel-heading.clear-fix		
-						.panel-title 
-							strong 
-								p Entity Details
-			.entity-panel.col-md-8
-				.panel.panel-default
-					#head1.panel-heading.clear-fix		
-						.panel-title 
-							strong
-								p Most Recent Post Associated with Entity
-		.entity-panel.col-md-12(ng-repeat="entity in entities | orderBy:'-nSuggested' | filter: { phone : filterPhone, text: filterText, gt : filterMinAge } ")
-			.entity-panel.col-md-4
-				.panel.panel-default
-					#head2.panel-heading.clear-fix			
-						.panel-title 
-							strong
-								{{entity.phone | tel}}
-					.panel-body
-						a.button.btn-primary.btn-lg.pull-right(ui-sref="entitydetail({ id: entity.id })") Inspect
+	//- .row
+	//- 	.col-md-4
+	//- 		.panel.panel-default
+	//- 			.panel-heading		
+	//- 				.panel-title 
+	//- 					strong 
+	//- 						p Entity Details
+	//- 	.col-md-8
+	//- 		.panel.panel-default
+	//- 			.panel-heading
+	//- 				.panel-title 
+	//- 					strong
+	//- 						p Most Recent Post Associated with Entity
+
+	.row
+
+		.col-md-12(ng-repeat="entity in entities | orderBy:'-nSuggested' | filter: { phone : filterPhone, text: filterText, gt : filterMinAge } ")
+			.panel.panel-default
+				.panel-heading 
+					h3 Entity Profile Summary: {{entity.phone | tel}}
+				.panel-body
+					.col-md-4
 						p Ads: {{entity.nPosts}}
 						p Active since: {{entity.firstPostTime.toDateString()}}
 						p Listed names: {{entity.name.join(', ') | capitalize}}
@@ -100,31 +100,74 @@ div(ng-include='"components/navbar/navbar.html"')
 						p Ads related by image: {{entity.nSuggested}}
 						p Ads related by text:
 						p Ads related by phone co-occurence:
-			.entity-panel.col-md-8
-				.panel.panel-default
-					#head2.panel-heading.clear-fix
-							.panel-title 
-								strong
-									{{entity.website[0]}} on {{entity.lastPostTime.toDateString()}}
-					.panel-body
-						p 
-						strong
-							Recent Title: 
-						| {{entity.title[0]}}
-						p 
-						strong
-							Recent Ad Text:
-						| {{entity.text[0]}}
-						p 
-						strong
-							All Images: 
-						| {{entity.imageUrls.length}}
-						br
-						row
-							col-md-3(ng-repeat='img in entity.imageUrls | limitTo:50')					
-								img.responsive(ng-src="{{img}}" 
-									style="max-height:50px; margin:0 auto;"
-									ng-class="{blurry: blur == true, clear: blur != true}")
+						a.button.btn-primary.btn-lg.pull-left(ui-sref="entitydetail({ id: entity.id })") Inspect
+					
+					.col-md-8
+						h4 Most Recent Post Associated with Entity
+						.panel.panel-default
+							.panel-heading
+								.panel-title 
+									h4 {{entity.website[0]}} on {{entity.lastPostTime.toDateString()}}
+									
+							.panel-body.vertical-layout
+								.item 
+									h4 {{entity.title[0]}}
+								.item
+									p 
+										| {{entity.text[0]}}
+								.item
+									.row
+										.col-md-2(ng-repeat='img in entity.imageUrls | limitTo:50')					
+											img.responsive(ng-src="{{img}}" 
+												style="max-height:50px; margin:0 auto;"
+												ng-class="{blurry: blur == true, clear: blur != true}")
+
+
+		//- .col-md-12(ng-repeat="entity in entities | orderBy:'-nSuggested' | filter: { phone : filterPhone, text: filterText, gt : filterMinAge } ")
+		//- 	.col-md-4
+		//- 		.panel.panel-default
+		//- 			.panel-heading.clear-fix			
+		//- 				.panel-title 
+		//- 					strong
+		//- 						{{entity.phone | tel}}
+		//- 			.panel-body
+		//- 				a.button.btn-primary.btn-lg.pull-right(ui-sref="entitydetail({ id: entity.id })") Inspect
+		//- 				p Ads: {{entity.nPosts}}
+		//- 				p Active since: {{entity.firstPostTime.toDateString()}}
+		//- 				p Listed names: {{entity.name.join(', ') | capitalize}}
+		//- 				p Listed ages: {{entity.age.join(', ')}}
+		//- 				p Listed price range: {{entity.priceRange}} 
+		//- 				p Cities: {{entity.city.join(', ') | capitalize}}
+		//- 				p Websites:  {{entity.website.join(', ')}}
+		//- 				p Face pictures: {{entity.nFaces}}
+		//- 				p Ads related by image: {{entity.nSuggested}}
+		//- 				p Ads related by text:
+		//- 				p Ads related by phone co-occurence:
+		//- 	.col-md-8
+		//- 		.panel.panel-default
+		//- 			.panel-heading.clear-fix
+		//- 					.panel-title 
+		//- 						strong
+		//- 							{{entity.website[0]}} on {{entity.lastPostTime.toDateString()}}
+		//- 			.panel-body
+		//- 				p 
+		//- 				strong
+		//- 					Recent Title: 
+		//- 				| {{entity.title[0]}}
+		//- 				p 
+		//- 				strong
+		//- 					Recent Ad Text:
+		//- 				| {{entity.text[0]}}
+		//- 				p 
+		//- 				strong
+		//- 					All Images: 
+		//- 				| {{entity.imageUrls.length}}
+		//- 				br
+		//- 				row
+		//- 					col-md-3(ng-repeat='img in entity.imageUrls | limitTo:50')					
+		//- 						img.responsive(ng-src="{{img}}" 
+		//- 							style="max-height:50px; margin:0 auto;"
+		//- 							ng-class="{blurry: blur == true, clear: blur != true}")
 																	
 	footer.footer
 		center Designed and Developed by Qadium 2015. All code is open source.

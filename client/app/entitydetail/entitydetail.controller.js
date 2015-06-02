@@ -31,11 +31,17 @@ angular.module('memexLinkerApp')
         }
         return current;
     }, {mode: null, greatestFreq: -Infinity, numMapping: {}}, arr).mode;
-};
+    }
 
     $scope.logo = "http://icons.iconarchive.com/icons/icons8/ios7/256/Very-Basic-Paper-Clip-icon.png";
 
-    $scope.map = {};
+    $scope.map = {
+        center: {
+            latitude: 33.5206608,
+            longitude: -86.80248999999998
+        },
+        zoom: 8
+    };
     $scope.markers = [
                  // {
                  //   id: 583187,
@@ -65,10 +71,10 @@ angular.module('memexLinkerApp')
     };
 
 
-    if (Auth.isLoggedIn()) {
-        $scope.user = Auth.getCurrentUser();
-        console.log($scope.user);     
-    }
+    // if (Auth.isLoggedIn()) {
+    //     $scope.user = Auth.getCurrentUser();
+    //     console.log($scope.user);     
+    // }
 
     $scope.entity = {
         phone:'',
@@ -83,9 +89,7 @@ angular.module('memexLinkerApp')
         hair:[],
         price:[],
         postTimes:[],
-        firstPostTime:'',
-
-
+        firstPostTime:''
     };
 
     $scope.getHost = function (url) {
@@ -116,7 +120,6 @@ angular.module('memexLinkerApp')
 
     // Link Ad to Entity by user-confirmed image similarity.
     $scope.linkToEntity = function(ad) {
-        console.log('link Ad ' + ad.id +' to Entity ' + $scope.id);
         var data = {
             idA: _.parseInt($scope.id),
             idB: ad.id,
@@ -211,9 +214,6 @@ angular.module('memexLinkerApp')
 
 
     function updateEntity() {
-        
-
-
         $scope.entity.cities= uniqueFlatAndDefined(collectAdProperty($scope.ads, 'city')).sort();
         $scope.entity.postTime= uniqueFlatAndDefined(collectAdProperty($scope.ads, 'posttime')).sort();
         $scope.entity.age = uniqueFlatAndDefined(collectAdProperty($scope.ads, 'age')).sort();
@@ -223,18 +223,17 @@ angular.module('memexLinkerApp')
         $scope.entity.eyes = uniqueFlatAndDefined(collectAdProperty($scope.ads, 'eyes')).sort();
         $scope.entity.hair = uniqueFlatAndDefined(collectAdProperty($scope.ads, 'hair')).sort();
         $scope.entity.price = uniqueFlatAndDefined(collectAdProperty($scope.ads, 'rate60')).sort();
-        var priceRange = 'Missing' ;
-        if ($scope.entity.price[0] != null) {
-            $scope.entity.minPrice = _.min($scope.entity.price)
-            $scope.entity.maxPrice = _.max($scope.entity.price)
+        //var priceRange = 'Missing' ;
+        if ($scope.entity.price[0] !== null) {
+            $scope.entity.minPrice = _.min($scope.entity.price);
+            $scope.entity.maxPrice = _.max($scope.entity.price);
         }
         else { 
-            $scope.entity.minPrice = "Missing"
-            $scope.entity.maxPrice = "Missing"
+            $scope.entity.minPrice = 'Missing';
+            $scope.entity.maxPrice = 'Missing';
         }
-        $scope.entity.modePrice = mode($scope.entity.price)
+        $scope.entity.modePrice = mode($scope.entity.price);
         $scope.entity.name = uniqueFlatAndDefined(collectAdProperty($scope.ads, 'name')).sort();
-        //$scope.entity.email = uniqueFlatAndDefined(collectAdProperty($scope.ads, 'email')).sort();
         $scope.entity.email = _.uniq(
             _.map($scope.ads, function(ad) {
                 return ad.properties.email;
@@ -266,14 +265,10 @@ angular.module('memexLinkerApp')
           return ! _.isUndefined(element);
       });
 
-
-
-        //TODO: Add markers
         if (! _.isEmpty($scope.entity.cities)) {
 
             var promise = geocodeCity($scope.entity.cities[0]);
             promise.then(function(point) {
-                console.log(point);
                 $scope.map = {
                     center: {
                         latitude: point.latitude,
@@ -281,6 +276,7 @@ angular.module('memexLinkerApp')
                     },
                     zoom: 8
                 };
+                console.log($scope.map);
             }, function(reason) {
                 console.log('Failed');
             }, function(update) {
@@ -302,6 +298,7 @@ angular.module('memexLinkerApp')
                             longitude: point.longitude,
                             title: city
                         };
+                        console.log('Marker:');
                         console.log(m);
                         $scope.markers.push(m);
                     });
@@ -314,14 +311,12 @@ angular.module('memexLinkerApp')
         var deferred = $q.defer();
         
         geocoder.geocode( { 'address': cityName }, function(results, status) {
-
             if (status === google.maps.GeocoderStatus.OK && results.length > 0) {
                 var location = results[0].geometry.location;
                 deferred.resolve({
                     latitude: parseFloat(location.lat()),
                     longitude: parseFloat(location.lng())
                 });
-
             } else {
                 deferred.resolve({
                     latitude: 0,

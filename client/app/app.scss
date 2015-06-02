@@ -106,3 +106,18 @@ $blur: 3px;
 .angular-google-map-container { height: 200px; }
 
   map, div[map] {display:block; width:450px; height:300px;}
+
+ul.nobullets
+{
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+}
+
+.vertical-layout {
+    flex-direction: column;
+}
+
+.item {
+    flex: 1;
+}

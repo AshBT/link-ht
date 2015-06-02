@@ -3,71 +3,72 @@ div(ng-include='"components/navbar/navbar.html"')
 .container
 	.row 
 		.entity-summary.col-md-3
-			
-			#box.panel.panel-default
-				#head1.panel-heading Entity: {{entity.phone | tel}}
-				.panel-body
-					col-md-3(ng-repeat='img in face_image_url')
-						img.responsive(ng-src="{{img}}"
-							style="max-height:80px; margin:0 auto;"
-							ng-class="{blurry: blur == true, clear: blur != true}")
-					br 
-					br
-					p Names: {{entity.name.join(', ') | capitalize}}
-					label Blur Images:
-					input(type="checkbox" ng-model="blur")
-					br 
-					button.btn-success() Save Entity 
-			#box.panel.panel-default
-				#head1.panel-heading Automated Analysis
-				.panel-body
-					p e.g. Movement pattern analysis (i.e. lots of ads in many places, SF-NY pattern, etc.)
-					p e.g. Highlighted key words (relatively distinct tri-grams)
+			.panel.panel-default
+				.panel-heading Entity: {{entity.phone | tel}}
+				.panel-body.vertical-layout
+					.item
+						col-md-3(ng-repeat='img in face_image_url')
+							img.responsive(ng-src="{{img}}"
+								style="max-height:80px; margin:0 auto;"
+								ng-class="{blurry: blur == true, clear: blur != true}")
+					.item
+						p Names: {{entity.name.join(', ') | capitalize}}
+					.item 
+						label Blur Images:
+						input(type="checkbox" ng-model="blur")
+					.item 
+						button.btn-success() Save Entity 
+			.panel.panel-default
+				.panel-heading 
+					| Automated Analysis
+				.panel-
+					ul
+						li Movement pattern analysis (i.e. lots of ads in many places, SF-NY pattern, etc.)
+						li Highlighted key words (relatively distinct tri-grams)
 
-			#box.panel.panel-default(style="height: 300px")
-				#head1.panel-heading Map
+			.panel.panel-default(style="height: 300px")
+				.panel-heading Map
 				.panel-body
 					ui-gmap-google-map(center='map.center', zoom='map.zoom')
 						ui-gmap-markers(models='markers', coords="'self'", icon="'icon'")
-					button(ng-click='expandMap()') 
-						|Expand Map
+					//- button(ng-click='expandMap()') 
+					//- 	|Expand Map
 
-
-
-
-			#box.panel.panel-default
-				#head1.panel-heading Entity Identifiers
+			.panel.panel-default
+				.panel-heading Entity Identifiers
 				.panel-body
-					p e-mail: {{entity.email[0].join(', ') }}
-					p Address: <input type="text" name="twitter" ng-model="twitter" required>
-					p Twitter: <input type="text" name="twitter" ng-model="twitter" required> 
-					p Instagram: <input type="text" name="instagram" ng-model="instagram" required>
-					p Youtube: <input type="text" name="youtube" ng-model="youtube" required>
-					p Yelp: <input type="text" name="yelp" ng-model="yelp" required>
-					button.btn-primary() Submit New Attributes 
+					.vertical-layout
 
-			#box.panel.panel-default
-				#head1.panel-heading Entity Details
+						ul.nobullets.item
+							li e-mail: {{entity.email[0].join(', ') }}
+							li Address: <input type="text" name="twitter" ng-model="twitter" required>
+							li Twitter: <input type="text" name="twitter" ng-model="twitter" required> 
+							li Instagram: <input type="text" name="instagram" ng-model="instagram" required>
+							li Youtube: <input type="text" name="youtube" ng-model="youtube" required>
+							li Yelp: <input type="text" name="yelp" ng-model="yelp" required>
+						.item
+							button.btn-primary() Submit New Attributes 
+
+			.panel.panel-default
+				.panel-heading Entity Details
 				.panel-body
-					p Ages: {{entity.age.join(', ')}}
-					p Ethnicities: {{entity.ethnicities.join(', ') | capitalize}}
-					p Hourly Price Range: {{entity.minPrice}} to {{entity.maxPrice}}
-					p Mode Price: {{entity.modePrice}}
-					p Height: {{entity.height.join(', ')}}
-					p Weight: {{entity.weight.join(', ')}}
-					p Eyes: {{entity.eyes.join(', ')}}
-					p Hair: {{entity.hair.join(', ')}}
-					p Cities: {{entity.cities.join(', ') | capitalize}}
+					ul.nobullets
+						li Ages: {{entity.age.join(', ')}}
+						li Ethnicities: {{entity.ethnicities.join(', ') | capitalize}}
+						li Hourly Price Range: {{entity.minPrice}} to {{entity.maxPrice}}
+						li Mode Price: {{entity.modePrice}}
+						li Height: {{entity.height.join(', ')}}
+						li Weight: {{entity.weight.join(', ')}}
+						li Eyes: {{entity.eyes.join(', ')}}
+						li Hair: {{entity.hair.join(', ')}}
+						li Cities: {{entity.cities.join(', ') | capitalize}}
 			
-			
-						
 		.col-md-9
-			#box.panel.panel-default
-				#head1.panel-heading Active Since {{entity.postTimes[0]}}
+			.panel.panel-default
+				.panel-heading Active Since {{entity.postTimes[0]}}
 				entity-heatmap(config='heatmapConfig', entityId='id')
 
-			hr
-			#box.panel.panel-default
+			.panel.panel-default
 				tabset
 					tab(heading='{{ads.length}} Ads and Reviews')
 						include ./partials/ads.jade
