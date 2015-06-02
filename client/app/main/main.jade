@@ -8,83 +8,36 @@ div(ng-include='"components/navbar/navbar.html"')
 				#head1.panel-heading Search Across Entities -- {{entities.length}} Entities Found
 				.panel-body
 					.entity-search.col-md-4
+						// city,age,maxAges,minAges,nFaces,nPosts,nSuggested,priceRange
 						.col-md-6
-							.glyphicon.glyphicon-earphone
 							| Phone number:
 						.col-md-6
 							input(ng-model="filterPhone")
 						.col-md-6
-							.glyphicon.glyphicon-font
 							| Ad text:
 						.col-md-6
 							input(ng-model="filterText")
 						.col-md-6
-							.glyphicon.glyphicon-address-book
-							| Name:
+							| Minimum Age:
 						.col-md-6
-							input(ng-model="filterName")
+							input(ng-model="filterMinAge")
 						.col-md-6
-							.glyphicon.glyphicon-uk-rat-18
-							| Age:
+							| Maximum Age:
 						.col-md-6
-							input(ng-model="filterAge")
+							input(ng-model="filterMaxAge")
 						.col-md-6
-							.glyphicon.glyphicon-bank
 							| City:
 						.col-md-6
 							input(ng-model="filterCity")
 						.col-md-6
-							.glyphicon.glyphicon-family
 							| Ethnicity: 
 						.col-md-6
 							input(ng-model="filterEthnicity")
 						.col-md-6
-							.glyphicon.glyphicon-usd
-							| Minimum Price:
+							| Price:
 						.col-md-6
 							input(ng-model="filterMinPrice")
 						.col-md-6
-							.glyphicon.glyphicon-usd
-							| Maximum Price:
-						.col-md-6
-							input(ng-model="filterMaxPrice")
-						.col-md-6
-							.glyphicon.glyphicon-usd
-							| Modal Price:
-						.col-md-6
-							input(ng-model="filterModePrice")
-						.col-md-6
-							.glyphicon.glyphicons-girl
-							| Hair Color:
-						.col-md-6
-							input(ng-model="filterHair")
-						.col-md-6
-							.glyphicon.glyphicon-earphone
-							| Eye Color:
-						.col-md-6
-							input(ng-model="filterEyes")
-						.col-md-6
-							.glyphicon.glyphicon-woman
-							| Bust Size:
-						.col-md-6
-							input(ng-model="filterBust")
-						.col-md-6
-							.glyphicon.glyphicon-woman
-							| Cup Size:
-						.col-md-6
-							input(ng-model="filterCup")
-						.col-md-6
-							.glyphicon.glyphicon-shop
-							| Incall:
-						.col-md-6
-							input(ng-model="filterIncall")
-						.col-md-6
-							.glyphicon.glyphicon-shop-window
-							| OutCall:
-						.col-md-6
-							input(ng-model="filterOutcall")
-						.col-md-6
-							.glyphicon.glyphicon-cluster
 							| Social Media Account:
 						.col-md-6
 							input(ng-model="socialMedia")
@@ -127,7 +80,7 @@ div(ng-include='"components/navbar/navbar.html"')
 						.panel-title 
 							strong
 								p Most Recent Post Associated with Entity
-		.entity-panel.col-md-12(ng-repeat="entity in entities | orderBy:'-nSuggested' | filter: { phone : filterText} ")
+		.entity-panel.col-md-12(ng-repeat="entity in entities | orderBy:'-nSuggested' | filter: { phone : filterPhone, text: filterText, gt : filterMinAge } ")
 			.entity-panel.col-md-4
 				.panel.panel-default
 					#head2.panel-heading.clear-fix			
@@ -146,11 +99,10 @@ div(ng-include='"components/navbar/navbar.html"')
 						p Face pictures: {{entity.nFaces}}
 						p Ads related by image: {{entity.nSuggested}}
 						p Ads related by text:
-						p Ads related by phone co-occurence: 	
+						p Ads related by phone co-occurence:
 			.entity-panel.col-md-8
 				.panel.panel-default
-					#head2.panel-heading.clear-fix		
-							
+					#head2.panel-heading.clear-fix
 							.panel-title 
 								strong
 									{{entity.website[0]}} on {{entity.lastPostTime.toDateString()}}
