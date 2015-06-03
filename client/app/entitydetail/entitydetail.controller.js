@@ -70,7 +70,6 @@ angular.module('memexLinkerApp')
         range : 1
     };
 
-
     // if (Auth.isLoggedIn()) {
     //     $scope.user = Auth.getCurrentUser();
     //     console.log($scope.user);     
