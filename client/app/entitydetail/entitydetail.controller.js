@@ -89,7 +89,11 @@ angular.module('memexLinkerApp')
         hair:[],
         price:[],
         postTimes:[],
-        firstPostTime:''
+        firstPostTime:'',
+        instagram:[], 
+        twitter:[],
+        youtube:[],
+        yelp:[]
     };
 
     $scope.getHost = function (url) {
@@ -222,6 +226,35 @@ angular.module('memexLinkerApp')
         $scope.entity.eyes = uniqueFlatAndDefined(collectAdProperty($scope.ads, 'eyes')).sort();
         $scope.entity.hair = uniqueFlatAndDefined(collectAdProperty($scope.ads, 'hair')).sort();
         $scope.entity.price = uniqueFlatAndDefined(collectAdProperty($scope.ads, 'rate60')).sort();
+        $scope.entity.email = uniqueFlatAndDefined(collectAdProperty($scope.ads, 'email')).sort();
+        $scope.entity.name = uniqueFlatAndDefined(collectAdProperty($scope.ads, 'name')).sort();
+        $scope.entity.instagram= uniqueFlatAndDefined(collectAdProperty($scope.ads, 'instagram')).sort();
+        $scope.entity.instagram_followers= uniqueFlatAndDefined(collectAdProperty($scope.ads, 'instagram_followers')).sort();
+        $scope.entity.instagram_follows= uniqueFlatAndDefined(collectAdProperty($scope.ads, 'instagram_follows')).sort();
+        $scope.entity.instagram_likers= uniqueFlatAndDefined(collectAdProperty($scope.ads, 'instagram_likers')).sort();
+        $scope.entity.instagram_profile_picture= uniqueFlatAndDefined(collectAdProperty($scope.ads, 'instagram_profile_picture')).sort();
+        $scope.entity.instagram_tags= uniqueFlatAndDefined(collectAdProperty($scope.ads, 'instagram_tags')).sort();
+
+        $scope.entity.youtube= uniqueFlatAndDefined(collectAdProperty($scope.ads, 'youtube')).sort();
+        $scope.entity.twitter= uniqueFlatAndDefined(collectAdProperty($scope.ads, 'twitter')).sort();
+        for (var i = 0; i < $scope.entity.twitter.length; i++) {
+        $scope.entity.twitter[0]=$scope.entity.twitter[0].replace("https://twitter.com/","@")
+        }
+        $scope.entity.tweets= uniqueFlatAndDefined(collectAdProperty($scope.ads, 'twitter')).sort();
+        $scope.entity.twitter_followers= uniqueFlatAndDefined(collectAdProperty($scope.ads, 'twitter_followers')).sort();
+        $scope.entity.twitter_friends= uniqueFlatAndDefined(collectAdProperty($scope.ads, 'twitter_friends')).sort();
+        $scope.entity.twitter_name= uniqueFlatAndDefined(collectAdProperty($scope.ads, 'twitter_name')).sort();
+        $scope.entity.twitter_profile_pic= uniqueFlatAndDefined(collectAdProperty($scope.ads, 'twitter_profile_pic')).sort();
+        $scope.entity.twitter_profile_background_pic= uniqueFlatAndDefined(collectAdProperty($scope.ads, 'twitter_profile_background_pic')).sort();
+        $scope.entity.twitter_description= uniqueFlatAndDefined(collectAdProperty($scope.ads, 'twitter_description')).sort();
+
+
+        $scope.entity.yelp= uniqueFlatAndDefined(collectAdProperty($scope.ads, 'yelp')).sort();
+
+
+
+
+
         //var priceRange = 'Missing' ;
         if ($scope.entity.price[0] !== null) {
             $scope.entity.minPrice = _.min($scope.entity.price);
@@ -232,15 +265,7 @@ angular.module('memexLinkerApp')
             $scope.entity.maxPrice = 'Missing';
         }
         $scope.entity.modePrice = mode($scope.entity.price);
-        $scope.entity.name = uniqueFlatAndDefined(collectAdProperty($scope.ads, 'name')).sort();
-        $scope.entity.email = _.uniq(
-            _.map($scope.ads, function(ad) {
-                return ad.properties.email;
-            })
-            );
-        $scope.entity.email = _.filter($scope.entity.email, function(element){
-            return ! _.isEmpty(element);
-        });
+        
 
         
         $scope.imageUrls = _.flatten(
