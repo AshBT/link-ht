@@ -19,13 +19,13 @@ div(ng-include='"components/navbar/navbar.html"')
 					.item 
 						button.btn-success() Save Entity 
 			
-			.panel.panel-default
-				.panel-heading 
-					| Automated Analysis
-				.panel-body
-					ul
-						li Movement pattern analysis (i.e. lots of ads in many places, SF-NY pattern, etc.)
-						li Highlighted key words (relatively distinct tri-grams)
+			//- .panel.panel-default
+			//- 	.panel-heading 
+			//- 		| Automated Analysis
+			//- 	.panel-body
+			//- 		ul
+			//- 			li Movement pattern analysis (i.e. lots of ads in many places, SF-NY pattern, etc.)
+			//- 			li Highlighted key words (relatively distinct tri-grams)
 
 			.panel.panel-default(style="height: 300px")
 				.panel-heading Map
@@ -34,17 +34,20 @@ div(ng-include='"components/navbar/navbar.html"')
 
 			.panel.panel-default
 				.panel-heading Entity Identifiers
-					.vertical-layout
-
+					.panel-body.vertical-layout
 						ul.nobullets.item
-							li e-mail: {{entity.email[0].join(', ') }}
-							li Address: <input type="text" name="twitter" ng-model="twitter" required>
-							li Twitter: <input type="text" name="twitter" ng-model="twitter" required> 
-							li Instagram: <input type="text" name="instagram" ng-model="instagram" required>
-							li Youtube: <input type="text" name="youtube" ng-model="youtube" required>
-							li Yelp: <input type="text" name="yelp" ng-model="yelp" required>
-						.item
-							button.btn-primary() Submit New Attributes 
+							li e-mail: {{entity.email.join(', ') }}
+							li Twitter: {{entity.twitter.join(', ') }}
+							li Instagram: {{entity.instagram.join(', ') }}
+							li Youtube: {{entity.youtube.join(', ') }}
+							li Yelp: {{entity.yelp.join(', ') }}
+
+							//- li Twitter: <input type="text" name="twitter" ng-model="twitter" required> 
+							//- li Instagram: <input type="text" name="instagram" ng-model="instagram" required>
+							//- li Youtube: <input type="text" name="youtube" ng-model="youtube" required>
+							//- li Yelp: <input type="text" name="yelp" ng-model="yelp" required>
+						//- .item
+						//- 	button.btn-primary() Submit New Attributes 
 
 			.panel.panel-default
 				.panel-heading Entity Details
@@ -59,11 +62,14 @@ div(ng-include='"components/navbar/navbar.html"')
 						li Eyes: {{entity.eyes.join(', ')}}
 						li Hair: {{entity.hair.join(', ')}}
 						li Cities: {{entity.cities.join(', ') | capitalize}}
+
+
 			
 		.col-md-9
 			.panel.panel-default
 				.panel-heading Active Since {{entity.postTimes[0]}}
 				entity-heatmap(config='heatmapConfig', entityId='id')
+
 
 			.panel.panel-default
 				tabset
