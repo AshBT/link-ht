@@ -5,6 +5,34 @@ angular.module('memexLinkerApp')
 .controller('EntitydetailCtrl', function ($scope, $http, $stateParams, $q, $modal, lodash, Auth) {
     var _ = lodash;
 
+
+//Start -- Trying to add in accordion
+    $scope.oneAtATime = true;
+
+    $scope.groups = [
+    {
+      title: 'Dynamic Group Header - 1',
+      content: 'Dynamic Group Body - 1'
+    },
+    {
+      title: 'Dynamic Group Header - 2',
+      content: 'Dynamic Group Body - 2'
+    }
+    ];
+
+    $scope.items = ['Item 1', 'Item 2', 'Item 3'];
+
+    $scope.addItem = function() {
+    var newItemNo = $scope.items.length + 1;
+    $scope.items.push('Item ' + newItemNo);
+    };
+
+    $scope.status = {
+    isFirstOpen: true,
+    isFirstDisabled: false
+    };
+
+//End -- Trying to add in accordion
     function collectAdProperty(ads, propertyName) {
       return _.map(ads, function(ad) {
         return ad.properties[propertyName];
@@ -40,7 +68,7 @@ angular.module('memexLinkerApp')
             latitude: 33.5206608,
             longitude: -86.80248999999998
         },
-        zoom: 8
+        zoom: 4
     };
     $scope.markers = [
                  // {
@@ -298,7 +326,7 @@ angular.module('memexLinkerApp')
                         latitude: point.latitude,
                         longitude: point.longitude
                     },
-                    zoom: 8
+                    zoom: 3
                 };
                 console.log($scope.map);
             }, function(reason) {

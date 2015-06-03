@@ -34,8 +34,7 @@ div(ng-include='"components/navbar/navbar.html"')
 
 			.panel.panel-default
 				.panel-heading Entity Identifiers
-					.vertical-layout
-
+					.panel-body.vertical-layout
 						ul.nobullets.item
 							li e-mail: {{entity.email.join(', ') }}
 							li Twitter: {{entity.twitter.join(', ') }}
@@ -70,38 +69,6 @@ div(ng-include='"components/navbar/navbar.html"')
 			.panel.panel-default
 				.panel-heading Active Since {{entity.postTimes[0]}}
 				entity-heatmap(config='heatmapConfig', entityId='id')
-			
-			//-Trying to add an accordion here
-			//- .panel.panel-default
-			//- 		div(ng-controller='MattsAccordion')
-			//- 		    p
-			//- 		        button.btn.btn-default.btn-sm(ng-click='status.open = !status.open') Toggle last panel
-			//- 		        | &#x9;&#x9;&#x9;    
-			//- 		        button.btn.btn-default.btn-sm(ng-click='status.isFirstDisabled = ! status.isFirstDisabled') Enable / Disable first panel
-			//- 		      | &#x9;&#x9;&#x9;  
-			//- 		      label.checkbox
-			//- 		        input(type='checkbox', ng-model='oneAtATime')
-			//- 		        | &#x9;&#x9;&#x9;    Open only one at a time
-			//- 		      | &#x9;&#x9;&#x9;  
-			//- 		      accordion(close-others='oneAtATime')
-			//- 		        accordion-group(heading='Static Header, initially expanded', is-open='status.isFirstOpen', is-disabled='status.isFirstDisabled')
-			//- 		          | This content is straight in the template.
-			//- 		        | &#x9;&#x9;&#x9;    
-			//- 		        accordion-group(heading='{{group.title}}', ng-repeat='group in groups')
-			//- 		          | {{group.content}}
-			//- 		        | &#x9;&#x9;&#x9;    
-			//- 		        accordion-group(heading='Dynamic Body Content')
-			//- 		          p The body of the accordion group grows to fit the contents
-			//- 		          | &#x9;&#x9;&#x9;        
-			//- 		          button.btn.btn-default.btn-sm(ng-click='addItem()') Add Item
-			//- 		          | &#x9;&#x9;&#x9;        
-			//- 		          div(ng-repeat='item in items') {{item}}
-			//- 		        | &#x9;&#x9;&#x9;    
-			//- 		        accordion-group(is-open='status.open')
-			//- 		          accordion-heading
-			//- 		            | I can have markup, too! 
-			//- 		            i.pull-right.glyphicon(ng-class="{'glyphicon-chevron-down': status.open, 'glyphicon-chevron-right': !status.open}")
-			//- 		          | &#x9;&#x9;&#x9;        This is just some content to illustrate fancy headings.
 
 
 			.panel.panel-default
