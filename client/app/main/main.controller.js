@@ -77,6 +77,10 @@ angular.module('memexLinkerApp')
           };
           return ad;
         });
+
+
+
+
         var postTimes = _.map(ads, function(ad){
           return new Date(ad.properties.posttime);
         });
@@ -161,6 +165,25 @@ angular.module('memexLinkerApp')
 
 return deferred.promise;
 }
+
+
+// function sumAcrossEntities(entities, propertyName) {
+//       return _.sum(entities, function(entity) {
+//         return entities[propertyName];
+//       });
+//     }
+
+
+//$scope.countAds = sumAcrossEntities($scope.entities, nPosts)
+//$scope.countAds = sumAcrossEntities($scope.entities, nPosts)
+//$scope.countAds = sumAcrossEntities($scope.entities, nPosts)
+//$scope.countAds = sumAcrossEntities($scope.entities, nPosts)
+
+
+
+
+
+
 
 $http.get('/api/entities').success(function(res) {
   var entities = _.map(res, function(e){
