@@ -9,7 +9,6 @@ div(ng-include='"components/navbar/navbar.html"')
 					h3 Search Across Entities -- {{entities.length}} Entities Found
 				.panel-body
 
-
 					.col-md-4
 						// city,age,maxAges,minAges,nFaces,nPosts,nSuggested,priceRange
 						.col-md-6
@@ -20,37 +19,9 @@ div(ng-include='"components/navbar/navbar.html"')
 							| Ad text:
 						.col-md-6
 							input(ng-model="filterText")
-						//- .col-md-6
-						//- 	| Minimum Age:
-						//- .col-md-6
-						//- 	input(ng-model="filterMinAge")
-						//- .col-md-6
-						//- 	| Maximum Age:
-						//- .col-md-6
-						//- 	input(ng-model="filterMaxAge")
-						//- .col-md-6
-						//- 	| City:
-						//- .col-md-6
-						//- 	input(ng-model="filterCity")
-						//- .col-md-6
-						//- 	| Ethnicity: 
-						//- .col-md-6
-						//- 	input(ng-model="filterEthnicity")
-						//- .col-md-6
-						//- 	| Price:
-						//- .col-md-6
-						//- 	input(ng-model="filterMinPrice")
-						//- .col-md-6
-						//- 	| Social Media Account:
-						//- .col-md-6
-							input(ng-model="socialMedia")
 						
 						.col-md-12
 							button.btn-danger(ng-click="count = count+1" ng-init="count=0")  Search all entites
-							//- br
-							//- p Right now, the button just increments: {{count}}
-							//- br
-							//- br
 						.col-md-12
 							label Blur Images:  
 								input(type="checkbox" ng-model="blur")
@@ -79,16 +50,16 @@ div(ng-include='"components/navbar/navbar.html"')
 					.col-md-4
 						p Ads: {{entity.nPosts}}
 						p Active since: {{entity.firstPostTime.toDateString()}}
-						p Listed names: {{entity.name.join(', ') | capitalize}}
-						p Listed ages: {{entity.age.join(', ')}}
-						p Listed price range: {{entity.priceRange}} 
-						p Cities: {{entity.city.join(', ') | capitalize}}
-						p Websites:  {{entity.website.join(', ')}}
-						p Pictures: {{entity.imageUrls.length}}
+						p(ng-if='entity.name && entity.name.length > 0') Listed names: {{entity.name.join(', ') | capitalize}}
+						p(ng-if='entity.age && entity.age.length > 0') Listed ages: {{entity.age.join(', ')}}
+						p(ng-if='entity.priceRange && entity.priceRange.length > 0') Listed price range: {{entity.priceRange}} 
+						p(ng-if='entity.city && entity.city.length > 0') Cities: {{entity.city.join(', ') | capitalize}}
+						p(ng-if='entity.website && entity.website.length > 0') Websites:  {{entity.website.join(', ')}}
+						p(ng-if='entity.imageUrls && entity.imageUrls.length > 0') Pictures: {{entity.imageUrls.length}}
 						p Pictures with Face: {{entity.nFaces}}
-						p Ads related by image: {{entity.nSuggested}}
-						p Ads related by text:
-						p Ads related by phone co-occurence:
+						p Ads related by image: {{entity.nSuggestedByImage}}
+						p Ads related by text: {{entity.nSuggestedByText}}
+						p Ads related by phone co-occurence: {{entity.nSuggestedByPhone}}
 						a.button.btn-primary.btn-lg.pull-left(ui-sref="entitydetail({ id: entity.id })") Inspect
 					
 					.col-md-8
