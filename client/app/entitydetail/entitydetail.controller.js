@@ -5,7 +5,6 @@ angular.module('memexLinkerApp')
 .controller('EntitydetailCtrl', function ($scope, $http, $stateParams, $q, $modal, lodash, Auth) {
     var _ = lodash;
 
-
 //Start -- Trying to add in accordion
     $scope.oneAtATime = true;
 
@@ -33,6 +32,7 @@ angular.module('memexLinkerApp')
     };
 
 //End -- Trying to add in accordion
+
     function collectAdProperty(ads, propertyName) {
       return _.map(ads, function(ad) {
         return ad.properties[propertyName];
@@ -356,27 +356,27 @@ angular.module('memexLinkerApp')
             });
         }
     } 
-
-    var geocoder = new google.maps.Geocoder();
-    function geocodeCity(cityName) {
-        var deferred = $q.defer();
+    //The following function requires access to the internet. We need to develop an offline version of this geocoder.
+    // var geocoder = new google.maps.Geocoder();
+    // function geocodeCity(cityName) {
+    //     var deferred = $q.defer();
         
-        geocoder.geocode( { 'address': cityName }, function(results, status) {
-            if (status === google.maps.GeocoderStatus.OK && results.length > 0) {
-                var location = results[0].geometry.location;
-                deferred.resolve({
-                    latitude: parseFloat(location.lat()),
-                    longitude: parseFloat(location.lng())
-                });
-            } else {
-                deferred.resolve({
-                    latitude: 0,
-                    longitude: 0
-                });
-            }
-        });
-        return deferred.promise;
-    } 
+    //     geocoder.geocode( { 'address': cityName }, function(results, status) {
+    //         if (status === google.maps.GeocoderStatus.OK && results.length > 0) {
+    //             var location = results[0].geometry.location;
+    //             deferred.resolve({
+    //                 latitude: parseFloat(location.lat()),
+    //                 longitude: parseFloat(location.lng())
+    //             });
+    //         } else {
+    //             deferred.resolve({
+    //                 latitude: 0,
+    //                 longitude: 0
+    //             });
+    //         }
+    //     });
+    //     return deferred.promise;
+    // } 
 
     updateLinked();
     updateSuggestedText();

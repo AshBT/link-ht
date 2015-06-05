@@ -81,7 +81,7 @@ div(ng-include='"components/navbar/navbar.html"')
 						include ./partials/suggested.jade
 					tab(heading='0 Annotations')
 						include ./partials/annotations.jade
-					tab(heading='0 Social Media Posts')
+					tab(heading='{{entity.twitter.length + entity.instagram.length + entity.youtube.length + entity.yelp.length}} Social Media Posts')
 						include ./partials/twitter.jade
 
 footer.footer

@@ -1,54 +1,31 @@
-.panel.panel-default
-	.panel-heading User -- Date
-	.panel-body
-		ul.nobullets
-			li Twitter
-			li {{entity.twitter_description.join(', ') }}
-			li {{entity.twitter_followers.join(', ') }}
-			li {{entity.twitter_friends.join(', ') }}
-			li {{entity.twitter_tweets.join(', ') }}
-			li {{entity.twitter_name.join(', ') }}
-			li {{entity.twitter_profile_pic.join(', ') }}
-			li {{entity.twitter_background_pic.join(', ') }}
-			li {{entity.twitter_description.join(', ') }}
-			li Instagram
-			li {{entity.instagram.join(', ')}}
-			li {{entity.instagram_followers.join(', ')}}
-			li {{entity.instagram_follows.join(', ')}}
-			li {{entity.instagram_likers.join(', ')}}
-			li {{entity.instagram_profile_picture.join(', ')}}
-			li {{entity.instagram_tags.join(', ')}}
-			li Youtube
-			li Yelp
+.row
+	.col-md-12
+		.panel.panel-default
+		.panel-heading 
+			accordion(close-others='oneAtATime')
+				accordion-group(heading='Twitter ({{entity.twitter.length}})', is-open='status.isFirstOpen', is-disabled='status.isFirstDisabled')
+					ul.nobullets
+						li Show Profile Pic {{entity.twitter_profile_pic.join(', ') }}
+						li Show Background Pic {{entity.twitter_background_pic.join(', ') }}
+						li User Name: {{entity.twitter_name.join(', ') }}
+						li User Description:{{entity.twitter_description.join(', ') }}
+						li User Tweets {{entity.twitter_tweets.join(', ') }}
+						li Followers: {{entity.twitter_followers.join(', ') }}
+						li Following: {{entity.twitter_friends.join(', ') }}
+				accordion-group(heading='Instagram ({{entity.instagram.length}})')
+					ul.nobullets
+						li Show profile pic {{entity.instagram_profile_picture.join(', ')}}
+						li User Name: {{entity.instagram.join(', ')}}
+						li Tags: {{entity.instagram_tags.join(', ')}} 
+						li Followers: {{entity.instagram_followers.join(', ')}}
+						li Following: {{entity.instagram_follows.join(', ')}}
+						li Likers: {{entity.instagram_likers.join(', ')}}
+				accordion-group(heading='Youtube ({{entity.youtube.length}})')
+					p No Youtube Videos
+				accordion-group(heading='Yelp ({{entity.yelp.length}})')
+					p No Yelp Listings
+
+
 			
 
-			//- .panel.panel-default
-			//- 		div(ng-controller='EntitydetailCtrl')
-			//- 		    p
-			//- 		        button.btn.btn-default.btn-sm(ng-click='status.open = !status.open') Toggle last panel
-			//- 		        | &#x9;&#x9;&#x9;    
-			//- 		        button.btn.btn-default.btn-sm(ng-click='status.isFirstDisabled = ! status.isFirstDisabled') Enable / Disable first panel
-			//- 		      | &#x9;&#x9;&#x9;  
-			//- 		      label.checkbox
-			//- 		        input(type='checkbox', ng-model='oneAtATime')
-			//- 		        | &#x9;&#x9;&#x9;    Open only one at a time
-			//- 		      | &#x9;&#x9;&#x9;  
-			//- 		      accordion(close-others='oneAtATime')
-			//- 		        accordion-group(heading='Static Header, initially expanded', is-open='status.isFirstOpen', is-disabled='status.isFirstDisabled')
-			//- 		          | This content is straight in the template.
-			//- 		        | &#x9;&#x9;&#x9;    
-			//- 		        accordion-group(heading='{{group.title}}', ng-repeat='group in groups')
-			//- 		          | {{group.content}}
-			//- 		        | &#x9;&#x9;&#x9;    
-			//- 		        accordion-group(heading='Dynamic Body Content')
-			//- 		          p The body of the accordion group grows to fit the contents
-			//- 		          | &#x9;&#x9;&#x9;        
-			//- 		          button.btn.btn-default.btn-sm(ng-click='addItem()') Add Item
-			//- 		          | &#x9;&#x9;&#x9;        
-			//- 		          div(ng-repeat='item in items') {{item}}
-			//- 		        | &#x9;&#x9;&#x9;    
-			//- 		        accordion-group(is-open='status.open')
-			//- 		          accordion-heading
-			//- 		            | I can have markup, too! 
-			//- 		            i.pull-right.glyphicon(ng-class="{'glyphicon-chevron-down': status.open, 'glyphicon-chevron-right': !status.open}")
-			//- 		          | &#x9;&#x9;&#x9;        This is just some content to illustrate fancy headings.
+	
