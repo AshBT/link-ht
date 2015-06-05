@@ -11,16 +11,16 @@
 			p: a(href='{{ad.properties.url}}') View post
 		.item
 			row
-			col-md-3(ng-repeat='img in ad.properties.image_locations')					
+			col-md-3(ng-repeat='img in ad.properties.image_locations')
 				img.responsive(ng-src="{{img}}" 
 					style="max-height:100px; margin:0 auto;"
 					ng-class="{blurry: blur == true, clear: blur != true}")
 		.panel-footer.clearfix
 			span.glyphicon.glyphicon-camera(ng-if='ad.suggestedByImage' popover="Suggested by image similarity" popover-trigger="mouseenter" popover-placement="right")
 			span.glyphicon.glyphicon-font(ng-if='ad.suggestedByText' popover="Suggested by text similarity" popover-trigger="mouseenter" popover-placement="right")
-			span.glyphicon.glyphicon-user(ng-if='ad.suggestedByUsername' popover="Suggested by identical username" popover-trigger="mouseenter" popover-placement="right"))
-			span.glyphicon.glyphicon-film(ng-if='ad.suggestedByVideo' popover="Suggested by video similarity" popover-trigger="mouseenter" popover-placement="right"))
-			span.glyphicon.glyphicon-earphone(ng-if='ad.suggestedByPhone' popover="Suggested by phone number co-occurence" popover-trigger="mouseenter" popover-placement="right"))
+			span.glyphicon.glyphicon-user(ng-if='ad.suggestedByUsername' popover="Suggested by identical username" popover-trigger="mouseenter" popover-placement="right")
+			span.glyphicon.glyphicon-film(ng-if='ad.suggestedByVideo' popover="Suggested by video similarity" popover-trigger="mouseenter" popover-placement="right")
+			span.glyphicon.glyphicon-earphone(ng-if='ad.suggestedByPhone' popover="Suggested by phone number co-occurence" popover-trigger="mouseenter" popover-placement="right")
 
 			.pull-right
 				button.btn-primary(ng-click='linkToEntity(ad)') 
