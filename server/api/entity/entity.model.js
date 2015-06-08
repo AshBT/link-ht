@@ -173,6 +173,31 @@ Entity.getAll = function (callback) {
     });
 };
 
+Entity.getSearch = function (text,callback) {
+    var query = [
+        'MATCH (entity:Entity)-(n:Ad)',
+        "WHERE n.text  =~ '.*as.*'"
+        'RETURN entity',
+        'LIMIT 200'
+    ].join('\n');
+    // db.query(query, null, function (err, results) {
+    //     if (err) return callback(err);
+    //     var entities = results.map(function (result) {
+    //         return new Entity(result['entity']);
+    //     });
+    //     callback(null, entities);
+    // });
+    db.cypher(query, function(err, results) {
+        if (err) return callback(err);
+        //console.log(results);
+        //{entity: { _id: 28380, labels: [Object], properties: [Object] }}
+        var entities = results.map(function(result){
+            return new Entity(result.entity);
+        });
+        callback(null, entities);
+    });
+};
+
 // creates the entity and persists (saves) it to the db, incl. indexing it:
 Entity.create = function (data, callback) {
     // construct a new instance of our class with the data, so it can
