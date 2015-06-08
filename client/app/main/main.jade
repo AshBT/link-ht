@@ -11,12 +11,6 @@ div(ng-include='"components/navbar/navbar.html"')
 					
 					.row
 						.col-md-6
-							.col-md-12.custom-search-.form
-								h4 Search
-								//input.search-query.form-control(ng-model="searchText" type='text', placeholder='Search Text', ng-submit='submitSearch(searchText)')
-								form(ng-submit='submitSearch()')
-									input.search-query.form-control(type='text', ng-model='searchText', name='text', placeholder='Search by Regular Expression, e.g. .*call.*')
-									input#submit(type='submit', value='Submit')
 							.col-md-12
 								h4 Search Filters
 								.col-md-12.custom-search-input
@@ -73,7 +67,7 @@ div(ng-include='"components/navbar/navbar.html"')
 
 		//.col-md-12(ng-repeat="entity in entities | orderBy:'-nSuggested' | filter: { phone : filterPhone, text: filterText, gt : filterMinAge } ")
 		//.col-md-12(ng-repeat="entity in searchedEntities | orderBy:'-nSuggested' ")
-		.col-md-12(ng-repeat="entity in entities | orderBy:'-nSuggested' | filter: { phone : filterPhone} ")
+		.col-md-12(ng-repeat="entity in entities1 | orderBy:'-nSuggested' ")
 			.panel.panel-default
 				.panel-heading 
 					h3 Entity Profile Summary: {{entity.phone | tel}}
