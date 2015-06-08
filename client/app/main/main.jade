@@ -51,7 +51,7 @@ div(ng-include='"components/navbar/navbar.html"')
 										td ---
 									tr(ng-if="aggregates.get('phones').length > 0")
 										td Phone Numbers
-										td {{aggregates.get('phones').join(', ') | tel}}
+										td {{aggregates.get('phones').sort().join(', ')}}
 									tr(ng-if="aggregates.get('websites').length > 0")
 										td Websites
 										td {{aggregates.get('websites').join(', ')}}
