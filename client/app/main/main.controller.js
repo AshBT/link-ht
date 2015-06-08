@@ -5,6 +5,16 @@ angular.module('memexLinkerApp')
 
   var _ = lodash;
 
+  // $scope.list = [];
+  //     $scope.text = 'hello';
+  //     $scope.submit = function() {
+  //       console.log('Submitted');
+  //       if ($scope.text) {
+  //         $scope.list.push(this.text);
+  //         $scope.text = '';
+  //       }
+  //     };
+
   var source_map = {
     1 : 'Backpage',
     2 : 'Craigslist',
@@ -40,6 +50,15 @@ angular.module('memexLinkerApp')
   $scope.blur = true;
   $scope.entities = [];
   $scope.searchedEntities = [];
+
+  $scope.searchText = '';
+  $scope.submitSearch = function(){
+    console.log('submitSearch...');
+    if ($scope.searchText) {
+          console.log($scope.searchText);
+          $scope.text = '';
+        }
+  };
 
     /* 
     * Returns the set of unique, flattened items, and removes undefined values.
@@ -93,7 +112,7 @@ angular.module('memexLinkerApp')
         var sourcesid = uniqueFlatAndDefined(collectAdProperty(ads, 'sources_id'));
         for (var i = 0; i < sourcesid.length; i++) { 
           website=website.concat(source_map[sourcesid[i]]);
-          console.log(website);
+          //  console.log(website);
         }
         website = _.filter(_.uniq(website), function(element){
           return ! _.isUndefined(element);
@@ -173,7 +192,7 @@ $http.get('/api/entities').success(function(res) {
       summarizeEntity(entity).then(function(entitySummary) {
         // success
         $scope.entities.push(entitySummary);
-        console.log(entitySummary);
+        //console.log(entitySummary);
       }, function(reason) {
         console.log('Failed for ' + reason);
       });

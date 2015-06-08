@@ -25,8 +25,11 @@ div(ng-include='"components/navbar/navbar.html"')
 									input(type="checkbox" ng-model="blur")
 								br
 								br
-							.col-md-12.custom-search-input
-								input.search-query.form-control(ng-model="searchText" type='text', placeholder='Search Text')
+							.col-md-12.custom-search-.form
+								//input.search-query.form-control(ng-model="searchText" type='text', placeholder='Search Text', ng-submit='submitSearch(searchText)')
+								form(ng-submit='submitSearch()', ng-controller='MainCtrl')
+									input.search-query.form-control(type='text', ng-model='searchText', name='text', placeholder='Search text')
+									input#submit(type='submit', value='Submit')
 
 						.col-md-8
 							h4 Entities: {{filteredEntities.length}}
