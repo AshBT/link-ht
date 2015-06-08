@@ -181,7 +181,8 @@ $http.get('/api/entities').success(function(res) {
 
   });
 
-$http.get('/api/entities/search').success(function(res) {
+console.log('---------------------------------------------')
+$http.post('/api/entities/search', {searchText : 'helloWorld'}).success(function(res) {
   var searchedEntities = _.map(res, function(e){
     return {
       'id': e._node._id,

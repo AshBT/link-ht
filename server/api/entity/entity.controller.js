@@ -15,6 +15,10 @@ exports.index = function(req, res) {
 };
 
 exports.search = function(req, res) {
+  console.log('---------------------------------------------')
+  console.log(req)
+  console.log('---------------------------------------------')
+
   Entity.getSearch(function(err, entities){
     if(err) {
       console.log(err);

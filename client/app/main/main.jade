@@ -15,13 +15,19 @@ div(ng-include='"components/navbar/navbar.html"')
 							.col-md-12.custom-search-input
 								input.search-query.form-control(ng-model="filterPhone" type='text', placeholder='Phone Number')
 							.col-md-12.custom-search-input
-								input.search-query.form-control(ng-model="filterText" type='text', placeholder='Ad Text')						
+								input.search-query.form-control(ng-model="filterText" type='text', placeholder='Ad Text')
+
+													
 							//- .col-md-12
 							//- 	button.btn-danger(ng-click="count = count+1" ng-init="count=0")  Search all entites
 							.col-md-12
 								label Blur Images:  
 									input(type="checkbox" ng-model="blur")
-						
+								br
+								br
+							.col-md-12.custom-search-input
+								input.search-query.form-control(ng-model="searchText" type='text', placeholder='Search Text')
+
 						.col-md-8
 							h4 Entities: {{filteredEntities.length}}
 							// TODO: use accordion to expand or hide these aggregate statistics
