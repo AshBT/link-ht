@@ -15,7 +15,8 @@ exports.index = function(req, res) {
 };
 
 exports.search = function(req, res) {
-  Entity.getSearch(function(err, entities){
+  console.log(req)
+  Entity.getSearch(req.body.searchText, function(err, entities){
     if(err) {
       console.log(err);
       return handleError(res, err)

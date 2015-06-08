@@ -5,16 +5,6 @@ angular.module('memexLinkerApp')
 
   var _ = lodash;
 
-  // $scope.list = [];
-  //     $scope.text = 'hello';
-  //     $scope.submit = function() {
-  //       console.log('Submitted');
-  //       if ($scope.text) {
-  //         $scope.list.push(this.text);
-  //         $scope.text = '';
-  //       }
-  //     };
-
   var source_map = {
     1 : 'Backpage',
     2 : 'Craigslist',
@@ -51,14 +41,6 @@ angular.module('memexLinkerApp')
   $scope.entities = [];
   $scope.searchedEntities = [];
 
-  $scope.searchText = '';
-  $scope.submitSearch = function(){
-    console.log('submitSearch...');
-    if ($scope.searchText) {
-          console.log($scope.searchText);
-          $scope.text = '';
-        }
-  };
 
     /* 
     * Returns the set of unique, flattened items, and removes undefined values.
@@ -200,28 +182,37 @@ $http.get('/api/entities').success(function(res) {
 
   });
 
-console.log('---------------------------------------------')
-$http.post('/api/entities/search', {searchText : 'helloWorld'}).success(function(res) {
-  var searchedEntities = _.map(res, function(e){
-    return {
-      'id': e._node._id,
-      'phone' : e._node.properties.identifier
-    };
-  });
+$scope.submitSearch = function(){
+    console.log('submitSearch...');
+    if ($scope.searchText) {
+          console.log($scope.searchText);
+       
+    $http.post('/api/entities/search', {searchText : $scope.searchText}).success(function(res) {
+      $scope.searchedEntities = [];
+      var returnedEntities = _.map(res, function(e){
+          return {
+            'id': e._node._id,
+            'phone' : e._node.properties.identifier
+          };
+        });
 
-    //Aggregate details from ads belonging to each entity.
-    _.forEach(searchedEntities, function(entity) {
-      summarizeEntity(entity).then(function(entitySummary) {
-        // success
-        $scope.searchedEntities.push(entitySummary);
-        console.log(entitySummary);
-      }, function(reason) {
-        console.log('Failed for ' + reason);
+        //Aggregate details from ads belonging to each entity.
+        _.forEach(returnedEntities, function(entity) {
+          summarizeEntity(entity).then(function(entitySummary) {
+            // success
+            $scope.searchedEntities.push(entitySummary);
+            console.log('------------');
+            console.log($scope.searchedEntities);
+            console.log('------------');
+
+          }, function(reason) {
+            console.log('Failed for ' + reason);
+          });
+        });
+
       });
-    });
-
-  });
-
+}
+};
 
 
 });
