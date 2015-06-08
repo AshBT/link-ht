@@ -39,6 +39,7 @@ angular.module('memexLinkerApp')
   $scope.logo = 'http://icons.iconarchive.com/icons/icons8/ios7/256/Very-Basic-Paper-Clip-icon.png';
   $scope.blur = true;
   $scope.entities = [];
+  $scope.searchedEntities = [];
 
     /* 
     * Returns the set of unique, flattened items, and removes undefined values.
@@ -179,4 +180,28 @@ $http.get('/api/entities').success(function(res) {
     });
 
   });
+
+$http.get('/api/entities/search').success(function(res) {
+  var searchedEntities = _.map(res, function(e){
+    return {
+      'id': e._node._id,
+      'phone' : e._node.properties.identifier
+    };
+  });
+
+    //Aggregate details from ads belonging to each entity.
+    _.forEach(searchedEntities, function(entity) {
+      summarizeEntity(entity).then(function(entitySummary) {
+        // success
+        $scope.searchedEntities.push(entitySummary);
+        console.log(entitySummary);
+      }, function(reason) {
+        console.log('Failed for ' + reason);
+      });
+    });
+
+  });
+
+
+
 });

@@ -6,6 +6,7 @@ var controller = require('./entity.controller');
 var router = express.Router();
 
 router.get('/', controller.index);
+router.get('/search', controller.search);
 router.get('/:id', controller.show);
 router.get('/:id/byPhone', controller.byPhone);
 router.get('/:id/byImage', controller.byImage);

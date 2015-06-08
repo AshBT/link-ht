@@ -5,6 +5,16 @@ var Entity = require('./entity.model');
 
 // Get list of entities
 exports.index = function(req, res) {
+  Entity.getAll(function(err, entities){
+    if(err) {
+      console.log(err);
+      return handleError(res, err)
+    }
+    res.json(entities);
+  });
+};
+
+exports.search = function(req, res) {
   Entity.getSearch(function(err, entities){
     if(err) {
       console.log(err);
