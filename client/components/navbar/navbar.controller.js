@@ -3,8 +3,16 @@
 angular.module('memexLinkerApp')
   .controller('NavbarCtrl', function ($scope, $location, Auth) {
     $scope.menu = [{
-      'title': 'Entity Search',
+      'title': 'Browse Entities',
       'link': '/'
+    },
+    {
+      'title': 'Search Entities',
+      'link': '/search'
+    },
+    {
+      'title': 'Saved Entities',
+      'link': '/savedentities'
     },
     {
       'title': 'Ad Stream',
@@ -13,10 +21,6 @@ angular.module('memexLinkerApp')
     {
       'title': 'Image Stream',
       'link': '/imagestream'
-    },
-    {
-      'title': 'Saved Entities',
-      'link': '/savedentities'
     }]
     ;
 
