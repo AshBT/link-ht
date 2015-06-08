@@ -176,7 +176,7 @@ Entity.getAll = function (callback) {
 Entity.getSearch = function (searchText, callback) {
     var query = [
         'MATCH (entity:Entity)-[r:BY_PHONE]-(n:Ad)',
-        "WHERE n.text =~ '" + searchText + "'",
+        "WHERE n.text =~ '.*" + searchText + ".*'",
         'RETURN entity',
         'LIMIT 200'
     ].join('\n');
