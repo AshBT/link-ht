@@ -2,11 +2,16 @@
 
 var neo4j = require('neo4j');
 
-var NEO_HOST = process.env['NEO_HOST'] || 'http://localhost:7474';
+var NEO_HOST = process.env['NEO_HOST'] || 'http://neo4j.52.8.52.176.xip.io/browser';
 var NEO_USER = process.env['NEO_USER'] || 'neo4j';
-var NEO_PASS = process.env['NEO_PASS'] || 'password';
-
-
+var NEO_PASS = process.env['NEO_PASS'] || 'D*USi0ntZwUfRNPr^6b20uGd';
+console.log('------------------------------------');
+console.log('------------------------------------');
+console.log('------------------------------------');
+console.log('------------------------------------');    
+console.log(NEO_HOST)
+console.log(NEO_USER)
+console.log(NEO_PASS)
 var db = new neo4j.GraphDatabase({
     url: NEO_HOST,
     auth: {username: NEO_USER, password: NEO_PASS},     // optional; see below for more details
@@ -176,9 +181,9 @@ Entity.getAll = function (callback) {
 Entity.getSearch = function (searchText, callback) {
     var query = [
         'MATCH (entity:Entity)-[r:BY_PHONE]-(n:Ad)',
-        "WHERE n.text =~ '.*" + searchText + ".*'",
-        'RETURN entity',
-        'LIMIT 200'
+        'WHERE n.text =~ {searchText}',
+        'RETURN DISTINCT entity',
+        'LIMIT 30'
     ].join('\n');
     // db.query(query, null, function (err, results) {
     //     if (err) return callback(err);
@@ -187,7 +192,12 @@ Entity.getSearch = function (searchText, callback) {
     //     });
     //     callback(null, entities);
     // });
-    db.cypher(query, function(err, results) {
+
+    var params = {
+        searchText : searchText,
+    };
+
+    db.cypher({query:query,params:params}, function(err, results) {
         if (err) return callback(err);
         //console.log(results);
         //{entity: { _id: 28380, labels: [Object], properties: [Object] }}
