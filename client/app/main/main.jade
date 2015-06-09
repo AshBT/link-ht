@@ -65,8 +65,10 @@ div(ng-include='"components/navbar/navbar.html"')
 										td ----
 	.row
 
-		//.col-md-12(ng-repeat="entity in entities | orderBy:'-nSuggested' | filter: { phone : filterPhone, text: filterText, gt : filterMinAge } ")
-		//.col-md-12(ng-repeat="entity in searchedEntities | orderBy:'-nSuggested' ")
+		
+		//- .col-md-12(ng-repeat="entity in searchedEntities | orderBy:'-nSuggested' ")
+		//- .col-md-12(ng-repeat="entity in searchedEntities | orderBy:'-nSuggested' ")
+		//- .col-md-12(ng-repeat="entity in entities | orderBy:'-nSuggested' | filter: { phone : filterPhone, text: filterText, gt : filterMinAge } ")
 		.col-md-12(ng-repeat="entity in entities1 | orderBy:'-nSuggested' | filter: { phone : filterPhone} ")
 			.panel.panel-default
 				.panel-heading 
@@ -91,14 +93,14 @@ div(ng-include='"components/navbar/navbar.html"')
 						.panel.panel-default
 							.panel-heading
 								.panel-title 
-									//- h4 Most Recent Post at {{entity.website[0]}} on {{entity.lastPostTime.toDateString()}}
+									h4 Most Recent Post at {{entity.website[0]}} on {{entity.lastPostTime.toDateString()}}
 									
 							.panel-body.vertical-layout
 								.item 
-									//- h4 {{entity.title[0]}}
+									h4 {{entity.title[0]}}
 								.item
 									p 
-										//- | {{entity.text[0]}}
+										| {{entity.text[0]}}
 								.item
 									.row
 										.col-md-2(ng-repeat='img in entity.imageUrls | limitTo:50')					
