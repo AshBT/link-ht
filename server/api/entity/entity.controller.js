@@ -67,6 +67,17 @@ exports.byText = function(req, res) {
   });
 }
 
+exports.save = function(req, res) {
+  var data = {
+    entityId: req.params.id,
+    userName: req.body.userName
+  }
+  Entity.savedByUser(data, function(err) {
+    if (err) return handleError(res, err);
+    return res.send(200);
+  });
+}
+
 // Creates a new entity in the DB.
 exports.create = function(req, res) {
   Entity.create(req.body, function(err, entity) {

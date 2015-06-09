@@ -12,6 +12,7 @@ router.get('/:id/byPhone', controller.byPhone);
 router.get('/:id/byImage', controller.byImage);
 router.get('/:id/byText', controller.byText);
 router.get('/:id/linked', controller.linked);
+router.post('/:id/save', controller.save);
 router.post('/', controller.create);
 //router.get('/search', controller.search);
 //router.put('/:id', controller.update);

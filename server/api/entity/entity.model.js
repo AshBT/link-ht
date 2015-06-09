@@ -198,6 +198,26 @@ Entity.getSearch = function (searchText, callback) {
     });
 };
 
+Entity.savedByUser = function(data, callback) {
+    console.log(data);
+    var query = [
+        'MATCH (e:Entity)',
+        'WHERE ID(e) = {id}',
+        'SET e += {savedByUser : true}',
+        'RETURN e'
+    ].join('\n');
+
+    var params = {
+        id: Number(data.entityId)
+    }
+
+    db.cypher({query:query, params:params}, function(err, results){
+        if (err) return callback(err);
+        console.log(results);
+        callback(null);
+    });
+};
+
 // creates the entity and persists (saves) it to the db, incl. indexing it:
 Entity.create = function (data, callback) {
     // construct a new instance of our class with the data, so it can
