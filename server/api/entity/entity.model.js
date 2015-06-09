@@ -2,11 +2,16 @@
 
 var neo4j = require('neo4j');
 
-var NEO_HOST = process.env['NEO_HOST'] || 'http://localhost:7474';
+var NEO_HOST = process.env['NEO_HOST'] || 'http://neo4j.52.8.52.176.xip.io/browser';
 var NEO_USER = process.env['NEO_USER'] || 'neo4j';
-var NEO_PASS = process.env['NEO_PASS'] || 'password';
-
-
+var NEO_PASS = process.env['NEO_PASS'] || 'D*USi0ntZwUfRNPr^6b20uGd';
+console.log('------------------------------------');
+console.log('------------------------------------');
+console.log('------------------------------------');
+console.log('------------------------------------');    
+console.log(NEO_HOST)
+console.log(NEO_USER)
+console.log(NEO_PASS)
 var db = new neo4j.GraphDatabase({
     url: NEO_HOST,
     auth: {username: NEO_USER, password: NEO_PASS},     // optional; see below for more details
@@ -177,7 +182,7 @@ Entity.getSearch = function (searchText, callback) {
     var query = [
         'MATCH (entity:Entity)-[r:BY_PHONE]-(n:Ad)',
         "WHERE n.text =~ '.*" + searchText + ".*'",
-        'RETURN entity',
+        'RETURN DISTINCT entity',
         'LIMIT 200'
     ].join('\n');
     // db.query(query, null, function (err, results) {
