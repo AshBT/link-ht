@@ -5,71 +5,70 @@ div(ng-include='"components/navbar/navbar.html"')
 		.col-md-12
 			.panel.panel-default
 				.panel-heading 
-					h4 Entity Graph Search
+					h4 Search Summary
 				.panel-body
 
 					
 					.row
-						.col-md-6
-							.col-md-12
-								h4 Search Filters
-								.col-md-12.custom-search-input
-									input.search-query.form-control(ng-model="filterPhone" type='text', placeholder='Phone Number')
-								.col-md-12.custom-search-input
-									input.search-query.form-control(ng-model="filterText" type='text', placeholder='Ad Text')
+						.col-md-4
+							h4 Search Filters
+							.col-md-12.custom-search-input
+								input.search-query.form-control(ng-model="filterPhone" type='text', placeholder='Phone Number')
+							.col-md-12.custom-search-input
+								input.search-query.form-control(ng-model="filterText" type='text', placeholder='Ad Text')
+
 													
 							//- .col-md-12
 							//- 	button.btn-danger(ng-click="count = count+1" ng-init="count=0")  Search all entites
 							.col-md-12
-								h4 Controls
 								label Blur Images:  
 									input(type="checkbox" ng-model="blur")
 								br
 								br
+							.col-md-12.custom-search-.form
+								//input.search-query.form-control(ng-model="searchText" type='text', placeholder='Search Text', ng-submit='submitSearch(searchText)')
+								form(ng-submit='submitSearch()')
+									input.search-query.form-control(type='text', ng-model='searchText', name='text', placeholder='Search text')
+									input#submit(type='submit', value='Submit')
 
-						.col-md-6(ng-if='searchedEntities.length > 0')
-							h4 Aggregates
+						.col-md-8
+							h4 Entities: {{filteredEntities.length}}
 							// TODO: use accordion to expand or hide these aggregate statistics
 							// TODO: ng-repeat rows over an array of aggregate properties.
 							table.table.table-hover
 								tbody
 									tr
-										td Entities: 
-										td {{aggregates.get('entityIds').length}}
-									tr(ng-if="aggregates.get('nAds').length > 0")
 										td Total Ads
-										td {{aggregates.get('nAds')}}
-									tr(ng-if="aggregates.get('nPictures').length > 0")
+										td ---
+									tr
 										td Total Pictures
 										td ---
-									tr(ng-if="aggregates.get('phones').length > 0")
+									tr
 										td Phone Numbers
-										td {{aggregates.get('phones').join(', ') | tel}}
-									tr(ng-if="aggregates.get('websites').length > 0")
+										td ----
+									tr
 										td Websites
-										td {{aggregates.get('websites').join(', ')}}
-									tr(ng-if="aggregates.get('ages').length > 0")
-										td Ages
-										td {{aggregates.get('ages').join(', ')}}
-									tr(ng-if="aggregates.get('socialMediaAccounts').length > 0")
+										td ----
+									tr
+										td Age Range
+										td ---
+									tr
 										td Social Media Accounts
 										td ---
-									tr(ng-if="aggregates.get('prices').length > 0")
+									tr
 										td Price Range
 										td ---
-									tr(ng-if="aggregates.get('cities').length > 0")
+									tr
 										td Cities
-										td {{aggregates.get('cities').join(', ')}}
-									tr(ng-if="aggregates.get('ethnicities').length > 0")
+										td ----
+									tr
 										td Ethnicities
 										td ----
 	.row
 
-		
-		//- .col-md-12(ng-repeat="entity in searchedEntities | orderBy:'-nSuggested' ")
-		//- .col-md-12(ng-repeat="entity in searchedEntities | orderBy:'-nSuggested' ")
-		//- .col-md-12(ng-repeat="entity in entities | orderBy:'-nSuggested' | filter: { phone : filterPhone, text: filterText, gt : filterMinAge } ")
-		.col-md-12(ng-repeat="entity in entities1 | orderBy:'-nSuggested' | filter: { phone : filterPhone} ")
+		//.col-md-12(ng-repeat="entity in entities | orderBy:'-nSuggested' | filter: { phone : filterPhone, text: filterText, gt : filterMinAge } ")
+		//.col-md-12(ng-repeat="entity in searchedEntities | orderBy:'-nSuggested' ")
+		.col-md-12(ng-repeat="entity in searchedEntities | orderBy:'-nSuggested' ")
 			.panel.panel-default
 				.panel-heading 
 					h3 Entity Profile Summary: {{entity.phone | tel}}
@@ -93,14 +92,14 @@ div(ng-include='"components/navbar/navbar.html"')
 						.panel.panel-default
 							.panel-heading
 								.panel-title 
-									h4 Most Recent Post at {{entity.website[0]}} on {{entity.lastPostTime.toDateString()}}
+									//- h4 Most Recent Post at {{entity.website[0]}} on {{entity.lastPostTime.toDateString()}}
 									
 							.panel-body.vertical-layout
 								.item 
-									h4 {{entity.title[0]}}
+									//- h4 {{entity.title[0]}}
 								.item
 									p 
-										| {{entity.text[0]}}
+										//- | {{entity.text[0]}}
 								.item
 									.row
 										.col-md-2(ng-repeat='img in entity.imageUrls | limitTo:50')					

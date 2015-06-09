@@ -173,10 +173,10 @@ Entity.getAll = function (callback) {
     });
 };
 
-Entity.getSearch = function (callback) {
+Entity.getSearch = function (searchText, callback) {
     var query = [
         'MATCH (entity:Entity)-[r:BY_PHONE]-(n:Ad)',
-        "WHERE n.text =~ 'Looking for a good time.*'",
+        "WHERE n.text =~ '.*" + searchText + ".*'",
         'RETURN entity',
         'LIMIT 200'
     ].join('\n');
