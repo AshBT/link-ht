@@ -1,8 +1,12 @@
 $icon-font-path: "/bower_components/fixed_glyphicons/";
 $fa-font-path: "/bower_components/font-awesome/fonts";
 
+// import bootswatch theme variables
+@import "bootswatch/spacelab/variables";
 @import 'bootstrap-sass-official/vendor/assets/stylesheets/bootstrap';
 @import 'font-awesome/scss/font-awesome';
+// load bootswatch style itself
+@import "bootswatch/spacelab/bootswatch";
 
 /**
  * App-wide Styles
