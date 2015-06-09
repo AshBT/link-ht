@@ -12,7 +12,7 @@ angular.module('memexLinkerApp')
     },
     {
       'title': 'Saved Entities',
-      'link': '/savedentities'
+      'link': '/savedEntities'
     },
     {
       'title': 'Ad Stream',
