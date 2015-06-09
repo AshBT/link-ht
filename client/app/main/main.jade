@@ -65,9 +65,6 @@ div(ng-include='"components/navbar/navbar.html"')
 										td ----
 	.row
 
-		
-		//- .col-md-12(ng-repeat="entity in searchedEntities | orderBy:'-nSuggested' ")
-		//- .col-md-12(ng-repeat="entity in searchedEntities | orderBy:'-nSuggested' ")
 		//- .col-md-12(ng-repeat="entity in entities | orderBy:'-nSuggested' | filter: { phone : filterPhone, text: filterText, gt : filterMinAge } ")
 		.col-md-12(ng-repeat="entity in entities1 | orderBy:'-nSuggested' | filter: { phone : filterPhone} ")
 			.panel.panel-default
