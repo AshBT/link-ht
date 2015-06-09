@@ -300,6 +300,7 @@ $scope.submitSearch = function(){
           };
         });
 
+        $scope.aggregates = initAggregates();
         //Aggregate details from ads belonging to each entity.
         _.forEach(returnedEntities, function(entity) {
           summarizeEntity(entity).then(function(entitySummary) {
@@ -308,14 +309,16 @@ $scope.submitSearch = function(){
             console.log('------------');
             console.log($scope.entities1);
             console.log('------------');
-
+            updateAggregates(entitySummary,$scope.aggregates);
           }, function(reason) {
             console.log('Failed for ' + reason);
           });
+
         });
 
       });
 }
+
 };
 
 });
