@@ -356,27 +356,27 @@ angular.module('memexLinkerApp')
             });
         }
     } 
-    //The following function requires access to the internet. We need to develop an offline version of this geocoder.
-    // var geocoder = new google.maps.Geocoder();
-    // function geocodeCity(cityName) {
-    //     var deferred = $q.defer();
+    // The following function requires access to the internet. We need to develop an offline version of this geocoder.
+    var geocoder = new google.maps.Geocoder();
+    function geocodeCity(cityName) {
+        var deferred = $q.defer();
         
-    //     geocoder.geocode( { 'address': cityName }, function(results, status) {
-    //         if (status === google.maps.GeocoderStatus.OK && results.length > 0) {
-    //             var location = results[0].geometry.location;
-    //             deferred.resolve({
-    //                 latitude: parseFloat(location.lat()),
-    //                 longitude: parseFloat(location.lng())
-    //             });
-    //         } else {
-    //             deferred.resolve({
-    //                 latitude: 0,
-    //                 longitude: 0
-    //             });
-    //         }
-    //     });
-    //     return deferred.promise;
-    // } 
+        geocoder.geocode( { 'address': cityName }, function(results, status) {
+            if (status === google.maps.GeocoderStatus.OK && results.length > 0) {
+                var location = results[0].geometry.location;
+                deferred.resolve({
+                    latitude: parseFloat(location.lat()),
+                    longitude: parseFloat(location.lng())
+                });
+            } else {
+                deferred.resolve({
+                    latitude: 0,
+                    longitude: 0
+                });
+            }
+        });
+        return deferred.promise;
+    } 
 
     updateLinked();
     updateSuggestedText();

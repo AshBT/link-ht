@@ -7,7 +7,7 @@ div(ng-include='"components/navbar/navbar.html"')
 				.panel-heading Entity: {{entity.phone | tel}}
 				.panel-body.vertical-layout
 					.item
-						col-md-3(ng-repeat='img in face_image_url')
+						col-md-3(ng-repeat='img in face_image_url | limitTo:5')
 							img.responsive(ng-src="{{img}}"
 								style="max-height:80px; margin:0 auto;"
 								ng-class="{blurry: blur == true, clear: blur != true}")
