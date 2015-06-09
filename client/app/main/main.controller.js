@@ -286,25 +286,36 @@ function updateAggregates(entitySummary, aggregates) {
   })));
 }
 
- $http.get('/api/entities').success(function(res) {
-   var entities = _.map(res, function(e){
-     return {
-       'id': e._node._id,
-       'phone' : e._node.properties.identifier
-     };
-   });
+$scope.submitSearch = function(){
+    console.log('submitSearch...');
+    if ($scope.searchText) {
+          console.log($scope.searchText);
+       
+    $http.post('/api/entities/', {searchText : $scope.searchText}).success(function(res) {
+      $scope.entities1 = [];
+      var returnedEntities = _.map(res, function(e){
+          return {
+            'id': e._node._id,
+            'phone' : e._node.properties.identifier
+          };
+        });
 
-     //Aggregate details from ads belonging to each entity.
-     _.forEach(entities, function(entity) {
-       summarizeEntity(entity).then(function(entitySummary) {
-         // success
-         $scope.entities1.push(entitySummary);
-         updateAggregates(entitySummary, $scope.aggregates)
-         // console.log(entitySummary);
-       }, function(reason) {
-         console.log('Failed for ' + reason);
-       });
-     });
-   });
+        //Aggregate details from ads belonging to each entity.
+        _.forEach(returnedEntities, function(entity) {
+          summarizeEntity(entity).then(function(entitySummary) {
+            // success
+            $scope.entities1.push(entitySummary);
+            console.log('------------');
+            console.log($scope.entities1);
+            console.log('------------');
+
+          }, function(reason) {
+            console.log('Failed for ' + reason);
+          });
+        });
+
+      });
+}
+};
 
 });

@@ -181,7 +181,7 @@ Entity.getAll = function (callback) {
 Entity.getSearch = function (searchText, callback) {
     var query = [
         'MATCH (entity:Entity)-[r:BY_PHONE]-(n:Ad)',
-        "WHERE n.text =~ '.*" + searchText + ".*'",
+        'WHERE n.text =~ {searchText}',
         'RETURN DISTINCT entity',
         'LIMIT 30'
     ].join('\n');
@@ -192,7 +192,12 @@ Entity.getSearch = function (searchText, callback) {
     //     });
     //     callback(null, entities);
     // });
-    db.cypher(query, function(err, results) {
+
+    var params = {
+        searchText : searchText,
+    };
+
+    db.cypher({query:query,params:params}, function(err, results) {
         if (err) return callback(err);
         //console.log(results);
         //{entity: { _id: 28380, labels: [Object], properties: [Object] }}
