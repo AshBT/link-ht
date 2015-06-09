@@ -4,7 +4,33 @@ angular.module('memexLinkerApp')
 .controller('MainCtrl', function ($scope, $http, $q, socket, lodash) {
 
   var _ = lodash;
+//Start -- Trying to add in accordion
+    $scope.oneAtATime = true;
 
+    $scope.groups = [
+    {
+      title: 'Dynamic Group Header - 1',
+      content: 'Dynamic Group Body - 1'
+    },
+    {
+      title: 'Dynamic Group Header - 2',
+      content: 'Dynamic Group Body - 2'
+    }
+    ];
+
+    $scope.items = ['Item 1', 'Item 2', 'Item 3'];
+
+    $scope.addItem = function() {
+    var newItemNo = $scope.items.length + 1;
+    $scope.items.push('Item ' + newItemNo);
+    };
+
+    $scope.status = {
+    isFirstOpen: true,
+    isFirstDisabled: false
+    };
+
+//End -- Trying to add in accordion
   var source_map = {
     1 : 'Backpage',
     2 : 'Craigslist',
@@ -56,6 +82,7 @@ angular.module('memexLinkerApp')
     var aggregates = new HashMap();
     aggregates.set('entityIds', []);
     aggregates.set('websites', []);
+    aggregates.set('names', []);
     aggregates.set('nAds', 0);
     aggregates.set('nPictures', 0);
     aggregates.set('phones', []);
@@ -64,6 +91,8 @@ angular.module('memexLinkerApp')
     aggregates.set('cities', []);
     aggregates.set('prices', []);
     aggregates.set('ethnicities', []);
+    aggregates.set('twitters', []);
+    aggregates.set('instagrams', []);
     return aggregates;
   }
 
@@ -75,7 +104,7 @@ angular.module('memexLinkerApp')
     */
     
     function uniqueFlatAndDefined(items) {
-      return _.filter(_.uniq(_.flatten(items)), function(item) {
+      return _.filter(_.uniq(_.flattenDeep(items)), function(item) {
         return ! _.isUndefined(item);
       });
     }
@@ -132,6 +161,11 @@ angular.module('memexLinkerApp')
         var name = uniqueFlatAndDefined(collectAdProperty(ads, 'name'));
         var city = uniqueFlatAndDefined(collectAdProperty(ads, 'city'));
 
+
+        var instagram = uniqueFlatAndDefined(collectAdProperty(ads, 'instagram'));
+        var twitter = uniqueFlatAndDefined(collectAdProperty(ads, 'twitter'));
+        var ethnicity = uniqueFlatAndDefined(collectAdProperty(ads, 'ethnicity'));
+
         var imageUrls = _.uniq(lodash.flatten(
           _.map(ads, function(ad) {
             return ad.properties.image_locations;
@@ -160,6 +194,7 @@ angular.module('memexLinkerApp')
             id: entity.id,
             phone: entity.phone,
             nPosts: ads.length,
+            nPics: imageUrls.length,
             nSuggestedByImage: nSuggestedByImage,
             nSuggestedByText: 0,
             nSuggestedByPhone: 0,
@@ -178,7 +213,10 @@ angular.module('memexLinkerApp')
             name: name,
             city: city,
             nFaces: nFaces,
-            website: website
+            website: website,
+            twitter: twitter,
+            instagram: instagram,
+            ethnicity: ethnicity
           };
           deferred.resolve(entitySummary);
         });            
@@ -196,9 +234,28 @@ function updateAggregates(entitySummary, aggregates) {
   var websites = aggregates.get('websites');
   websites.push(entitySummary.website);
   aggregates.set('websites', uniqueFlatAndDefined(websites));
+  //Names
+  var names = aggregates.get('names');
+  names.push(entitySummary.name);
+  aggregates.set('names', uniqueFlatAndDefined(names));
+  //Instagram
+  var instagrams = aggregates.get('instagrams');
+  instagrams.push(entitySummary.instagram);
+  aggregates.set('instagrams', uniqueFlatAndDefined(instagrams));
+  //Names
+  var twitters = aggregates.get('twitters');
+  twitters.push(entitySummary.twitter);
+  aggregates.set('twitters', uniqueFlatAndDefined(twitters));
+  //Ethnicities
+  var ethnicities = aggregates.get('ethnicities');
+  ethnicities.push(entitySummary.ethnicity);
+  aggregates.set('ethnicities', uniqueFlatAndDefined(ethnicities));
   // Ads
   var nAds = aggregates.get('nAds');
-  aggregates.set('nAds', nAds + entitySummary.nPosts);
+  aggregates.set('nAds', nAds + Number(entitySummary.nPosts));
+  //Images
+  var nPictures = aggregates.get('nPictures');
+  aggregates.set('nPictures', nPictures + Number(entitySummary.nPics));
   // Cities
   var cities = aggregates.get('cities');
   cities.push(entitySummary.city);
@@ -209,9 +266,24 @@ function updateAggregates(entitySummary, aggregates) {
   aggregates.set('phones', uniqueFlatAndDefined(phones));
   // Ages
   var ages = aggregates.get('ages');
-  phones.push(entitySummary.age);
-  aggregates.set('ages', uniqueFlatAndDefined(ages));
-
+  ages.push(entitySummary.age);
+  var listages = uniqueFlatAndDefined(ages);
+  aggregates.set('age_min', _.min(_.filter(uniqueFlatAndDefined(ages), function(n) {
+    return Number((n % 1 ) == 0);
+  })));
+    aggregates.set('age_max', _.max(_.filter(uniqueFlatAndDefined(ages), function(n) {
+    return Number((n % 1 ) == 0);
+  })));
+// Prices
+  var prices = aggregates.get('prices');
+  prices.push(entitySummary.rate60);
+  var listprices = uniqueFlatAndDefined(prices);
+  aggregates.set('price_min', _.min(_.filter(uniqueFlatAndDefined(listprices), function(n) {
+    return (n % 1) == 0;
+  })));
+  aggregates.set('price_max', _.max(_.filter(uniqueFlatAndDefined(listprices), function(n) {
+    return (n % 2) == 0;
+  })));
 }
 
  $http.get('/api/entities').success(function(res) {
@@ -227,7 +299,8 @@ function updateAggregates(entitySummary, aggregates) {
        summarizeEntity(entity).then(function(entitySummary) {
          // success
          $scope.entities1.push(entitySummary);
-         //console.log(entitySummary);
+         updateAggregates(entitySummary, $scope.aggregates)
+         // console.log(entitySummary);
        }, function(reason) {
          console.log('Failed for ' + reason);
        });
