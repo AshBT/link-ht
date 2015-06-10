@@ -79,7 +79,6 @@ angular.module('memexLinkerApp')
                  // }
                ];
 
-
     $scope.blur = true;
     $scope.ads = [];
     $scope.imageUrls = [];
@@ -229,7 +228,6 @@ angular.module('memexLinkerApp')
 
             updateEntity();
         });
-
     }
 
     function updateSuggestedImage() {
@@ -246,7 +244,6 @@ angular.module('memexLinkerApp')
 
             updateEntity();
         });
-
     }
 
 

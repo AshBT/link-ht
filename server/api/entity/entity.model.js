@@ -5,13 +5,7 @@ var neo4j = require('neo4j');
 var NEO_HOST = process.env['NEO_HOST'] || 'http://localhost:7474';
 var NEO_USER = process.env['NEO_USER'] || 'neo4j';
 var NEO_PASS = process.env['NEO_PASS'] || 'password';
-console.log('------------------------------------');
-console.log('------------------------------------');
-console.log('------------------------------------');
-console.log('------------------------------------');    
-console.log(NEO_HOST)
-console.log(NEO_USER)
-console.log(NEO_PASS)
+
 var db = new neo4j.GraphDatabase({
     url: NEO_HOST,
     auth: {username: NEO_USER, password: NEO_PASS},     // optional; see below for more details
