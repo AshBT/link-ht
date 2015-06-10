@@ -79,30 +79,49 @@ angular.module('memexLinkerApp')
   // };
 
   function initAggregates() {
-    var aggregates = new HashMap();
-    aggregates.set('entityIds', []);
-    aggregates.set('websites', []);
-    aggregates.set('names', []);
-    aggregates.set('nAds', 0);
-    aggregates.set('nPictures', 0);
-    aggregates.set('phones', []);
-    aggregates.set('ages', []);
-    aggregates.set('socialMediaAccounts', []);
-    aggregates.set('cities', []);
-    aggregates.set('prices', []);
-    aggregates.set('ethnicities', []);
-    aggregates.set('twitters', []);
-    aggregates.set('instagrams', []);
-    return aggregates;
+    // var aggregates = new HashMap();
+    // aggregates.set('entityIds', []);
+    // aggregates.set('websites', []);
+    // aggregates.set('names', []);
+    // aggregates.set('nAds', 0);
+    // aggregates.set('nPictures', 0);
+    // aggregates.set('phones', []);
+    // aggregates.set('ages', []);
+    // aggregates.set('socialMediaAccounts', []);
+    // aggregates.set('cities', []);
+    // aggregates.set('prices', []);
+    // aggregates.set('ethnicities', []);
+    // aggregates.set('twitters', []);
+    // aggregates.set('instagrams', []);
+    // return aggregates;
+    return {
+      'entityIds': [],
+      'websites': [],
+      'nAds': 0,
+      'nPictures': 0,
+      'phones': [],
+      'ages': [],
+      'socialMediaAccounts': [],
+      'cities': [],
+      'prices': [],
+      'ethnicities': [],
+      set: function(key, value) {
+        this[key] = value
+        return this
+      },
+      get: function(key) {
+        return this[key]
+      }
+    };
   }
 
   // Temporary hashmap for computing search result aggregate statistics.
   $scope.aggregates = initAggregates();
 
-    /* 
+    /*
     * Returns the set of unique, flattened items, and removes undefined values.
     */
-    
+
     function uniqueFlatAndDefined(items) {
       return _.filter(_.uniq(_.flattenDeep(items)), function(item) {
         return ! _.isUndefined(item);
@@ -117,9 +136,9 @@ angular.module('memexLinkerApp')
 
     function summarizeEntity(entity) {
       var deferred = $q.defer();
-      
+
       $http.get('api/entities/' + entity.id + '/byphone').success(function(res){
-        var ads = _.map(res, function(element){ 
+        var ads = _.map(res, function(element){
           var ad = {
             'id':element.ad._id,
             'labels':element.ad.labels,
@@ -147,7 +166,7 @@ angular.module('memexLinkerApp')
         }
         var website=[];
         var sourcesid = uniqueFlatAndDefined(collectAdProperty(ads, 'sources_id'));
-        for (var i = 0; i < sourcesid.length; i++) { 
+        for (var i = 0; i < sourcesid.length; i++) {
           website=website.concat(source_map[sourcesid[i]]);
           //  console.log(website);
         }
@@ -219,7 +238,7 @@ angular.module('memexLinkerApp')
             ethnicity: ethnicity
           };
           deferred.resolve(entitySummary);
-        });            
+        });
       });
 
 return deferred.promise;
@@ -290,7 +309,7 @@ $scope.submitSearch = function(){
     console.log('submitSearch...');
     if ($scope.searchText) {
           console.log($scope.searchText);
-       
+
     $http.post('/api/entities/', {searchText : $scope.searchText}).success(function(res) {
       $scope.entities1 = [];
       var returnedEntities = _.map(res, function(e){
