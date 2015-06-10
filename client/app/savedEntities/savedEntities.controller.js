@@ -2,6 +2,8 @@
 
 angular.module('memexLinkerApp')
 .controller('SavedentitiesCtrl', function ($scope, $http, $q, lodash) {
+    var _ = lodash;
+
     // fetch saved entities
     var _ = lodash;
     var source_map = {
@@ -35,8 +37,166 @@ angular.module('memexLinkerApp')
     	28 : 'MissingKids'
     };
 
-    $scope.logo = 'http://icons.iconarchive.com/icons/icons8/ios7/256/Very-Basic-Paper-Clip-icon.png';
-    $scope.blur = true;
-    $scope.entities = [];
+     /* 
+    * Returns the set of unique, flattened items, and removes undefined values.
+    */
+    
+    function uniqueFlatAndDefined(items) {
+      return _.filter(_.uniq(_.flattenDeep(items)), function(item) {
+        return ! _.isUndefined(item);
+    });
+  }
+
+  function collectAdProperty(ads, propertyName) {
+      return _.map(ads, function(ad) {
+        return ad.properties[propertyName];
+    });
+  }
+
+
+  // Temporary hashmap for computing search result aggregate statistics.
+  $scope.logo = 'http://icons.iconarchive.com/icons/icons8/ios7/256/Very-Basic-Paper-Clip-icon.png';
+  $scope.blur = true;
+  $scope.entities = [];
+
+  function summarizeEntity(entity) {
+      var deferred = $q.defer();
+      
+      $http.get('api/entities/' + entity.id + '/byphone').success(function(res){
+        var ads = _.map(res, function(element){ 
+          var ad = {
+            'id':element.ad._id,
+            'labels':element.ad.labels,
+            'properties':element.ad.properties
+        };
+        return ad;
+    });
+
+        var postTimes = _.map(ads, function(ad){
+          return new Date(ad.properties.posttime);
+      });
+        var lastPostTime = _.max(postTimes);
+        var firstPostTime = _.min(postTimes);
+
+        var age = uniqueFlatAndDefined(collectAdProperty(ads, 'age')).sort();
+        var minAges = _.min(age);
+        var maxAges = _.max(age);
+        var rate60 = uniqueFlatAndDefined(collectAdProperty(ads, 'rate60'));
+        var priceRange = 'Missing' ;
+        if (rate60.length === 1 && rate60[0] != null) {
+          priceRange = rate60[0] ;
+      }
+      else if (rate60.length > 1) {
+          priceRange = _.min(rate60) + ' to ' +  _.max(rate60);
+      }
+      var website=[];
+      var sourcesid = uniqueFlatAndDefined(collectAdProperty(ads, 'sources_id'));
+      for (var i = 0; i < sourcesid.length; i++) { 
+          website=website.concat(source_map[sourcesid[i]]);
+          //  console.log(website);
+      }
+      website = _.filter(_.uniq(website), function(element){
+          return ! _.isUndefined(element);
+      });
+
+
+      var title = collectAdProperty(ads, 'title');
+      var text = collectAdProperty(ads, 'text');
+      var name = uniqueFlatAndDefined(collectAdProperty(ads, 'name'));
+      var city = uniqueFlatAndDefined(collectAdProperty(ads, 'city'));
+
+
+      var instagram = uniqueFlatAndDefined(collectAdProperty(ads, 'instagram'));
+      var twitter = uniqueFlatAndDefined(collectAdProperty(ads, 'twitter'));
+      var ethnicity = uniqueFlatAndDefined(collectAdProperty(ads, 'ethnicity'));
+
+      var imageUrls = _.uniq(lodash.flatten(
+          _.map(ads, function(ad) {
+            return ad.properties.image_locations;
+        }),
+          true
+          ));
+
+      imageUrls = _.filter(imageUrls, function(element){
+          return ! _.isUndefined(element);
+      });
+
+      var face = uniqueFlatAndDefined(lodash.flatten(
+          _.map(ads, function(ad) {
+            return ad.properties.face_image_url;
+        }),
+          true
+          ));
+
+      var nFaces = face.length;
+
+        // TODO: refactor server to provide all suggested ads, with reason(s) why each was suggested.
+        $http.get('api/entities/' + entity.id + '/byimage').success(function(res){
+          var nSuggestedByImage = res.length;
+
+          var entitySummary = {
+            id: entity.id,
+            phone: entity.phone,
+            nPosts: ads.length,
+            nPics: imageUrls.length,
+            nSuggestedByImage: nSuggestedByImage,
+            nSuggestedByText: 0,
+            nSuggestedByPhone: 0,
+            postTimes : postTimes,
+            lastPostTime: lastPostTime,
+            firstPostTime: firstPostTime,
+            age: age,
+            minAges: minAges,
+            maxAges: maxAges,
+            imageUrls: imageUrls,
+            priceRange: priceRange,
+            rate60: rate60,
+            sourcesid: sourcesid,
+            title: title,
+            text:text,
+            name: name,
+            city: city,
+            nFaces: nFaces,
+            website: website,
+            twitter: twitter,
+            instagram: instagram,
+            ethnicity: ethnicity
+        };
+        deferred.resolve(entitySummary);
+    });            
+    });
+
+    return deferred.promise;
+    }
+
+
+    // Get saved entities
+    var data = {
+        userName : 'username'
+    };
+    $http.post('/api/interaction/saved', data).
+    success(function(res) {
+        console.log(res);
+        var savedEntities = _.map(res, function(e){
+          return {
+            'id': e._node._id,
+            'phone' : e._node.properties.identifier
+          };
+        });
+                //Aggregate details from ads belonging to each entity.
+        _.forEach(savedEntities, function(entity) {
+          summarizeEntity(entity).then(function(entitySummary) {
+            // success
+            $scope.entities.push(entitySummary);
+          }, function(reason) {
+            console.log('Failed for ' + reason);
+          });
+
+        });
+    }).
+    error(function(data, status, headers, config) {
+        console.error(status);
+    });
+
 
 });

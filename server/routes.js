@@ -13,6 +13,7 @@ module.exports = function(app) {
   app.use('/api/ads', require('./api/ad'));
   app.use('/api/entities', require('./api/entity'));
   app.use('/api/users', require('./api/user'));
+  app.use('/api/interaction', require('./api/interaction'));
 
   app.use('/auth', require('./auth'));
   

@@ -78,6 +78,11 @@ exports.save = function(req, res) {
   });
 }
 
+// Note: this method does not condone evangelism.
+exports.getSaved = function(req, res) {
+  Entity.getSaved()
+};
+
 // Creates a new entity in the DB.
 exports.create = function(req, res) {
   Entity.create(req.body, function(err, entity) {
