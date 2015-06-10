@@ -97,6 +97,7 @@ angular.module('memexLinkerApp')
     return {
       'entityIds': [],
       'websites': [],
+      'names': [],
       'nAds': 0,
       'nPictures': 0,
       'phones': [],
@@ -105,6 +106,9 @@ angular.module('memexLinkerApp')
       'cities': [],
       'prices': [],
       'ethnicities': [],
+      'twitters': [],
+      'instagrams': [],
+      
       set: function(key, value) {
         this[key] = value
         return this
