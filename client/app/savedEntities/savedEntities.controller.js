@@ -53,8 +53,6 @@ angular.module('memexLinkerApp')
     });
   }
 
-
-  // Temporary hashmap for computing search result aggregate statistics.
   $scope.logo = 'http://icons.iconarchive.com/icons/icons8/ios7/256/Very-Basic-Paper-Clip-icon.png';
   $scope.blur = true;
   $scope.entities = [];
