@@ -1,0 +1,20 @@
+[Unit]
+Description=Link HT service
+After=docker.service
+Requires=docker.service
+
+[Service]
+TimeoutStartSec=0
+ExecStartPre=-/usr/bin/docker kill linkht
+ExecStartPre=-/usr/bin/docker rm linkht
+ExecStartPre=/usr/bin/docker pull ok-registry.service.consul/linkht
+ExecStart=/usr/bin/docker run --name linkht \
+    --rm \
+    -e SERVICE_NAME=linkht \
+    -e SERVICE_TAGS=http \
+    -e NEO_HOST=http://neo4j.service.consul \
+    -p 8080:8080 \
+    ok-registry.service.consul/linkht \
+    /bin/bash -c "mongod --smallfiles & sleep 20 && nodejs server/app.js"
+
+ExecStop=/usr/bin/docker stop linkht
