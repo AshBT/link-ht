@@ -18,7 +18,8 @@ angular.module('memexLinkerApp')
       content: 'Dynamic Group Body - 2'
     }
     ];
-  var source_map = {
+  
+  $scope.source_map = {
     1 : 'Backpage',
     2 : 'Craigslist',
     3 : 'Classivox',
