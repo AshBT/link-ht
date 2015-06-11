@@ -172,7 +172,7 @@ angular.module('memexLinkerApp')
     var data = {
         userName : 'username'
     };
-    $http.post('/api/interaction/saved', data).
+    $http.post('/api/interactions/saved', data).
     success(function(res) {
         console.log(res);
         var savedEntities = _.map(res, function(e){
