@@ -4,15 +4,15 @@ var _ = require('lodash');
 var Entity = require('./entity.model');
 
 // Get list of entities
-exports.index = function(req, res) {
-  Entity.getAll(function(err, entities){
-    if(err) {
-      console.log(err);
-      return handleError(res, err)
-    }
-    res.json(entities);
-  });
-};
+//exports.index = function(req, res) {
+//Entity.getAll(function(err, entities){
+//    if(err) {
+//     console.log(err);
+//      return handleError(res, err)
+//    }
+//    res.json(entities);
+//  });
+//};
 
 exports.search = function(req, res) {
   Entity.getSearch(req.body.searchText, function(err, entities){
@@ -66,6 +66,22 @@ exports.byText = function(req, res) {
       return res.json(ads);
   });
 }
+
+exports.save = function(req, res) {
+  var data = {
+    entityId: req.params.id,
+    userName: req.body.userName
+  }
+  Entity.savedByUser(data, function(err) {
+    if (err) return handleError(res, err);
+    return res.send(200);
+  });
+}
+
+// Note: this method does not condone evangelism.
+exports.getSaved = function(req, res) {
+  Entity.getSaved()
+};
 
 // Creates a new entity in the DB.
 exports.create = function(req, res) {

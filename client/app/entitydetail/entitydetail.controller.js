@@ -79,14 +79,13 @@ angular.module('memexLinkerApp')
                  // }
                ];
 
-
     $scope.blur = true;
     $scope.ads = [];
     $scope.imageUrls = [];
     $scope.face_image_url = [];
     $scope.suggestedAds = [];
     $scope.id = $stateParams.id;
-    $scope.user = null;
+    //$scope.user = null;
 
     $scope.heatmapConfig = {
         entityId: $scope.id,
@@ -97,11 +96,6 @@ angular.module('memexLinkerApp')
         legend: [2, 4, 6, 10],
         range : 1
     };
-
-    // if (Auth.isLoggedIn()) {
-    //     $scope.user = Auth.getCurrentUser();
-    //     console.log($scope.user);     
-    // }
 
     $scope.entity = {
         phone:'',
@@ -129,26 +123,6 @@ angular.module('memexLinkerApp')
         return parser.host;
     };
 
-    // ---- Map Modal ------- //
-
-    $scope.lat = 34.834442;
-    $scope.lng = -82.3686479;
-
-    $scope.expandMap = function () {
-        var modalInstance = $modal.open({
-            templateUrl:'/app/entitydetail/partials/mapdetail.html',
-            controller: ModalInstanceCtrl,
-            resolve: {
-                lat: function () {
-                    return $scope.lat;
-                },
-                lng: function () {
-                    return $scope.lng;
-                }
-            }
-        });
-    };
-
     // Link Ad to Entity by user-confirmed image similarity.
     $scope.linkToEntity = function(ad) {
         var data = {
@@ -168,6 +142,38 @@ angular.module('memexLinkerApp')
           error(function(data, status, headers, config) {
             console.log(data);
           });
+    };
+
+    $scope.saveEntity = function() {
+        console.log('saveEntity');
+        // TODO: Get user name if logged in
+        var userName = 'test_user';
+        var data = {
+            userName: userName
+        };
+         $http.post('api/entities/' + $scope.id + '/save', data).success(function(res){
+           console.log(res);
+        });
+    };
+
+    // ---- Map Modal ------- //
+
+    $scope.lat = 34.834442;
+    $scope.lng = -82.3686479;
+
+    $scope.expandMap = function () {
+        var modalInstance = $modal.open({
+            templateUrl:'/app/entitydetail/partials/mapdetail.html',
+            controller: ModalInstanceCtrl,
+            resolve: {
+                lat: function () {
+                    return $scope.lat;
+                },
+                lng: function () {
+                    return $scope.lng;
+                }
+            }
+        });
     };
 
     var ModalInstanceCtrl = function ($scope, $modalInstance, lat, lng) {
@@ -222,7 +228,6 @@ angular.module('memexLinkerApp')
 
             updateEntity();
         });
-
     }
 
     function updateSuggestedImage() {
@@ -239,7 +244,6 @@ angular.module('memexLinkerApp')
 
             updateEntity();
         });
-
     }
 
 
@@ -275,12 +279,7 @@ angular.module('memexLinkerApp')
         $scope.entity.twitter_profile_background_pic= uniqueFlatAndDefined(collectAdProperty($scope.ads, 'twitter_profile_background_pic')).sort();
         $scope.entity.twitter_description= uniqueFlatAndDefined(collectAdProperty($scope.ads, 'twitter_description')).sort();
 
-
         $scope.entity.yelp= uniqueFlatAndDefined(collectAdProperty($scope.ads, 'yelp')).sort();
-
-
-
-
 
         //var priceRange = 'Missing' ;
         if ($scope.entity.price[0] !== null) {
@@ -292,8 +291,6 @@ angular.module('memexLinkerApp')
             $scope.entity.maxPrice = 'Missing';
         }
         $scope.entity.modePrice = mode($scope.entity.price);
-        
-
         
         $scope.imageUrls = _.flatten(
           _.map($scope.ads, function(ad) {

@@ -39,7 +39,7 @@ angular.module('memexLinkerApp')
     5 : 'NaughtyReviews',
     6 : 'RedBook',
     7 : 'CityVibe',
-    8 :  'MassageTroll',
+    8 : 'MassageTroll',
     9 : 'RedBookForum',
     10 : 'CityXGuide',
     11 : 'CityXGuideForum',
@@ -49,7 +49,7 @@ angular.module('memexLinkerApp')
     15 : 'EscortsInCollege',
     16 : 'EscortPhoneList',
     17 : 'EroticMugshots',
-    18 :  'EscortsAdsXXX',
+    18 : 'EscortsAdsXXX',
     19 : 'EscortsinCA',
     20 : 'EscortsintheUS',
     21 : 'LiveEscortReviws',
@@ -79,30 +79,53 @@ angular.module('memexLinkerApp')
   // };
 
   function initAggregates() {
-    var aggregates = new HashMap();
-    aggregates.set('entityIds', []);
-    aggregates.set('websites', []);
-    aggregates.set('names', []);
-    aggregates.set('nAds', 0);
-    aggregates.set('nPictures', 0);
-    aggregates.set('phones', []);
-    aggregates.set('ages', []);
-    aggregates.set('socialMediaAccounts', []);
-    aggregates.set('cities', []);
-    aggregates.set('prices', []);
-    aggregates.set('ethnicities', []);
-    aggregates.set('twitters', []);
-    aggregates.set('instagrams', []);
-    return aggregates;
+    // var aggregates = new HashMap();
+    // aggregates.set('entityIds', []);
+    // aggregates.set('websites', []);
+    // aggregates.set('names', []);
+    // aggregates.set('nAds', 0);
+    // aggregates.set('nPictures', 0);
+    // aggregates.set('phones', []);
+    // aggregates.set('ages', []);
+    // aggregates.set('socialMediaAccounts', []);
+    // aggregates.set('cities', []);
+    // aggregates.set('prices', []);
+    // aggregates.set('ethnicities', []);
+    // aggregates.set('twitters', []);
+    // aggregates.set('instagrams', []);
+    // return aggregates;
+    return {
+      'entityIds': [],
+      'websites': [],
+      'names': [],
+      'nAds': 0,
+      'nPictures': 0,
+      'phones': [],
+      'ages': [],
+      'socialMediaAccounts': [],
+      'cities': [],
+      'prices': [],
+      'ethnicities': [],
+      'twitters': [],
+      'instagrams': [],
+      
+      set: function(key, value) {
+        this[key] = value
+        return this
+      },
+      get: function(key) {
+        return this[key]
+      }
+    };
   }
 
   // Temporary hashmap for computing search result aggregate statistics.
   $scope.aggregates = initAggregates();
 
-    /* 
+    /*
     * Returns the set of unique, flattened items, and removes undefined values.
     */
-    
+
     function uniqueFlatAndDefined(items) {
       return _.filter(_.uniq(_.flattenDeep(items)), function(item) {
         return ! _.isUndefined(item);
@@ -117,9 +140,9 @@ angular.module('memexLinkerApp')
 
     function summarizeEntity(entity) {
       var deferred = $q.defer();
-      
+
       $http.get('api/entities/' + entity.id + '/byphone').success(function(res){
-        var ads = _.map(res, function(element){ 
+        var ads = _.map(res, function(element){
           var ad = {
             'id':element.ad._id,
             'labels':element.ad.labels,
@@ -147,7 +170,7 @@ angular.module('memexLinkerApp')
         }
         var website=[];
         var sourcesid = uniqueFlatAndDefined(collectAdProperty(ads, 'sources_id'));
-        for (var i = 0; i < sourcesid.length; i++) { 
+        for (var i = 0; i < sourcesid.length; i++) {
           website=website.concat(source_map[sourcesid[i]]);
           //  console.log(website);
         }
@@ -219,7 +242,7 @@ angular.module('memexLinkerApp')
             ethnicity: ethnicity
           };
           deferred.resolve(entitySummary);
-        });            
+        });
       });
 
 return deferred.promise;
@@ -286,25 +309,39 @@ function updateAggregates(entitySummary, aggregates) {
   })));
 }
 
- $http.get('/api/entities').success(function(res) {
-   var entities = _.map(res, function(e){
-     return {
-       'id': e._node._id,
-       'phone' : e._node.properties.identifier
-     };
-   });
+$scope.submitSearch = function(){
+    console.log('submitSearch...');
+    if ($scope.searchText) {
+          console.log($scope.searchText);
 
-     //Aggregate details from ads belonging to each entity.
-     _.forEach(entities, function(entity) {
-       summarizeEntity(entity).then(function(entitySummary) {
-         // success
-         $scope.entities1.push(entitySummary);
-         updateAggregates(entitySummary, $scope.aggregates)
-         // console.log(entitySummary);
-       }, function(reason) {
-         console.log('Failed for ' + reason);
-       });
-     });
-   });
+    $http.post('/api/entities/', {searchText : $scope.searchText}).success(function(res) {
+      $scope.entities1 = [];
+      var returnedEntities = _.map(res, function(e){
+          return {
+            'id': e._node._id,
+            'phone' : e._node.properties.identifier
+          };
+        });
+
+        $scope.aggregates = initAggregates();
+        //Aggregate details from ads belonging to each entity.
+        _.forEach(returnedEntities, function(entity) {
+          summarizeEntity(entity).then(function(entitySummary) {
+            // success
+            $scope.entities1.push(entitySummary);
+            console.log('------------');
+            console.log($scope.entities1);
+            console.log('------------');
+            updateAggregates(entitySummary,$scope.aggregates);
+          }, function(reason) {
+            console.log('Failed for ' + reason);
+          });
+
+        });
+
+      });
+}
+
+};
 
 });

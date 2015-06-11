@@ -17,7 +17,7 @@ div(ng-include='"components/navbar/navbar.html"')
 						label Blur Images:
 						input(type="checkbox" ng-model="blur")
 					.item 
-						button.btn-success() Save Entity 
+						button.btn-success(ng-click='saveEntity()') Save Entity 
 
 			.panel.panel-default(style="height: 300px")
 				.panel-heading Map

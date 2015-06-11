@@ -4,11 +4,9 @@ div(ng-include='"components/navbar/navbar.html"')
 	.row
 		.col-md-12
 			.panel.panel-default
-				.panel-heading 
+				.panel-heading
 					h4 Entity Graph Search
 				.panel-body
-
-					
 					.row
 						.col-md-3
 							.col-md-12
@@ -17,22 +15,26 @@ div(ng-include='"components/navbar/navbar.html"')
 									input.search-query.form-control(ng-model="filterPhone" type='text', placeholder='Phone Number')
 								.col-md-12.custom-search-input
 									input.search-query.form-control(ng-model="filterText" type='text', placeholder='Ad Text')
-													
+
 							//- .col-md-12
 							//- 	button.btn-danger(ng-click="count = count+1" ng-init="count=0")  Search all entites
 							.col-md-12
 								h4 Controls
-								label Blur Images:  
+								label Blur Images:
 									input(type="checkbox" ng-model="blur")
 								br
 								br
+							.col-md-12.form
+								form(ng-submit='submitSearch()')
+									input.search-query.form-control(type='text', ng-model='searchText', name='text', placeholder='Search text')
+									input.btn.btn-primary#submit(type='submit', value='Submit')
 						.col-md-3
 							h4 Aggregate Results
 
 							table.table.table-hover
 								tbody
 									tr
-										td Entities 
+										td Entities
 										td {{aggregates.get('entityIds').length}}
 									tr
 										td Ads
@@ -45,14 +47,14 @@ div(ng-include='"components/navbar/navbar.html"')
 										td {{aggregates.get('age_min')}} to {{aggregates.get('age_max')}}
 									tr
 										td Price Range
-										td {{aggregates.get('price_min')}} to {{aggregates.get('price_max')}} 
+										td {{aggregates.get('price_min')}} to {{aggregates.get('price_max')}}
 
 						.col-md-6
 							// TODO: use accordion to expand or hide these aggregate statistics
 							// TODO: ng-repeat rows over an array of aggregate properties.
 							accordion(close-others='oneAtATime')
 								accordion-group(heading='Search Result Details (Click Me!)', is-disabled='status.isFirstDisabled')
-									h4 								
+									h4
 									table.table.table-hover
 
 										tbody
@@ -68,7 +70,7 @@ div(ng-include='"components/navbar/navbar.html"')
 											tr
 												td Cities
 												td {{aggregates.get('cities').join(', ') | capitalize}}
-											tr 
+											tr
 												td Names
 												td {{aggregates.get('names').join(', ') | capitalize}}
 											tr
@@ -79,8 +81,8 @@ div(ng-include='"components/navbar/navbar.html"')
 		//- .col-md-12(ng-repeat="entity in entities | orderBy:'-nSuggested' | filter: { phone : filterPhone, text: filterText, gt : filterMinAge } ")
 		.col-md-12(ng-repeat="entity in entities1 | orderBy:'-nSuggested' | filter: { phone : filterPhone, text: filterText} ")
 			.panel.panel-default
-				.panel-heading 
-					h3 {{entity.nPosts}} Ads from Base Entity {{entity.phone | tel}} 
+				.panel-heading
+					h3 {{entity.nPosts}} Ads from Base Entity {{entity.phone | tel}}
 				.panel-body
 					.col-md-4
 						p Active since: <strong> {{entity.firstPostTime.toDateString()}} </strong>
@@ -95,26 +97,26 @@ div(ng-include='"components/navbar/navbar.html"')
 						p  Ads related by text:<strong> {{entity.nSuggestedByText}}</strong>
 						p  Ads related by phone co-occurence:  <strong> {{entity.nSuggestedByPhone}}</strong>
 						a.button.btn-primary.btn-lg.pull-left(ui-sref="entitydetail({ id: entity.id })") Inspect
-					
+
 					.col-md-8
 						.panel.panel-default
 							.panel-heading
-								.panel-title 
+								.panel-title
 									h4 Most Recent Post at {{entity.website[0]}} on {{entity.lastPostTime.toDateString()}}
-									
+
 							.panel-body.vertical-layout
-								.item 
+								.item
 									h4 {{entity.title[0]}}
 								.item
-									p 
+									p
 										| {{entity.text[0]}}
 								.item
 									.row
-										.col-md-2(ng-repeat='img in entity.imageUrls | limitTo:50')					
-											img.responsive(ng-src="{{img}}" 
+										.col-md-2(ng-repeat='img in entity.imageUrls | limitTo:50')
+											img.responsive(ng-src="{{img}}"
 												style="max-height:50px; margin:0 auto;"
 												ng-class="{blurry: blur == true, clear: blur != true}")
-																	
+
 	footer.footer
 		center Designed and Developed by Qadium 2015. All code is open source.
-		center About Help Terms Privacy 
+		center About Help Terms Privacy
