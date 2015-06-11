@@ -35,3 +35,30 @@ Interaction.saved = function (callback) {
         callback(null, savedEntities);
     });
 };
+
+Interaction.linkTypes = function(entityId, adId, callback) {
+    var query = [
+            'MATCH (e:Entity)',
+            'WHERE e.savedByUser = true',
+            'RETURN e'
+        ].join('\n');
+
+    var query = [
+        'MATCH (entity:Entity)-[r]-(ad:Ad)',
+        'WHERE ID(entity) = {entityId} AND ID(ad) = {adId}',      
+        'RETURN DISTINCT TYPE(r)'
+    ].join('\n')
+
+    var params = {
+        entityId: Number(entityId),
+        adId: Number(adId)
+    };
+
+    db.cypher({query:query, params:params}, function (err, results) {
+        if (err) return callback(err);
+        var linkTypes = results.map(function (result) {
+            return result['TYPE(r)'];
+        });
+        callback(null, linkTypes);
+    });
+}

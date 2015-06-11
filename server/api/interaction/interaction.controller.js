@@ -18,7 +18,15 @@ exports.saved = function(req, res) {
     console.log(entities);
     return res.json(entities);
   });
-
-    
 };
+
+exports.linkTypes = function(req, res) {
+    var entityId = req.body.entityId;
+	var adId = req.body.adId;
+  	Interaction.linkTypes(entityId, adId, function(err, linkTypes) {
+  		if(err) return handleError(res, err);
+  		console.log(linkTypes);
+  		return res.json({linkTypes:linkTypes});
+  	});
+}
 

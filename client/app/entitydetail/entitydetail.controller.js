@@ -237,7 +237,14 @@ angular.module('memexLinkerApp')
                 'labels':element.ad.labels,
                 'properties':element.ad.properties
               };
-              console.log(ad);
+
+              $http.post('api/interactions/linkTypes', {entityId : $scope.id, adId : ad.id}).success(function(res){
+                console.log(res);
+                if (res.linkTypes.indexOf('BY_PHONE') > -1) { ad.linkedByPhone = true; }
+                if (res.linkTypes.indexOf('BY_TXT') > -1) { ad.linkedByText = true; }
+                if (res.linkTypes.indexOf('BY_IMG') > -1) { ad.linkedByImage = true; }
+              });
+                console.log(ad);    
               return ad;
             });
             updateEntity();
