@@ -26,13 +26,13 @@ div(ng-include='"components/navbar/navbar.html"')
 
 			.panel.panel-default
 				.panel-heading Entity Identifiers
-					.panel-body.vertical-layout
-						ul.nobullets.item
-							li e-mail: {{entity.email.join(', ') }}
-							li Twitter: {{entity.twitter.join(', ') }}
-							li Instagram: {{entity.instagram.join(', ') }}
-							li Youtube: {{entity.youtube.join(', ') }}
-							li Yelp: {{entity.yelp.join(', ') }}
+				.panel-body.vertical-layout
+					ul.nobullets.item
+						li(ng-if="entity.email.length > 0") e-mail: {{entity.email.join(', ') }}
+						li(ng-if="entity.twitter.length > 0") Twitter: {{entity.twitter.join(', ') }}
+						li(ng-if="entity.instagram.length > 0") Instagram: {{entity.instagram.join(', ') }}
+						li(ng-if="entity.youtube.length > 0") Youtube: {{entity.youtube.join(', ') }}
+						li(ng-if="entity.yelp.length > 0") Yelp: {{entity.yelp.join(', ') }}
 
 							//- li Twitter: <input type="text" name="twitter" ng-model="twitter" required> 
 							//- li Instagram: <input type="text" name="instagram" ng-model="instagram" required>
@@ -45,22 +45,22 @@ div(ng-include='"components/navbar/navbar.html"')
 				.panel-heading Entity Details
 				.panel-body
 					ul.nobullets
-						li Ages: {{entity.age.join(', ')}}
-						li Ethnicities: {{entity.ethnicities.join(', ') | capitalize}}
-						li Hourly Price Range: {{entity.minPrice}} to {{entity.maxPrice}}
-						li Mode Price: {{entity.modePrice}}
-						li Height: {{entity.height.join(', ')}}
-						li Weight: {{entity.weight.join(', ')}}
-						li Eyes: {{entity.eyes.join(', ')}}
-						li Hair: {{entity.hair.join(', ')}}
-						li Cities: {{entity.cities.join(', ') | capitalize}}
+						li(ng-if="entity.age.length > 0") Ages: {{entity.age.join(', ')}}
+						li(ng-if="entity.ethnicities.length > 0") Ethnicities: {{entity.ethnicities.join(', ') | capitalize}}
+						li(ng-if="entity.minPrice.length > 0") Hourly Price Range: {{entity.minPrice}} to {{entity.maxPrice}}
+						li(ng-if="entity.modePrice.length > 0") Mode Price: {{entity.modePrice}}
+						li(ng-if="entity.height.length > 0") Height: {{entity.height.join(', ')}}
+						li(ng-if="entity.weight.length > 0") Weight: {{entity.weight.join(', ')}}
+						li(ng-if="entity.eyes.length > 0") Eyes: {{entity.eyes.join(', ')}}
+						li(ng-if="entity.hair.length > 0") Hair: {{entity.hair.join(', ')}}
+						li(ng-if="entity.cities.length > 0") Cities: {{entity.cities.join(', ') | capitalize}}
 
 
 			
 		.col-md-9
-			.panel.panel-default
-				.panel-heading Active Since {{entity.postTimes[0]}}
-				entity-heatmap(config='heatmapConfig', entityId='id')
+			//- .panel.panel-default
+			//- 	.panel-heading Active Since {{entity.postTimes[0]}}
+			//- 	entity-heatmap(config='heatmapConfig', entityId='id')
 
 
 			.panel.panel-default

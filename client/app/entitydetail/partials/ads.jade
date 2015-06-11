@@ -1,9 +1,9 @@
 .panel.panel-default(ng-repeat='ad in ads')
-	#head2.panel-heading.h1  {{ad.properties.sources_id}} at {{ad.properties.posttime}}
+	.panel-heading.h1  {{ad.properties.sources_id}} at {{ad.properties.posttime}}
 	.panel-body.vertical-layout
 		.item
-			h4 Title: {{ad.properties.title}}
-			p Text: {{ad.properties.text}}
+			h4 {{ad.properties.title}}
+			p {{ad.properties.text}}
 			p: a(href='{{ad.properties.url}}') View original post
 		.item
 			row

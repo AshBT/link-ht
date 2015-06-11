@@ -202,7 +202,7 @@ angular.module('memexLinkerApp')
 
         var face = uniqueFlatAndDefined(lodash.flatten(
           _.map(ads, function(ad) {
-            return ad.properties.face_image_url;
+            return ad.properties.face_image_location;
           }),
           true
           ));
