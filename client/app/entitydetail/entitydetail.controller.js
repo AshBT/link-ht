@@ -174,7 +174,6 @@ angular.module('memexLinkerApp')
     };
 
     $scope.saveEntity = function() {
-        console.log('saveEntity');
         // TODO: Get user name if logged in
         var userName = 'test_user';
         var data = {
@@ -237,6 +236,7 @@ angular.module('memexLinkerApp')
                 'labels':element.ad.labels,
                 'properties':element.ad.properties
               };
+              console.log(ad);
               return ad;
             });
             updateEntity();
@@ -274,7 +274,6 @@ angular.module('memexLinkerApp')
             updateEntity();
         });
     }
-
 
     function updateEntity() {
         $scope.entity.cities= uniqueFlatAndDefined(collectAdProperty($scope.ads, 'city')).sort();
@@ -353,7 +352,6 @@ angular.module('memexLinkerApp')
                     },
                     zoom: 3
                 };
-                console.log($scope.map);
             }, function(reason) {
                 console.log('Failed');
             }, function(update) {
@@ -361,11 +359,9 @@ angular.module('memexLinkerApp')
             });
 
             _.forEach($scope.entity.cities, function(city, key) {
-                console.log(city, key);
                 geocodeCity(city)
                     .then(function(point){
-                        console.log(point);
-                                         //   id: 583187,
+                 //   id: 583187,
                  //   latitude: 46.7682,
                  //   longitude: -71.3234,
                  //   title: 'title'
@@ -375,8 +371,6 @@ angular.module('memexLinkerApp')
                             longitude: point.longitude,
                             title: city
                         };
-                        console.log('Marker:');
-                        console.log(m);
                         $scope.markers.push(m);
                     });
             });
