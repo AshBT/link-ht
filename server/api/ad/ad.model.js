@@ -77,9 +77,11 @@ Ad.get = function (id, callback) {
 };
 
 Ad.getAll = function (callback) {
+    console.log('Ad.getAll');
     var query = [
         'MATCH (ad:Ad)',
-        'RETURN ad'
+        'RETURN ad',
+        'LIMIT 100'
     ].join('\n');
     db.cypher(query, function (err, results) {
         if (err) return callback(err);

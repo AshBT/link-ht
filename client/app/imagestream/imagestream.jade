@@ -1,13 +1,8 @@
 div(ng-include='"components/navbar/navbar.html"')
-
 .container
 	.row
-		.col-md-12
-			.panel.panel-default
-				.panel-heading
-					//- h4 Ads in Last 24 Hours
-					h4 Image Stream Under Development
-				.panel-body
+		#masonry
+			img(ng-repeat='imageUrl in imageUrls' ng-src='{{imageUrl}}', alt='')
 
 	footer.footer
 		center Designed and Developed by Qadium 2015. All code is open source.
