@@ -265,7 +265,7 @@ angular.module('memexLinkerApp')
         $scope.entity.youtube= uniqueFlatAndDefined(collectAdProperty($scope.ads, 'youtube')).sort();
         $scope.entity.twitter= uniqueFlatAndDefined(collectAdProperty($scope.ads, 'twitter')).sort();
         for (var i = 0; i < $scope.entity.twitter.length; i++) {
-        $scope.entity.twitter[0]=$scope.entity.twitter[0].replace("https://twitter.com/","@")
+        $scope.entity.twitter[i]=$scope.entity.twitter[i].replace("https://twitter.com/","@")
         }
         $scope.entity.tweets= uniqueFlatAndDefined(collectAdProperty($scope.ads, 'twitter')).sort();
         $scope.entity.twitter_followers= uniqueFlatAndDefined(collectAdProperty($scope.ads, 'twitter_followers')).sort();
