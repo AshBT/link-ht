@@ -314,7 +314,9 @@ $scope.submitSearch = function(){
     if ($scope.searchText) {
           console.log($scope.searchText);
 
-    $http.post('/api/entities/', {searchText : $scope.searchText}).success(function(res) {
+    $scope.searchText2= ".*" + $scope.searchText + ".*" 
+
+    $http.post('/api/entities/', {searchText : $scope.searchText2}).success(function(res) {
       $scope.entities1 = [];
       var returnedEntities = _.map(res, function(e){
           return {

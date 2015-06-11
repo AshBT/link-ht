@@ -8,67 +8,67 @@ div(ng-include='"components/navbar/navbar.html"')
 					//- h4 Ads in Last 24 Hours
 					h4 Ad Stream Under Development
 				.panel-body
-	//- 				.row
-	//- 					.col-md-3
-	//- 						.col-md-12
-	//- 							h4 Filter
-	//- 							.col-md-12.custom-search-input
-	//- 								input.search-query.form-control(ng-model="filterPhone" type='text', placeholder='Phone Number')
-	//- 							.col-md-12.custom-search-input
-	//- 								input.search-query.form-control(ng-model="filterText" type='text', placeholder='Ad Text')
-	//- 						.col-md-12
-	//- 							h4 Controls
-	//- 							label Blur Images:
-	//- 								input(type="checkbox" ng-model="blur")
-	//- 							br
-	//- 							br
-	//- 					.col-md-3
-	//- 						h4 Aggregate Statistics
+					.row
+						.col-md-3
+							.col-md-12
+								h4 Filter
+								.col-md-12.custom-search-input
+									input.search-query.form-control(ng-model="filterPhone" type='text', placeholder='Phone Number')
+								.col-md-12.custom-search-input
+									input.search-query.form-control(ng-model="filterText" type='text', placeholder='Ad Text')
+							.col-md-12
+								h4 Controls
+								label Blur Images:
+									input(type="checkbox" ng-model="blur")
+								br
+								br
+						.col-md-3
+							h4 Aggregate Statistics
 
-	//- 						table.table.table-hover
-	//- 							tbody
-	//- 								tr
-	//- 									td Entities
-	//- 									td {{aggregates.get('entityIds').length}}
-	//- 								tr
-	//- 									td Ads
-	//- 									td {{aggregates.get('nAds')}}
-	//- 								tr
-	//- 									td Pictures
-	//- 									td {{aggregates.get('nPictures')}}
-	//- 								tr
-	//- 									td Age Range
-	//- 									td {{aggregates.get('age_min')}} to {{aggregates.get('age_max')}}
-	//- 								tr
-	//- 									td Price Range
-	//- 									td {{aggregates.get('price_min')}} to {{aggregates.get('price_max')}}
+							table.table.table-hover
+								tbody
+									tr
+										td Entities
+										td {{aggregates.get('entityIds').length}}
+									tr
+										td Ads
+										td {{aggregates.get('nAds')}}
+									tr
+										td Pictures
+										td {{aggregates.get('nPictures')}}
+									tr
+										td Age Range
+										td {{aggregates.get('age_min')}} to {{aggregates.get('age_max')}}
+									tr
+										td Price Range
+										td {{aggregates.get('price_min')}} to {{aggregates.get('price_max')}}
 
-	//- 					.col-md-6
-	//- 						accordion(close-others='oneAtATime')
-	//- 							accordion-group(heading='Search Result Details (Click Me!)', is-disabled='status.isFirstDisabled')
-	//- 								h4
-	//- 								table.table.table-hover
+						.col-md-6
+							accordion(close-others='oneAtATime')
+								accordion-group(heading='Search Result Details (Click Me!)', is-disabled='status.isFirstDisabled')
+									h4
+									table.table.table-hover
 
-	//- 									tbody
-	//- 										tr
-	//- 											td Websites
-	//- 											td {{aggregates.get('websites').join(', ')}}
-	//- 										tr
-	//- 											td Twitter Accounts
-	//- 											td {{aggregates.get('twitters').join(', ')}}
-	//- 										tr
-	//- 											td Instagram Accounts
-	//- 											td {{aggregates.get('instagrams').join(', ')}}
-	//- 										tr
-	//- 											td Cities
-	//- 											td {{aggregates.get('cities').join(', ') | capitalize}}
-	//- 										tr
-	//- 											td Names
-	//- 											td {{aggregates.get('names').join(', ') | capitalize}}
-	//- 										tr
-	//- 											td Ethnicities
-	//- 											td {{aggregates.get('ethnicities').join(', ') | capitalize}}
-	//- .row
+										tbody
+											tr
+												td Websites
+												td {{aggregates.get('websites').join(', ')}}
+											tr
+												td Twitter Accounts
+												td {{aggregates.get('twitters').join(', ')}}
+											tr
+												td Instagram Accounts
+												td {{aggregates.get('instagrams').join(', ')}}
+											tr
+												td Cities
+												td {{aggregates.get('cities').join(', ') | capitalize}}
+											tr
+												td Names
+												td {{aggregates.get('names').join(', ') | capitalize}}
+											tr
+												td Ethnicities
+												td {{aggregates.get('ethnicities').join(', ') | capitalize}}
+	.row
 	//- 	.col-md-12(ng-repeat="entity in entities1 | orderBy:'-nSuggested' | filter: { phone : filterPhone, text: filterText} ")
 	//- 		.panel.panel-default
 	//- 			.panel-heading
