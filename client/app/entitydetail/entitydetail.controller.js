@@ -342,9 +342,9 @@ angular.module('memexLinkerApp')
         }),
           true
           );
-        $scope.imageUrls = _.filter($scope.imageUrls, function(element){
+        $scope.imageUrls = uniqueFlatAndDefined(_.filter($scope.imageUrls, function(element){
           return ! _.isUndefined(element);
-      });
+      }));
 
 
         $scope.face_image_url = _.flatten(

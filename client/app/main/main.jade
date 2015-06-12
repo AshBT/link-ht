@@ -19,17 +19,14 @@ div(ng-include='"components/navbar/navbar.html"')
 								//- 	input.search-query.form-control(ng-model="filterPhone" type='text', placeholder='Phone Number')
 								//- .col-md-12.custom-search-input
 								//- 	input.search-query.form-control(ng-model="filterText" type='text', placeholder='Ad Text')
-							.col-md-12(ng-if="aggregates.get('entityIds').length > 0")
+							.col-md-12
 								br
 								h4 Controls
 
 								label Blur Images: 
-									input(type="checkbox" ng-model="blur")
-								//- Add Filters for similar ads, number of face pictures, etc.
-								//- h5 Filter
-								//- 	input.search-query.form-control(ng-model="filterPhone" type='text', placeholder='Phone Number')
-									
-
+									input(type="checkbox", ng-model="blur")
+								label Has Face Picture: 
+									input(type="checkbox", ng-model="hasFacePic")
 								br
 								br
 							
@@ -80,7 +77,7 @@ div(ng-include='"components/navbar/navbar.html"')
 	.row
 
 		//- .col-md-12(ng-repeat="entity in entities | orderBy:'-nSuggested' | filter: { phone : filterPhone, text: filterText, gt : filterMinAge } ")
-		.col-md-12(ng-repeat="entity in entities1 | orderBy:'-nSuggested' | filter: { phone : filterPhone} ")
+		.col-md-12(ng-repeat="entity in entities1 | orderBy:'-nSuggested' | filter: { phone : filterPhone, text: filterText}")
 			.panel.panel-default
 				.panel-heading
 					h3 {{entity.nPosts}} Ads from Base Entity {{entity.phone | tel}}

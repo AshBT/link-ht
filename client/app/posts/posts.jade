@@ -6,7 +6,35 @@ div(ng-include='"components/navbar/navbar.html"')
 			.panel.panel-default
 				.panel-heading
 					//- h4 Ads in Last 24 Hours
-					h4 Streaming Ads View Currently Under Development
+					//- h4 Streaming Ads View Currently Under Development
+					h2 FAQ
+				.panel-body
+						.com-md-12
+							h4 What is Link?
+							p Link HT is a front-end web app that sits on top of Link Plumber, and is applied to commercial sex ad data collected by IST Research. The web app allows users to link together ads to create and organize entities. Entities are collections of ads that are initially grouped together based on phone numbers. Once entities are initialized, a user can change the group of ads that define an entity by detaching or adding an ad to an entity using automated suggestions. All user suggestions/inputs are tagged by username and persisted across the database, but can be ignored by other users if they disagree with the suggestion. 
+							p Link HT’s search functionality is well suited for investigations. Like traditional search engines, Link HT provides full text search. Instead of returning a list of URLs to pages containing the search term, Link HT returns a list of entities containing the search term. In other words, a search on the word “Memex” would return not just the ads that contained “Memex,” but those ads’ entities: all the ads sharing the same phone number (or other user confirmed similarity metrics) as the ads containing “Memex.” 
+
+							h4 What is an entity?
+							p An entity is a collection of ads and reviews. An entity is a construct that is initially based on ads containing the same phone number and ultimately based on how a user adds and detaches ads from an entity. For simplicity sake, we've labeled each entity by the phone number(s) contained in that entity. 
+							p For example, imagine ten ads sharing the same phone number. Those ten ads will be considered the same entity. Link provides suggestions of ads that may be related to the entity, and a user can confirm these suggestions. A confirmed suggestion incorporates the ad to the entity, and the entity now has 11 ads.
+							h4 What is the backend data base?
+							p Neo4j 2.2 with Elastic Search
+							h4 How do you set up the back end database?
+							a(href='github.com/qadium/plumber') Link Plumber 
+							//- h4 Why use a graph database?
+							//- p ...
+							//- h4 What's something Link can do that other things can't?
+							//- p ...
+							//- h4 And more ...
+							//- p ...
+
+
+
+
+
+
+
+
 	//- 			.panel-body
 	//- 				.row
 	//- 					.col-md-3
