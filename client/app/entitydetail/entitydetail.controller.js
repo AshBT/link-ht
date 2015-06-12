@@ -63,6 +63,14 @@ angular.module('memexLinkerApp')
 
 //End -- Trying to add in accordion
 
+    $scope.annotations = [];
+    $scope.submitAnnotation = function() {
+        if ($scope.annotationText) {
+          $scope.annotations.push({text: this.annotationText});
+          $scope.text = '';
+        }
+      };
+
     function collectAdProperty(ads, propertyName) {
       return _.map(ads, function(ad) {
         return ad.properties[propertyName];
