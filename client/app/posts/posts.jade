@@ -6,69 +6,97 @@ div(ng-include='"components/navbar/navbar.html"')
 			.panel.panel-default
 				.panel-heading
 					//- h4 Ads in Last 24 Hours
-					h4 Ad Stream Under Development
+					//- h4 Streaming Ads View Currently Under Development
+					h2 FAQ
 				.panel-body
-					.row
-						.col-md-3
-							.col-md-12
-								h4 Filter
-								.col-md-12.custom-search-input
-									input.search-query.form-control(ng-model="filterPhone" type='text', placeholder='Phone Number')
-								.col-md-12.custom-search-input
-									input.search-query.form-control(ng-model="filterText" type='text', placeholder='Ad Text')
-							.col-md-12
-								h4 Controls
-								label Blur Images:
-									input(type="checkbox" ng-model="blur")
-								br
-								br
-						.col-md-3
-							h4 Aggregate Statistics
+						.com-md-12
+							h4 What is Link?
+							p Link HT is a front-end web app that sits on top of Link Plumber, and is applied to commercial sex ad data collected by IST Research. The web app allows users to link together ads to create and organize entities. Entities are collections of ads that are initially grouped together based on phone numbers. Once entities are initialized, a user can change the group of ads that define an entity by detaching or adding an ad to an entity using automated suggestions. All user suggestions/inputs are tagged by username and persisted across the database, but can be ignored by other users if they disagree with the suggestion. 
+							p Link HT’s search functionality is well suited for investigations. Like traditional search engines, Link HT provides full text search. Instead of returning a list of URLs to pages containing the search term, Link HT returns a list of entities containing the search term. In other words, a search on the word “Memex” would return not just the ads that contained “Memex,” but those ads’ entities: all the ads sharing the same phone number (or other user confirmed similarity metrics) as the ads containing “Memex.” 
 
-							table.table.table-hover
-								tbody
-									tr
-										td Entities
-										td {{aggregates.get('entityIds').length}}
-									tr
-										td Ads
-										td {{aggregates.get('nAds')}}
-									tr
-										td Pictures
-										td {{aggregates.get('nPictures')}}
-									tr
-										td Age Range
-										td {{aggregates.get('age_min')}} to {{aggregates.get('age_max')}}
-									tr
-										td Price Range
-										td {{aggregates.get('price_min')}} to {{aggregates.get('price_max')}}
+							h4 What is an entity?
+							p An entity is a collection of ads and reviews. An entity is a construct that is initially based on ads containing the same phone number and ultimately based on how a user adds and detaches ads from an entity. For simplicity sake, we've labeled each entity by the phone number(s) contained in that entity. 
+							p For example, imagine ten ads sharing the same phone number. Those ten ads will be considered the same entity. Link provides suggestions of ads that may be related to the entity, and a user can confirm these suggestions. A confirmed suggestion incorporates the ad to the entity, and the entity now has 11 ads.
+							h4 What is the backend data base?
+							p Neo4j 2.2 with Elastic Search
+							h4 How do you set up the back end database?
+							a(href='github.com/qadium/plumber') Link Plumber 
+							//- h4 Why use a graph database?
+							//- p ...
+							//- h4 What's something Link can do that other things can't?
+							//- p ...
+							//- h4 And more ...
+							//- p ...
 
-						.col-md-6
-							accordion(close-others='oneAtATime')
-								accordion-group(heading='Search Result Details (Click Me!)', is-disabled='status.isFirstDisabled')
-									h4
-									table.table.table-hover
 
-										tbody
-											tr
-												td Websites
-												td {{aggregates.get('websites').join(', ')}}
-											tr
-												td Twitter Accounts
-												td {{aggregates.get('twitters').join(', ')}}
-											tr
-												td Instagram Accounts
-												td {{aggregates.get('instagrams').join(', ')}}
-											tr
-												td Cities
-												td {{aggregates.get('cities').join(', ') | capitalize}}
-											tr
-												td Names
-												td {{aggregates.get('names').join(', ') | capitalize}}
-											tr
-												td Ethnicities
-												td {{aggregates.get('ethnicities').join(', ') | capitalize}}
-	.row
+
+
+
+
+
+
+	//- 			.panel-body
+	//- 				.row
+	//- 					.col-md-3
+	//- 						.col-md-12
+	//- 							h4 Filter
+	//- 							.col-md-12.custom-search-input
+	//- 								input.search-query.form-control(ng-model="filterPhone" type='text', placeholder='Phone Number')
+	//- 							.col-md-12.custom-search-input
+	//- 								input.search-query.form-control(ng-model="filterText" type='text', placeholder='Ad Text')
+	//- 						.col-md-12
+	//- 							h4 Controls
+	//- 							label Blur Images:
+	//- 								input(type="checkbox" ng-model="blur")
+	//- 							br
+	//- 							br
+	//- 					.col-md-3
+	//- 						h4 Aggregate Statistics
+
+	//- 						table.table.table-hover
+	//- 							tbody
+	//- 								tr
+	//- 									td Entities
+	//- 									td {{aggregates.get('entityIds').length}}
+	//- 								tr
+	//- 									td Ads
+	//- 									td {{aggregates.get('nAds')}}
+	//- 								tr
+	//- 									td Pictures
+	//- 									td {{aggregates.get('nPictures')}}
+	//- 								tr
+	//- 									td Age Range
+	//- 									td {{aggregates.get('age_min')}} to {{aggregates.get('age_max')}}
+	//- 								tr
+	//- 									td Price Range
+	//- 									td {{aggregates.get('price_min')}} to {{aggregates.get('price_max')}}
+
+	//- 					.col-md-6
+	//- 						accordion(close-others='oneAtATime')
+	//- 							accordion-group(heading='Search Result Details (Click Me!)', is-disabled='status.isFirstDisabled')
+	//- 								h4
+	//- 								table.table.table-hover
+
+	//- 									tbody
+	//- 										tr
+	//- 											td Websites
+	//- 											td {{aggregates.get('websites').join(', ')}}
+	//- 										tr
+	//- 											td Twitter Accounts
+	//- 											td {{aggregates.get('twitters').join(', ')}}
+	//- 										tr
+	//- 											td Instagram Accounts
+	//- 											td {{aggregates.get('instagrams').join(', ')}}
+	//- 										tr
+	//- 											td Cities
+	//- 											td {{aggregates.get('cities').join(', ') | capitalize}}
+	//- 										tr
+	//- 											td Names
+	//- 											td {{aggregates.get('names').join(', ') | capitalize}}
+	//- 										tr
+	//- 											td Ethnicities
+	//- 											td {{aggregates.get('ethnicities').join(', ') | capitalize}}
+	//- .row
 	//- 	.col-md-12(ng-repeat="entity in entities1 | orderBy:'-nSuggested' | filter: { phone : filterPhone, text: filterText} ")
 	//- 		.panel.panel-default
 	//- 			.panel-heading
@@ -110,39 +138,3 @@ div(ng-include='"components/navbar/navbar.html"')
 	footer.footer
 		center Designed and Developed by Qadium 2015. All code is open source.
 		center About Help Terms Privacy
-
-
-
-
-		
-		//- .entity-search.col-md-12(ng-repeat='ad in ads | limitTo:10')
-		//- 	.entity-panel.col-md-4
-		//- 		.panel.panel-default
-		//- 			#head2.panel-heading 
-		//- 				strong
-		//- 					Phone: {{ad.properties.phone | tel}}
-
-		//- 			.panel-body
-		//- 				//Below should post entity properties for the ad to its right
-		//- 				//If an ad is part of two entities, then the entity column should simply //say ad contains two entities
-		//- 				a.button.btn-danger.btn-lg.pull-right(ui-sref="entitydetail({ id: entity.id })") Inspect
-		//- 				p Ads:
-		//- 				p Images:
-		//- 				p Active Since:
-		//- 				p Age Range:
-		//- 				p Price Range:
-		//- 				p Websites:
-		//- 	.entity-panel.col-md-8
-		//- 		.panel.panel-default
-
-		//- 			#head2.panel-heading {{ad.properties.sources_id}} at {{ad.properties.posttime}}
-		//- 			.panel-body
-		//- 				p Title: {{ad.properties.title}}
-		//- 				p Text: {{ad.properties.text}}
-		//- 				p: a(href='{{ad.properties.url}}') View post
-
-		//- 				row
-		//- 					col-md-3(ng-repeat='img in ad.properties.image_locations')					
-		//- 						img.responsive(ng-src="{{img}}" 
-		//- 							style="max-height:100px; margin:0 auto;"
-		//- 							ng-class="{blurry: blur == true, clear: blur != true}")
