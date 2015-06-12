@@ -175,9 +175,9 @@ Entity.getAll = function (callback) {
 Entity.getSearch = function (searchText, callback) {
     var query = [
         'MATCH (entity:Entity)-[r:BY_PHONE]-(n:Ad)',
-        'WHERE n.text =~ {searchText}',
+        'WHERE n.title =~ {searchText} OR n.text =~ {searchText} OR ANY(name IN n.phone WHERE name =~ {searchText})',
         'RETURN DISTINCT entity',
-        'LIMIT 100'
+        'LIMIT 1000'
     ].join('\n');
     // db.query(query, null, function (err, results) {
     //     if (err) return callback(err);

@@ -6,69 +6,69 @@ div(ng-include='"components/navbar/navbar.html"')
 			.panel.panel-default
 				.panel-heading
 					//- h4 Ads in Last 24 Hours
-					h4 Ad Stream Under Development
-				.panel-body
-					.row
-						.col-md-3
-							.col-md-12
-								h4 Filter
-								.col-md-12.custom-search-input
-									input.search-query.form-control(ng-model="filterPhone" type='text', placeholder='Phone Number')
-								.col-md-12.custom-search-input
-									input.search-query.form-control(ng-model="filterText" type='text', placeholder='Ad Text')
-							.col-md-12
-								h4 Controls
-								label Blur Images:
-									input(type="checkbox" ng-model="blur")
-								br
-								br
-						.col-md-3
-							h4 Aggregate Statistics
+					h4 Streaming Ads View Currently Under Development
+	//- 			.panel-body
+	//- 				.row
+	//- 					.col-md-3
+	//- 						.col-md-12
+	//- 							h4 Filter
+	//- 							.col-md-12.custom-search-input
+	//- 								input.search-query.form-control(ng-model="filterPhone" type='text', placeholder='Phone Number')
+	//- 							.col-md-12.custom-search-input
+	//- 								input.search-query.form-control(ng-model="filterText" type='text', placeholder='Ad Text')
+	//- 						.col-md-12
+	//- 							h4 Controls
+	//- 							label Blur Images:
+	//- 								input(type="checkbox" ng-model="blur")
+	//- 							br
+	//- 							br
+	//- 					.col-md-3
+	//- 						h4 Aggregate Statistics
 
-							table.table.table-hover
-								tbody
-									tr
-										td Entities
-										td {{aggregates.get('entityIds').length}}
-									tr
-										td Ads
-										td {{aggregates.get('nAds')}}
-									tr
-										td Pictures
-										td {{aggregates.get('nPictures')}}
-									tr
-										td Age Range
-										td {{aggregates.get('age_min')}} to {{aggregates.get('age_max')}}
-									tr
-										td Price Range
-										td {{aggregates.get('price_min')}} to {{aggregates.get('price_max')}}
+	//- 						table.table.table-hover
+	//- 							tbody
+	//- 								tr
+	//- 									td Entities
+	//- 									td {{aggregates.get('entityIds').length}}
+	//- 								tr
+	//- 									td Ads
+	//- 									td {{aggregates.get('nAds')}}
+	//- 								tr
+	//- 									td Pictures
+	//- 									td {{aggregates.get('nPictures')}}
+	//- 								tr
+	//- 									td Age Range
+	//- 									td {{aggregates.get('age_min')}} to {{aggregates.get('age_max')}}
+	//- 								tr
+	//- 									td Price Range
+	//- 									td {{aggregates.get('price_min')}} to {{aggregates.get('price_max')}}
 
-						.col-md-6
-							accordion(close-others='oneAtATime')
-								accordion-group(heading='Search Result Details (Click Me!)', is-disabled='status.isFirstDisabled')
-									h4
-									table.table.table-hover
+	//- 					.col-md-6
+	//- 						accordion(close-others='oneAtATime')
+	//- 							accordion-group(heading='Search Result Details (Click Me!)', is-disabled='status.isFirstDisabled')
+	//- 								h4
+	//- 								table.table.table-hover
 
-										tbody
-											tr
-												td Websites
-												td {{aggregates.get('websites').join(', ')}}
-											tr
-												td Twitter Accounts
-												td {{aggregates.get('twitters').join(', ')}}
-											tr
-												td Instagram Accounts
-												td {{aggregates.get('instagrams').join(', ')}}
-											tr
-												td Cities
-												td {{aggregates.get('cities').join(', ') | capitalize}}
-											tr
-												td Names
-												td {{aggregates.get('names').join(', ') | capitalize}}
-											tr
-												td Ethnicities
-												td {{aggregates.get('ethnicities').join(', ') | capitalize}}
-	.row
+	//- 									tbody
+	//- 										tr
+	//- 											td Websites
+	//- 											td {{aggregates.get('websites').join(', ')}}
+	//- 										tr
+	//- 											td Twitter Accounts
+	//- 											td {{aggregates.get('twitters').join(', ')}}
+	//- 										tr
+	//- 											td Instagram Accounts
+	//- 											td {{aggregates.get('instagrams').join(', ')}}
+	//- 										tr
+	//- 											td Cities
+	//- 											td {{aggregates.get('cities').join(', ') | capitalize}}
+	//- 										tr
+	//- 											td Names
+	//- 											td {{aggregates.get('names').join(', ') | capitalize}}
+	//- 										tr
+	//- 											td Ethnicities
+	//- 											td {{aggregates.get('ethnicities').join(', ') | capitalize}}
+	//- .row
 	//- 	.col-md-12(ng-repeat="entity in entities1 | orderBy:'-nSuggested' | filter: { phone : filterPhone, text: filterText} ")
 	//- 		.panel.panel-default
 	//- 			.panel-heading
@@ -110,39 +110,3 @@ div(ng-include='"components/navbar/navbar.html"')
 	footer.footer
 		center Designed and Developed by Qadium 2015. All code is open source.
 		center About Help Terms Privacy
-
-
-
-
-		
-		//- .entity-search.col-md-12(ng-repeat='ad in ads | limitTo:10')
-		//- 	.entity-panel.col-md-4
-		//- 		.panel.panel-default
-		//- 			#head2.panel-heading 
-		//- 				strong
-		//- 					Phone: {{ad.properties.phone | tel}}
-
-		//- 			.panel-body
-		//- 				//Below should post entity properties for the ad to its right
-		//- 				//If an ad is part of two entities, then the entity column should simply //say ad contains two entities
-		//- 				a.button.btn-danger.btn-lg.pull-right(ui-sref="entitydetail({ id: entity.id })") Inspect
-		//- 				p Ads:
-		//- 				p Images:
-		//- 				p Active Since:
-		//- 				p Age Range:
-		//- 				p Price Range:
-		//- 				p Websites:
-		//- 	.entity-panel.col-md-8
-		//- 		.panel.panel-default
-
-		//- 			#head2.panel-heading {{ad.properties.sources_id}} at {{ad.properties.posttime}}
-		//- 			.panel-body
-		//- 				p Title: {{ad.properties.title}}
-		//- 				p Text: {{ad.properties.text}}
-		//- 				p: a(href='{{ad.properties.url}}') View post
-
-		//- 				row
-		//- 					col-md-3(ng-repeat='img in ad.properties.image_locations')					
-		//- 						img.responsive(ng-src="{{img}}" 
-		//- 							style="max-height:100px; margin:0 auto;"
-		//- 							ng-class="{blurry: blur == true, clear: blur != true}")
