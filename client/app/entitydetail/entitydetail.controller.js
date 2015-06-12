@@ -62,29 +62,34 @@ angular.module('memexLinkerApp')
     };
 
 //End -- Trying to add in accordion
-
-    $scope.list = [];
-    $scope.text = 'hello';
-    $scope.submit = function() {
-        if ($scope.text) {
-          $scope.list.push(this.text);
-          $scope.text = '';
-      }
-    };
-
     $scope.annotations = [];
-    $scope.submitAnnotation = function(annotationText) {
+    $scope.text = '';
+    $scope.submit = function() {
+        console.log('submit ' + this.text);
         var username = 'Anonymous';
         if(Auth.isLoggedIn()) {
             username = Auth.getCurrentUser();
         }
-        $scope.annotations.push({
+        if (this.text) {
+          $scope.annotations.push({
+            txt: this.text,
             username: username,
-            text: annotationText,
             date: Date.now()
         });
-        $scope.annotationText = '';
+          $scope.text = '';
+      }
     };
+
+    
+    // $scope.submitAnnotation = function(annotationText) {
+
+    //     $scope.annotations.push({
+    //         username: username,
+    //         text: annotationText,
+    //         date: Date.now()
+    //     });
+    //     $scope.annotationText = '';
+    // };
 
     function collectAdProperty(ads, propertyName) {
       return _.map(ads, function(ad) {
