@@ -331,9 +331,9 @@ $scope.submitSearch = function(){
           summarizeEntity(entity).then(function(entitySummary) {
             // success
             $scope.entities1.push(entitySummary);
-            console.log('------------');
-            console.log($scope.entities1);
-            console.log('------------');
+            // console.log('------------');
+            // console.log($scope.entities1);
+            // console.log('------------');
             updateAggregates(entitySummary,$scope.aggregates);
           }, function(reason) {
             console.log('Failed for ' + reason);
