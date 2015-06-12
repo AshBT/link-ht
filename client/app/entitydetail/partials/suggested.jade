@@ -3,7 +3,7 @@
 
 .panel.panel-default(ng-repeat='ad in suggestedAds')
 
-	#head2.panel-heading.h1 {{ad.properties.sources_id}} at {{ad.properties.posttime}}
+	#head2.panel-heading.h1 {{source_map[ad.properties.sources_id]}} at {{ad.properties.posttime | date}}
 	.panel-body.vertical-layout
 		.item
 			h4 {{ad.properties.title}}
