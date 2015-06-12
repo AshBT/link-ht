@@ -5,21 +5,8 @@
 		| {{annotation.text}}
 
 	//- .panel-footer.clearfix
-		
-
-form.form-inline(role='form' ng-submit='submitAnnotation()')
-	.form-group
-		input.form-control(type='text', placeholder='Your comments', ng-model='annotationText')
-	.form-group
-		button.btn.btn-default(type="submit" id="submit" value="Submit") Add
-
-
-
-		//- .pull-right
-		//- 	button.btn-primary(ng-click='') 
-		//- 		|Add to  Entity
-		//- 	br
-		//- 	button.btn-danger(ng-click='') 
-		//- 		|Remove from Entity
-
-
+form(ng-submit="submit()")
+	| Enter text and hit enter:
+	input(type="text" ng-model="text" name="text")
+	input(type="submit" id="submit" value="Submit")
+pre(list={{list}})
