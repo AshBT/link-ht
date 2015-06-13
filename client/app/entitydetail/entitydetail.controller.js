@@ -72,7 +72,7 @@ angular.module('memexLinkerApp')
         }
         if (this.text) {
           $scope.annotations.push({
-            txt: this.text,
+            text: this.text,
             username: username,
             date: Date.now()
         });
