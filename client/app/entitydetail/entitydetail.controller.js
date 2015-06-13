@@ -68,7 +68,7 @@ angular.module('memexLinkerApp')
         console.log('submit ' + this.text);
         var username = 'Anonymous';
         if(Auth.isLoggedIn()) {
-            username = Auth.getCurrentUser();
+            username = Auth.getCurrentUser().name;
         }
         if (this.text) {
           $scope.annotations.push({
