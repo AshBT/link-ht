@@ -32,7 +32,7 @@ $fa-font-path: "/bower_components/font-awesome/fonts";
 @import 'modal/modal.scss';
 // endinjector
 
-$blur: 3px;
+$blur: 10px;
 .blurry {
     filter: blur($blur);
     // Browser Specific

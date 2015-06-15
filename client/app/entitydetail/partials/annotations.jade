@@ -1,17 +1,12 @@
-//.panel.panel-default(ng-repeat='comment in annotations')
-.panel.panel-default
-	.panel-heading.h1  User -- Date
+
+.panel.panel-default(ng-repeat='annotation in annotations')
+	.panel-heading.h1  {{annotation.username}} -- {{annotation.date | date}}
 	.panel-body
-		p Add general comments
-		p Add ad id 
-		p Add json
+		| {{annotation.text}}
 
-	.panel-footer.clearfix
-		span.glyphicon.glyphicon-user(popover="Suggested by image similarity" popover-trigger="mouseenter" popover-placement="right")
+	//- .panel-footer.clearfix
+form(ng-submit="submit()")
+	| Enter an annotation: 
+	input(type="text" ng-model="text" name="text")
+	input(type="submit" id="submit" value="Submit")
 
-		.pull-right
-			button.btn-primary(ng-click='') 
-				|Add to  Entity
-			br
-			button.btn-danger(ng-click='') 
-				|Remove from Entity

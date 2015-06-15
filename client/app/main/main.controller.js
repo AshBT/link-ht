@@ -188,7 +188,6 @@ angular.module('memexLinkerApp')
         var instagram = uniqueFlatAndDefined(collectAdProperty(ads, 'instagram'));
         var twitter = uniqueFlatAndDefined(collectAdProperty(ads, 'twitter'));
         var ethnicity = uniqueFlatAndDefined(collectAdProperty(ads, 'ethnicity'));
-
         var imageUrls = _.uniq(lodash.flatten(
           _.map(ads, function(ad) {
             return ad.properties.image_locations;
@@ -199,16 +198,15 @@ angular.module('memexLinkerApp')
         imageUrls = _.filter(imageUrls, function(element){
           return ! _.isUndefined(element);
         });
-
-        var face = uniqueFlatAndDefined(lodash.flatten(
+        var face = _.uniq(lodash.flatten(
           _.map(ads, function(ad) {
-            return ad.properties.face_image_location;
+            return ad.properties.face_image_url;
           }),
           true
           ));
-
-        var nFaces = face.length;
-
+        face= _.filter(face, function(element){
+          return ! _.isUndefined(element);
+        });
         // TODO: refactor server to provide all suggested ads, with reason(s) why each was suggested.
         $http.get('api/entities/' + entity.id + '/byimage').success(function(res){
           var nSuggestedByImage = res.length;
@@ -235,11 +233,11 @@ angular.module('memexLinkerApp')
             text:text,
             name: name,
             city: city,
-            nFaces: nFaces,
             website: website,
             twitter: twitter,
             instagram: instagram,
-            ethnicity: ethnicity
+            ethnicity: ethnicity,
+            face: face
           };
           deferred.resolve(entitySummary);
         });
@@ -305,7 +303,7 @@ function updateAggregates(entitySummary, aggregates) {
     return (n % 1) == 0;
   })));
   aggregates.set('price_max', _.max(_.filter(uniqueFlatAndDefined(listprices), function(n) {
-    return (n % 2) == 0;
+    return (n % 1) == 0;
   })));
 }
 
@@ -331,9 +329,9 @@ $scope.submitSearch = function(){
           summarizeEntity(entity).then(function(entitySummary) {
             // success
             $scope.entities1.push(entitySummary);
-            console.log('------------');
-            console.log($scope.entities1);
-            console.log('------------');
+            // console.log('------------');
+            // console.log($scope.entities1);
+            // console.log('------------');
             updateAggregates(entitySummary,$scope.aggregates);
           }, function(reason) {
             console.log('Failed for ' + reason);
