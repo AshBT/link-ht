@@ -63,7 +63,7 @@ angular.module('memexLinkerApp')
   };
 
   $scope.logo = 'http://icons.iconarchive.com/icons/icons8/ios7/256/Very-Basic-Paper-Clip-icon.png';
-  $scope.blur = false;
+  $scope.blur = true;
   $scope.hasFacePic = false;
   $scope.entities1 = [];
   $scope.nSuggestedByText = 0;
@@ -221,7 +221,7 @@ angular.module('memexLinkerApp')
           $scope.nSuggestedByText = res.length;
           console.log($scope.nSuggestedByText);
         });
-        
+
         // TODO: refactor server to provide all suggested ads, with reason(s) why each was suggested.
 
 
@@ -234,7 +234,7 @@ angular.module('memexLinkerApp')
             nPosts: ads.length,
             nPics: imageUrls.length,
             nSuggestedByImage: nSuggestedByImage,
-            nSuggestedByText: 0,
+            nSuggestedByText: $scope.nSuggestedByText,
             nSuggestedByPhone: 0,
             postTimes : postTimes,
             lastPostTime: lastPostTime,
