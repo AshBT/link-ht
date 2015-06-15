@@ -27,6 +27,10 @@ div(ng-include='"components/navbar/navbar.html"')
 									input(type="checkbox", ng-model="blur")
 								label Has Face Picture: 
 									input(type="checkbox", ng-model="hasFacePic")
+								label Has Similar Ads: 
+									input(type="checkbox", ng-model="hasSimilarAds")
+								label Has Social Media 
+									input(type="checkbox", ng-model="hasSocialMedia")
 								br
 								br
 							
@@ -90,7 +94,7 @@ div(ng-include='"components/navbar/navbar.html"')
 						p(ng-if='entity.age && entity.age.length > 0') Listed ages:  <strong>{{entity.age.join(', ')}}</strong>
 						p(ng-if='entity.priceRange && entity.priceRange.length > 0') Listed price range: <strong>{{entity.priceRange}} </strong>
 						p(ng-if='entity.imageUrls && entity.imageUrls.length > 0')  Pictures: <strong> {{entity.imageUrls.length}}</strong>
-						p Pictures with Face: <strong> {{entity.nFaces}}</strong>
+						p Pictures with Face: <strong> {{entity.face.length}} </strong>
 						p Ads related by image: <strong> {{entity.nSuggestedByImage}}</strong>
 						p Ads related by text:<strong> {{entity.nSuggestedByText}}</strong>
 						p Ads related by phone co-occurence:  <strong> {{entity.nSuggestedByPhone}}</strong>
