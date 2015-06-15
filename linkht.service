@@ -17,4 +17,4 @@ ExecStart=/usr/bin/docker run --name linkht \
     ok-registry.service.consul/linkht \
     /bin/bash -c "mongod --smallfiles & sleep 20 && nodejs server/app.js"
 
-ExecStop=/usr/bin/docker stop linkht
+ExecStop=/usr/bin/docker rm -f linkht
