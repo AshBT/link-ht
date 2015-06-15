@@ -66,6 +66,7 @@ angular.module('memexLinkerApp')
   $scope.blur = false;
   $scope.hasFacePic = false;
   $scope.entities1 = [];
+  $scope.nSuggestedByText = 0;
   // $scope.searchAggregates = {
   //   nEntites: 0,
   //   nAds: 0,
@@ -208,7 +209,15 @@ angular.module('memexLinkerApp')
         face= _.filter(face, function(element){
           return ! _.isUndefined(element);
         });
+
+
+        $http.get('api/entities/' + entity.id + '/bytext').success(function(res){
+          $scope.nSuggestedByText = res.length;
+          console.log($scope.nSuggestedByText);
+        });
         // TODO: refactor server to provide all suggested ads, with reason(s) why each was suggested.
+
+
         $http.get('api/entities/' + entity.id + '/byimage').success(function(res){
           var nSuggestedByImage = res.length;
 
@@ -347,10 +356,6 @@ $scope.submitSearch = function(){
 
 $scope.facesFilter = function(e,hasFacePic){
   return e.face.length >=1 || !$scope.hasFacePic;
-
-
-
-
   }
 
 
