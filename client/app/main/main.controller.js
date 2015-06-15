@@ -140,6 +140,12 @@ angular.module('memexLinkerApp')
       });
     }
 
+    function collectAdProperty2(ads, propertyName) {
+      return _.map(ads, function(ad) {
+        return ad.properties[propertyName];
+      });
+    }
+
     function summarizeEntity(entity) {
       var deferred = $q.defer();
 
