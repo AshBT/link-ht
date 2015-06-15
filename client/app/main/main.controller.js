@@ -217,47 +217,43 @@ angular.module('memexLinkerApp')
         });
 
 
-        $http.get('api/entities/' + entity.id + '/bytext').success(function(res){
-          $scope.nSuggestedByText = res.length;
-          console.log($scope.nSuggestedByText);
-        });
+
 
         // TODO: refactor server to provide all suggested ads, with reason(s) why each was suggested.
-
-
         $http.get('api/entities/' + entity.id + '/byimage').success(function(res){
           var nSuggestedByImage = res.length;
-
-          var entitySummary = {
-            id: entity.id,
-            phone: entity.phone,
-            nPosts: ads.length,
-            nPics: imageUrls.length,
-            nSuggestedByImage: nSuggestedByImage,
-            nSuggestedByText: $scope.nSuggestedByText,
-            nSuggestedByPhone: 0,
-            postTimes : postTimes,
-            lastPostTime: lastPostTime,
-            firstPostTime: firstPostTime,
-            age: age,
-            minAges: minAges,
-            maxAges: maxAges,
-            imageUrls: imageUrls,
-            priceRange: priceRange,
-            rate60: rate60,
-            sourcesid: sourcesid,
-            title: title,
-            text:text,
-            name: name,
-            city: city,
-            website: website,
-            twitter: twitter,
-            instagram: instagram,
-            ethnicity: ethnicity,
-            face: face
-          };
-          deferred.resolve(entitySummary);
-        });
+          $scope.getNSuggestedByText(entity).then( function(nSuggestedByText){
+            var entitySummary = {
+              id: entity.id,
+              phone: entity.phone,
+              nPosts: ads.length,
+              nPics: imageUrls.length,
+              nSuggestedByImage: nSuggestedByImage,
+              nSuggestedByText: nSuggestedByText,
+              nSuggestedByPhone: 0,
+              postTimes : postTimes,
+              lastPostTime: lastPostTime,
+              firstPostTime: firstPostTime,
+              age: age,
+              minAges: minAges,
+              maxAges: maxAges,
+              imageUrls: imageUrls,
+              priceRange: priceRange,
+              rate60: rate60,
+              sourcesid: sourcesid,
+              title: title,
+              text:text,
+              name: name,
+              city: city,
+              website: website,
+              twitter: twitter,
+              instagram: instagram,
+              ethnicity: ethnicity,
+              face: face
+            };
+            deferred.resolve(entitySummary);
+          });
+    })
       });
 
 return deferred.promise;
@@ -365,6 +361,13 @@ $scope.facesFilter = function(e,hasFacePic){
   return e.face.length >=1 || !$scope.hasFacePic;
   }
 
+$scope.getNSuggestedByText = function(entity) {
+  var deferred = $q.defer();
+  $http.get('api/entities/' + entity.id + '/byText').success(function(res){
+    deferred.resolve(res.length);
+  });
+  return deferred.promise;
+}
 
 
 });
