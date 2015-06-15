@@ -221,6 +221,7 @@ angular.module('memexLinkerApp')
           $scope.nSuggestedByText = res.length;
           console.log($scope.nSuggestedByText);
         });
+        
         // TODO: refactor server to provide all suggested ads, with reason(s) why each was suggested.
 
 
