@@ -64,6 +64,7 @@ angular.module('memexLinkerApp')
 
   $scope.logo = 'http://icons.iconarchive.com/icons/icons8/ios7/256/Very-Basic-Paper-Clip-icon.png';
   $scope.blur = false;
+  $scope.hasFacePic = false;
   $scope.entities1 = [];
   // $scope.searchAggregates = {
   //   nEntites: 0,
@@ -344,4 +345,18 @@ $scope.submitSearch = function(){
 
 };
 
+$scope.facesFilter = function(e,hasFacePic){
+  return e.face.length >=1 || !$scope.hasFacePic;
+
+
+
+
+  }
+
+
+
 });
+
+
+
+
