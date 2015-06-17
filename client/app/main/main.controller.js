@@ -112,6 +112,8 @@ angular.module('memexLinkerApp')
       'ethnicities': [],
       'twitters': [],
       'instagrams': [],
+      'price_min' : 9999,
+      'price_max' : 9999,
       
       set: function(key, value) {
         this[key] = value
@@ -310,6 +312,8 @@ function updateAggregates(entitySummary, aggregates) {
     aggregates.set('age_max', _.max(_.filter(uniqueFlatAndDefined(ages), function(n) {
     return Number((n % 1 ) == 0);
   })));
+
+
 // Prices
   var prices = aggregates.get('prices');
   prices.push(entitySummary.rate60);
@@ -321,8 +325,9 @@ function updateAggregates(entitySummary, aggregates) {
     return (n % 1) == 0;
   })));
 
-  aggregates.set('price_max') = _.max(_.map(listprices,parseInt));
-  aggregates.set('price_min') = _.min(_.map(listprices,parseInt));
+  aggregates.set('price_max',_.max(_.map(listprices,parseInt)));
+  aggregates.set('price_min',_.min(_.map(listprices,parseInt)));
+
 }
 
 $scope.submitSearch = function(){
