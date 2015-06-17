@@ -112,6 +112,8 @@ angular.module('memexLinkerApp')
       'ethnicities': [],
       'twitters': [],
       'instagrams': [],
+      'price_min' : 9999,
+      'price_max' : 9999,
       
       set: function(key, value) {
         this[key] = value
@@ -251,7 +253,8 @@ angular.module('memexLinkerApp')
               instagram: instagram,
               ethnicity: ethnicity,
               face: face, 
-              socialmedia: twitter.length + instagram.length + youtube.length
+              socialmedia: twitter.length + instagram.length + youtube.length,
+              similarads: nSuggestedByImage + nSuggestedByText,
             };
             deferred.resolve(entitySummary);
           });
@@ -310,6 +313,8 @@ function updateAggregates(entitySummary, aggregates) {
     aggregates.set('age_max', _.max(_.filter(uniqueFlatAndDefined(ages), function(n) {
     return Number((n % 1 ) == 0);
   })));
+
+
 // Prices
   var prices = aggregates.get('prices');
   prices.push(entitySummary.rate60);
@@ -320,6 +325,10 @@ function updateAggregates(entitySummary, aggregates) {
   aggregates.set('price_max', _.max(_.filter(uniqueFlatAndDefined(listprices), function(n) {
     return (n % 1) == 0;
   })));
+
+  aggregates.set('price_max',_.max(_.map(listprices,parseInt)));
+  aggregates.set('price_min',_.min(_.map(listprices,parseInt)));
+
 }
 
 $scope.submitSearch = function(){
@@ -363,12 +372,12 @@ $scope.facesFilter = function(e,hasFacePic){
   return e.face.length >=1 || !$scope.hasFacePic;
   }
 
-$scope.socialmediaFilter = function(e,hasSocialMedia){
-  return e.socmedia.length >=1 || !$scope.hasSocialMedia;
+$scope.socialMediaFilter = function(e,hasSocialMedia){
+  return e.socialmedia >=1 || !$scope.hasSocialMedia;
   }
 
- $scope.similaradsFilter = function(e,hasFacePic){
-  return e.simads.length >=1 || !$scope.hasSimilarAds;
+ $scope.similarAdsFilter = function(e,hasFacePic){
+  return e.similarads >=1 || !$scope.hasSimilarAds;
   } 
 
 $scope.getNSuggestedByText = function(entity) {
