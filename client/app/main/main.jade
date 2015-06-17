@@ -53,7 +53,7 @@ div(ng-include='"components/navbar/navbar.html"')
 										td {{aggregates.get('age_min')}} to {{aggregates.get('age_max')}}
 									tr(ng-if="aggregates.get('price_max') != 9999")
 										td Price Range
-										td(ng-if="aggregates.get('price_max') != 9999"){{aggregates.get('price_min')}} to {{aggregates.get('price_max')}}
+										td(ng-if="aggregates.get('price_max') != 9999"){{aggregates.get('price_min') | currency:"$"}} to {{aggregates.get('price_max') | currency:"$"}}
 						.col-md-6
 							accordion(close-others='oneAtATime')
 								accordion-group(heading='Search Result Details (Click Me!)', is-disabled='status.isFirstDisabled')

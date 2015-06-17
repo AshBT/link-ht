@@ -69,35 +69,9 @@ angular.module('memexLinkerApp')
   $scope.hasSocialMedia = false;
   $scope.entities1 = [];
   $scope.nSuggestedByText = 0;
-  // $scope.searchAggregates = {
-  //   nEntites: 0,
-  //   nAds: 0,
-  //   nPictures: 0,
-  //   phones: [],
-  //   websites: [],
-  //   ages: [],
-  //   socialMediaAccounts: [],
-  //   prices: [],
-  //   cities: [],
-  //   ethnicities: []
-  // };
 
   function initAggregates() {
-    // var aggregates = new HashMap();
-    // aggregates.set('entityIds', []);
-    // aggregates.set('websites', []);
-    // aggregates.set('names', []);
-    // aggregates.set('nAds', 0);
-    // aggregates.set('nPictures', 0);
-    // aggregates.set('phones', []);
-    // aggregates.set('ages', []);
-    // aggregates.set('socialMediaAccounts', []);
-    // aggregates.set('cities', []);
-    // aggregates.set('prices', []);
-    // aggregates.set('ethnicities', []);
-    // aggregates.set('twitters', []);
-    // aggregates.set('instagrams', []);
-    // return aggregates;
+    // Consider using HashMap instead.
     return {
       'entityIds': [],
       'websites': [],
@@ -112,8 +86,8 @@ angular.module('memexLinkerApp')
       'ethnicities': [],
       'twitters': [],
       'instagrams': [],
-      'price_min' : 9999,
-      'price_max' : 9999,
+      'price_min' : null,
+      'price_max' : null,
       
       set: function(key, value) {
         this[key] = value
@@ -125,29 +99,26 @@ angular.module('memexLinkerApp')
     };
   }
 
-  // Temporary hashmap for computing search result aggregate statistics.
+
   $scope.aggregates = initAggregates();
 
-    /*
-    * Returns the set of unique, flattened items, and removes undefined values.
-    */
+  function uniqueFlatAndDefined(items) {
+    return _.filter(_.uniq(_.flattenDeep(items)), function(item) {
+      return ! _.isUndefined(item);
+    });
+  }
 
-    function uniqueFlatAndDefined(items) {
-      return _.filter(_.uniq(_.flattenDeep(items)), function(item) {
-        return ! _.isUndefined(item);
-      });
-    }
+  function collectAdProperty(ads, propertyName) {
+    return _.map(ads, function(ad) {
+      return ad.properties[propertyName];
+    });
+  }
 
-    function collectAdProperty(ads, propertyName) {
-      return _.map(ads, function(ad) {
-        return ad.properties[propertyName];
-      });
-    }
-    function collectAdProperty2(ads, propertyName) {
-      return _.map(ads, function(ad) {
-        return _.trunc(ad.properties[propertyName],15);
-      });
-    }
+  function collectAdProperty2(ads, propertyName) {
+    return _.map(ads, function(ad) {
+      return _.trunc(ad.properties[propertyName],15);
+    });
+  }
 
     function summarizeEntity(entity) {
       var deferred = $q.defer();
@@ -171,14 +142,20 @@ angular.module('memexLinkerApp')
         var age = uniqueFlatAndDefined(collectAdProperty(ads, 'age')).sort();
         var minAges = _.min(age);
         var maxAges = _.max(age);
+
+
         var rate60 = uniqueFlatAndDefined(collectAdProperty(ads, 'rate60'));
-        var priceRange = 'Missing' ;
+        var minPrice = null;
+        var maxPrice = null;
         if (rate60.length === 1 && rate60[0] != null) {
-          priceRange = rate60[0] ;
+          minPrice = maxPrice= rate60[0] ;
         }
         else if (rate60.length > 1) {
-          priceRange = _.min(rate60) + ' to ' +  _.max(rate60);
+          minPrice = _.min(rate60);
+          maxPrice = _.max(rate60);
         }
+
+
         var website=[];
         var sourcesid = uniqueFlatAndDefined(collectAdProperty(ads, 'sources_id'));
         for (var i = 0; i < sourcesid.length; i++) {
@@ -188,14 +165,11 @@ angular.module('memexLinkerApp')
           return ! _.isUndefined(element);
         });
 
-
         var title = collectAdProperty(ads, 'title');
         var text = collectAdProperty(ads, 'text');
         var name = uniqueFlatAndDefined(collectAdProperty(ads, 'name'));
         var city = uniqueFlatAndDefined(collectAdProperty2(ads, 'city'));
-
         var youtube = uniqueFlatAndDefined(collectAdProperty(ads, 'youtube'));
-
         var instagram = uniqueFlatAndDefined(collectAdProperty(ads, 'instagram'));
         var twitter = uniqueFlatAndDefined(collectAdProperty(ads, 'twitter'));
         var ethnicity = uniqueFlatAndDefined(collectAdProperty(ads, 'ethnicity'));
@@ -219,10 +193,6 @@ angular.module('memexLinkerApp')
           return ! _.isUndefined(element);
         });
 
-
-
-
-        // TODO: refactor server to provide all suggested ads, with reason(s) why each was suggested.
         $http.get('api/entities/' + entity.id + '/byimage').success(function(res){
           var nSuggestedByImage = res.length;
           $scope.getNSuggestedByText(entity).then( function(nSuggestedByText){
@@ -241,7 +211,8 @@ angular.module('memexLinkerApp')
               minAges: minAges,
               maxAges: maxAges,
               imageUrls: imageUrls,
-              priceRange: priceRange,
+              minPrice: minPrice,
+              maxPrice: maxPrice,
               rate60: rate60,
               sourcesid: sourcesid,
               title: title,
@@ -258,7 +229,7 @@ angular.module('memexLinkerApp')
             };
             deferred.resolve(entitySummary);
           });
-    })
+    });
       });
 
 return deferred.promise;
@@ -281,7 +252,7 @@ function updateAggregates(entitySummary, aggregates) {
   var instagrams = aggregates.get('instagrams');
   instagrams.push(entitySummary.instagram);
   aggregates.set('instagrams', uniqueFlatAndDefined(instagrams));
-  //Names
+  //Twitter
   var twitters = aggregates.get('twitters');
   twitters.push(entitySummary.twitter);
   aggregates.set('twitters', uniqueFlatAndDefined(twitters));
@@ -315,20 +286,13 @@ function updateAggregates(entitySummary, aggregates) {
   })));
 
 
-// Prices
+  // Prices
   var prices = aggregates.get('prices');
-  prices.push(entitySummary.rate60);
-  var listprices = uniqueFlatAndDefined(prices);
-  aggregates.set('price_min', _.min(_.filter(uniqueFlatAndDefined(listprices), function(n) {
-    return (n % 1) == 0;
-  })));
-  aggregates.set('price_max', _.max(_.filter(uniqueFlatAndDefined(listprices), function(n) {
-    return (n % 1) == 0;
-  })));
-
-  aggregates.set('price_max',_.max(_.map(listprices,parseInt)));
-  aggregates.set('price_min',_.min(_.map(listprices,parseInt)));
-
+  prices.push(_.map(entitySummary.rate60, Number));
+  aggregates.set('prices', uniqueFlatAndDefined(prices));
+  aggregates.set('price_max', _.max(aggregates.get('prices')));
+  aggregates.set('price_min', _.min(aggregates.get('prices')));
+  console.log(aggregates);
 }
 
 $scope.submitSearch = function(){
@@ -352,10 +316,9 @@ $scope.submitSearch = function(){
         _.forEach(returnedEntities, function(entity) {
           summarizeEntity(entity).then(function(entitySummary) {
             // success
+            console.log('min price: ' + entitySummary.minPrice);
+            console.log('max price: ' + entitySummary.maxPrice);
             $scope.entities1.push(entitySummary);
-            // console.log('------------');
-            // console.log($scope.entities1);
-            // console.log('------------');
             updateAggregates(entitySummary,$scope.aggregates);
           }, function(reason) {
             console.log('Failed for ' + reason);
@@ -370,15 +333,15 @@ $scope.submitSearch = function(){
 
 $scope.facesFilter = function(e,hasFacePic){
   return e.face.length >=1 || !$scope.hasFacePic;
-  }
+  };
 
 $scope.socialMediaFilter = function(e,hasSocialMedia){
   return e.socialmedia >=1 || !$scope.hasSocialMedia;
-  }
+  };
 
  $scope.similarAdsFilter = function(e,hasFacePic){
   return e.similarads >=1 || !$scope.hasSimilarAds;
-  } 
+  } ;
 
 $scope.getNSuggestedByText = function(entity) {
   var deferred = $q.defer();
@@ -386,7 +349,7 @@ $scope.getNSuggestedByText = function(entity) {
     deferred.resolve(res.length);
   });
   return deferred.promise;
-}
+};
 
 
 });
