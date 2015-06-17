@@ -65,6 +65,8 @@ angular.module('memexLinkerApp')
   $scope.logo = 'http://icons.iconarchive.com/icons/icons8/ios7/256/Very-Basic-Paper-Clip-icon.png';
   $scope.blur = true;
   $scope.hasFacePic = false;
+  $scope.hasSimilarAds = false;
+  $scope.hasSocialMedia = false;
   $scope.entities1 = [];
   $scope.nSuggestedByText = 0;
   // $scope.searchAggregates = {
@@ -139,10 +141,9 @@ angular.module('memexLinkerApp')
         return ad.properties[propertyName];
       });
     }
-
     function collectAdProperty2(ads, propertyName) {
       return _.map(ads, function(ad) {
-        return ad.properties[propertyName];
+        return _.trunc(ad.properties[propertyName],15);
       });
     }
 
@@ -180,7 +181,6 @@ angular.module('memexLinkerApp')
         var sourcesid = uniqueFlatAndDefined(collectAdProperty(ads, 'sources_id'));
         for (var i = 0; i < sourcesid.length; i++) {
           website=website.concat(source_map[sourcesid[i]]);
-          //  console.log(website);
         }
         website = _.filter(_.uniq(website), function(element){
           return ! _.isUndefined(element);
@@ -190,8 +190,9 @@ angular.module('memexLinkerApp')
         var title = collectAdProperty(ads, 'title');
         var text = collectAdProperty(ads, 'text');
         var name = uniqueFlatAndDefined(collectAdProperty(ads, 'name'));
-        var city = uniqueFlatAndDefined(collectAdProperty(ads, 'city'));
+        var city = uniqueFlatAndDefined(collectAdProperty2(ads, 'city'));
 
+        var youtube = uniqueFlatAndDefined(collectAdProperty(ads, 'youtube'));
 
         var instagram = uniqueFlatAndDefined(collectAdProperty(ads, 'instagram'));
         var twitter = uniqueFlatAndDefined(collectAdProperty(ads, 'twitter'));
@@ -249,7 +250,8 @@ angular.module('memexLinkerApp')
               twitter: twitter,
               instagram: instagram,
               ethnicity: ethnicity,
-              face: face
+              face: face, 
+              socialmedia: twitter.length + instagram.length + youtube.length
             };
             deferred.resolve(entitySummary);
           });
@@ -360,6 +362,14 @@ $scope.submitSearch = function(){
 $scope.facesFilter = function(e,hasFacePic){
   return e.face.length >=1 || !$scope.hasFacePic;
   }
+
+$scope.socialmediaFilter = function(e,hasSocialMedia){
+  return e.socmedia.length >=1 || !$scope.hasSocialMedia;
+  }
+
+ $scope.similaradsFilter = function(e,hasFacePic){
+  return e.simads.length >=1 || !$scope.hasSimilarAds;
+  } 
 
 $scope.getNSuggestedByText = function(entity) {
   var deferred = $q.defer();
