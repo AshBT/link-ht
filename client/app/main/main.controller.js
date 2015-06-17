@@ -253,7 +253,8 @@ angular.module('memexLinkerApp')
               instagram: instagram,
               ethnicity: ethnicity,
               face: face, 
-              socialmedia: twitter.length + instagram.length + youtube.length
+              socialmedia: twitter.length + instagram.length + youtube.length,
+              similarads: nSuggestedByImage + nSuggestedByText,
             };
             deferred.resolve(entitySummary);
           });
@@ -371,12 +372,12 @@ $scope.facesFilter = function(e,hasFacePic){
   return e.face.length >=1 || !$scope.hasFacePic;
   }
 
-$scope.socialmediaFilter = function(e,hasSocialMedia){
-  return e.socmedia.length >=1 || !$scope.hasSocialMedia;
+$scope.socialMediaFilter = function(e,hasSocialMedia){
+  return e.socialmedia >=1 || !$scope.hasSocialMedia;
   }
 
- $scope.similaradsFilter = function(e,hasFacePic){
-  return e.simads.length >=1 || !$scope.hasSimilarAds;
+ $scope.similarAdsFilter = function(e,hasFacePic){
+  return e.similarads >=1 || !$scope.hasSimilarAds;
   } 
 
 $scope.getNSuggestedByText = function(entity) {
