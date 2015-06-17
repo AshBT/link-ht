@@ -2,7 +2,7 @@
 
 // TODO: inject an entity service, and use it to get the entity object
 angular.module('memexLinkerApp')
-.controller('EntitydetailCtrl', function ($scope, $http, $stateParams, $q, $modal, lodash, Auth) {
+.controller('EntitydetailCtrl', function ($scope, $http, $stateParams, $q, $modal, lodash, Auth, $sce) {
     var _ = lodash;
 
 //Start -- Trying to add in accordion
@@ -176,6 +176,7 @@ angular.module('memexLinkerApp')
         instagram:[], 
         twitter:[],
         youtube:[],
+        youtube_sameuser:[],
         yelp:[]
     };
 
@@ -335,6 +336,15 @@ angular.module('memexLinkerApp')
         $scope.entity.instagram_tags= uniqueFlatAndDefined(collectAdProperty($scope.ads, 'instagram_tags')).sort();
 
         $scope.entity.youtube= uniqueFlatAndDefined(collectAdProperty($scope.ads, 'youtube')).sort();
+        $scope.entity.youtube_sameuser= uniqueFlatAndDefined(collectAdProperty($scope.ads, 'youtube_video_urls')).sort();
+        for (var i = 0; i < $scope.entity.youtube.length; i++) {
+                $scope.entity.youtube[i]=$sce.trustAsResourceUrl($scope.entity.youtube[i])
+                }
+        for (var i = 0; i < $scope.entity.youtube_sameuser.length; i++) {
+                $scope.entity.youtube_sameuser[i]=$sce.trustAsResourceUrl($scope.entity.youtube_sameuser[i])
+                }
+
+
         $scope.entity.twitter= uniqueFlatAndDefined(collectAdProperty($scope.ads, 'twitter')).sort();
         for (var i = 0; i < $scope.entity.twitter.length; i++) {
         $scope.entity.twitter[i]=$scope.entity.twitter[i].replace("https://twitter.com/","@")
