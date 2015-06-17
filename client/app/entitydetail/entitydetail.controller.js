@@ -96,7 +96,11 @@ angular.module('memexLinkerApp')
         return ad.properties[propertyName];
       });
     }
-
+    function collectAdProperty2(ads, propertyName) {
+      return _.map(ads, function(ad) {
+        return _.trunc(ad.properties[propertyName],15);
+      });
+    }
     function uniqueFlatAndDefined(items) {
       return _.filter(_.uniq(_.flatten(items)), function(item) {
         return ! _.isUndefined(item);
@@ -312,7 +316,7 @@ angular.module('memexLinkerApp')
     }
 
     function updateEntity() {
-        $scope.entity.cities= uniqueFlatAndDefined(collectAdProperty($scope.ads, 'city')).sort();
+        $scope.entity.cities= uniqueFlatAndDefined(collectAdProperty2($scope.ads, 'city')).sort();
         $scope.entity.postTime= uniqueFlatAndDefined(collectAdProperty($scope.ads, 'posttime')).sort();
         $scope.entity.age = uniqueFlatAndDefined(collectAdProperty($scope.ads, 'age')).sort();
         $scope.entity.ethnicities = uniqueFlatAndDefined(collectAdProperty($scope.ads, 'ethnicity')).sort();

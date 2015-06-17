@@ -1,9 +1,11 @@
 div(ng-include='"components/navbar/navbar.html"')
 .container
 	.row
+		.item 
+			label Blur Images:
+			input(type="checkbox" ng-model="blur")
 		#masonry
-			img(ng-repeat='imageUrl in imageUrls' ng-src='{{imageUrl}}', alt='')
-
+			img(ng-repeat='imageUrl in imageUrls' ng-src='{{imageUrl}}' ng-class="{blurry: blur == true, clear: blur != true}", alt='')
 	footer.footer
 		center Designed and Developed by Qadium 2015. All code is open source.
 		center About Help Terms Privacy
