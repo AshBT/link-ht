@@ -320,6 +320,9 @@ function updateAggregates(entitySummary, aggregates) {
   aggregates.set('price_max', _.max(_.filter(uniqueFlatAndDefined(listprices), function(n) {
     return (n % 1) == 0;
   })));
+
+  aggregates.set('price_max') = _.max(_.map(listprices,parseInt));
+  aggregates.set('price_min') = _.min(_.map(listprices,parseInt));
 }
 
 $scope.submitSearch = function(){
