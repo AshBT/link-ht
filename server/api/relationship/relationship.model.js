@@ -2,9 +2,9 @@
 
 var neo4j = require('neo4j');
 
-var NEO_HOST = process.env['NEO_HOST'] || 'http://neo4j.52.8.194.57.xip.io/';
+var NEO_HOST = process.env['NEO_HOST'] || 'http://localhost:7474';
 var NEO_USER = process.env['NEO_USER'] || 'neo4j';
-var NEO_PASS = process.env['NEO_PASS'] || 'D*USi0ntZwUfRNPr^6b20uGd';
+var NEO_PASS = process.env['NEO_PASS'] || 'password';
 
 var db = new neo4j.GraphDatabase({
     url: NEO_HOST,
