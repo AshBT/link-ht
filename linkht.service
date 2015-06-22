@@ -7,6 +7,7 @@ Requires=docker.service
 TimeoutStartSec=0
 ExecStartPre=-/usr/bin/docker kill linkht
 ExecStartPre=-/usr/bin/docker rm linkht
+ExecStartPre=-/usr/bin/docker rmi -f ok-registry.service.consul/linkht
 ExecStartPre=/usr/bin/docker pull ok-registry.service.consul/linkht
 ExecStart=/usr/bin/docker run --name linkht \
     --rm \
