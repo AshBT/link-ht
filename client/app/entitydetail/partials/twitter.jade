@@ -26,9 +26,11 @@
 						.col-md-12(ng-repeat = 'video1 in entity.youtube')
 							iframe(width='420', height='315', ng-src='{{video1}}')
 
-					//- .col-md-12(ng-repeat = 'video2 in entity.youtube_sameuser')
-					//- 	p a {{video2}}
-					//- 	//- <iframe width="420" height="315" src='{{video2}}'></iframe>
+								
+						.col-md-12(ng-repeat = 'video2 in entity.youtube_sameuser')
+							h4 Other Videos Posted by the Same User: {{entity.youtube_username}}
+
+							<iframe width="420" height="315" src='{{video2}}'></iframe>
 
 
 

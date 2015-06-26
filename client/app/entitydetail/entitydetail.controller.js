@@ -177,6 +177,7 @@ angular.module('memexLinkerApp')
         twitter:[],
         youtube:[],
         youtube_sameuser:[],
+        youtube_username:[],
         yelp:[]
     };
 
@@ -341,8 +342,9 @@ angular.module('memexLinkerApp')
                 $scope.entity.youtube[i]=$sce.trustAsResourceUrl($scope.entity.youtube[i])
                 }
         for (var i = 0; i < $scope.entity.youtube_sameuser.length; i++) {
-                $scope.entity.youtube_sameuser[i]=$sce.trustAsResourceUrl($scope.entity.youtube_sameuser[i])
+                $scope.entity.youtube_sameuser[i]=$sce.trustAsResourceUrl($scope.entity.youtube_sameuser[i].replace("watch?v=", "embed/"))
                 }
+        $scope.entity.youtube_username= uniqueFlatAndDefined(collectAdProperty($scope.ads, 'youtube_user')).sort();
 
 
         $scope.entity.twitter= uniqueFlatAndDefined(collectAdProperty($scope.ads, 'twitter')).sort();
