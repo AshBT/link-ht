@@ -14,13 +14,17 @@ var Entity = require('./entity.model');
 //  });
 //};
 
+
 exports.search = function(req, res) {
+  console.log("DANTHEMAN")
   Entity.getSearch(req.body.searchText, function(err, entities){
     if(err) {
       console.log(err);
       return handleError(res, err)
     }
     res.json(entities);
+    console.log("BOOYA")
+    console.log(entities)
   });
 };
 

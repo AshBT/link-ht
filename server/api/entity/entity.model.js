@@ -15,6 +15,7 @@ var db = new neo4j.GraphDatabase({
 });
 
 
+
 var Entity = module.exports = function Entity(_node) {
 	this._node = _node;
 }   
@@ -180,19 +181,9 @@ Entity.getSearch = function (searchText, callback) {
         'LIMIT 50'
     ].join('\n');
 
-    // OR ANY(name IN n.phone WHERE name =~ {searchText}) OR ANY(name IN n.twitter WHERE name =~ {searchText})
-    // db.query(query, null, function (err, results) {
-    //     if (err) return callback(err);
-    //     var entities = results.map(function (result) {
-    //         return new Entity(result['entity']);
-    //     });
-    //     callback(null, entities);
-    // });
-
     var params = {
         searchText : searchText,
     };
-
     db.cypher({query:query,params:params}, function(err, results) {
         if (err) return callback(err);
         //console.log(results);
@@ -203,6 +194,33 @@ Entity.getSearch = function (searchText, callback) {
         callback(null, entities);
     });
 };
+
+// Entity.getSearch = function (searchText, callback) {
+//     console.log("A1")
+//     var query = [
+//         'MATCH (entity:Entity)-[r:BY_PHONE]-(n:Ad)',
+//         'WHERE HAS(n.id) AND ANY (m IN {searchText} WHERE m IN n.id)',
+//         'RETURN DISTINCT entity',
+//         'LIMIT 50'
+//     ].join('\n');
+
+//     var params = {
+//         searchText : searchText,
+//     };
+//     console.log("A2")
+//     console.log(params)
+//     db.cypher({query:query,params:params}, function(err, results) {
+//         if (err) return callback(err);
+//         //console.log(results);
+//         //{entity: { _id: 28380, labels: [Object], properties: [Object] }}
+//         var entities = results.map(function(result){
+//             return new Entity(result.entity);
+//         });
+//         console.log(entities)
+//         callback(null, entities);
+//     });
+// };
+
 
 Entity.savedByUser = function(data, callback) {
     console.log(data);
@@ -249,4 +267,6 @@ Entity.create = function (data, callback) {
         callback(null, entity);
     });
 };
+
+
 

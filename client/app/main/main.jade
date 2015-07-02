@@ -1,11 +1,25 @@
 div(ng-include='"components/navbar/navbar.html"')
-
 .container
 	.row
 		.col-md-12
 			.panel.panel-default
 				.panel-heading
-					h4 Entity Graph Search
+					h3 Elastic Search (Beta)
+				.panel-body
+					.row
+						.col-md-12.form
+								form(ng-submit='submitElasticSearch()' ng-click="counter = counter + 1" ng-init="counter=0")
+									input.search-query.form-control(type='text',ng-model='elasticSearchText', name='text', placeholder='Search...')
+									input.btn.btn-primary#submit(type='submit', value='Submit')
+									br
+									br
+									p You've done {{counter}} Elastic Search searches
+
+	.row
+		.col-md-12
+			.panel.panel-default
+				.panel-heading
+					h3 Entity Graph Search
 				.panel-body
 					.row
 						.col-md-3

@@ -4,7 +4,7 @@ angular.module('memexLinkerApp')
 .controller('MainCtrl', function ($scope, $http, $q, socket, lodash) {
 
   var _ = lodash;
-//Start -- Trying to add in accordion
+//Accordion Code
     $scope.oneAtATime = true;
 
     $scope.groups = [
@@ -30,7 +30,7 @@ angular.module('memexLinkerApp')
     isFirstDisabled: false
     };
 
-//End -- Trying to add in accordion
+//End Accordion Code
   var source_map = {
     1 : 'Backpage',
     2 : 'Craigslist',
@@ -62,12 +62,15 @@ angular.module('memexLinkerApp')
     28 : 'MissingKids'
   };
 
+
+
   $scope.logo = 'http://icons.iconarchive.com/icons/icons8/ios7/256/Very-Basic-Paper-Clip-icon.png';
   $scope.blur = true;
   $scope.hasFacePic = false;
   $scope.hasSimilarAds = false;
   $scope.hasSocialMedia = false;
   $scope.entities1 = [];
+  $scope.xx = {}
   $scope.nSuggestedByText = 0;
 
   function initAggregates() {
@@ -296,40 +299,65 @@ function updateAggregates(entitySummary, aggregates) {
 }
 
 $scope.submitSearch = function(){
-    console.log('submitSearch...');
-    if ($scope.searchText) {
-          console.log($scope.searchText);
-
+  console.log('submitSearch...');
+  if ($scope.searchText) {
+    console.log($scope.searchText);
     $scope.searchText2= ".*" + $scope.searchText + ".*" 
-
     $http.post('/api/entities/', {searchText : $scope.searchText2}).success(function(res) {
       $scope.entities1 = [];
       var returnedEntities = _.map(res, function(e){
-          return {
-            'id': e._node._id,
-            'phone' : e._node.properties.identifier
-          };
-        });
+        return {
+          'id': e._node._id,
+          'phone' : e._node.properties.identifier
+        };
+      });
 
         $scope.aggregates = initAggregates();
         //Aggregate details from ads belonging to each entity.
         _.forEach(returnedEntities, function(entity) {
           summarizeEntity(entity).then(function(entitySummary) {
-            // success
-            console.log('min price: ' + entitySummary.minPrice);
-            console.log('max price: ' + entitySummary.maxPrice);
             $scope.entities1.push(entitySummary);
             updateAggregates(entitySummary,$scope.aggregates);
           }, function(reason) {
-            console.log('Failed for ' + reason);
-          });
-
+          console.log('Failed for ' + reason);
         });
 
       });
-}
 
+    });
+  }
 };
+var adIds = []
+$scope.entities1 = [];
+
+$scope.submitElasticSearch = function(){
+  console.log('submitElasticSearch...');
+  if ($scope.elasticSearchText) {
+    console.log($scope.elasticSearchText);
+    $http.post('/api/elastics/search', {elasticSearchText : $scope.elasticSearchText}).success(function(res) {
+      $scope.entities1 = [];
+      console.log(res)
+      var returnedEntities = _.map(res, function(e){
+        return {
+          'id': e._node._id,
+          'phone' : e._node.properties.identifier
+        };
+      });
+      $scope.aggregates = initAggregates();
+      _.forEach(returnedEntities, function(entity) {
+        summarizeEntity(entity).then(function(entitySummary) {
+          $scope.entities1.push(entitySummary);
+          updateAggregates(entitySummary,$scope.aggregates);
+        }, function(reason) {
+            console.log('Failed for ' + reason);
+          });
+        });
+      });
+    };
+  };
+
+
+
 
 $scope.facesFilter = function(e,hasFacePic){
   return e.face.length >=1 || !$scope.hasFacePic;
