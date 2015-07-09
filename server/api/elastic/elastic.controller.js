@@ -38,7 +38,7 @@ exports.search = function(req, res) {
 
   client.search({
     index: 'ads',
-    size: 100,
+    size: 50,
     body: {
       query: {
         match: {

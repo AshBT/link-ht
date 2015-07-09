@@ -50,7 +50,7 @@ Elastic.getNeo4j = function (searchText, callback) {
   // console.log(searchText)
     var query = [
         'MATCH (entity:Entity)-[r:BY_PHONE]-(n:Ad)',
-        'WHERE HAS(n.id) AND ANY (m IN {searchText} WHERE m IN n.id)',
+        'WHERE HAS(n.id) AND n.id IN {searchText}',
         'RETURN DISTINCT entity',
         'LIMIT 50'
     ].join('\n');

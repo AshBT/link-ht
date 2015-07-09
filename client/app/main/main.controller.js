@@ -197,7 +197,7 @@ angular.module('memexLinkerApp')
         });
 
         $http.get('api/entities/' + entity.id + '/byimage').success(function(res){
-          var nSuggestedByImage = res.length;
+          var nSuggestedByImage = res[0]["count(ad)"] || 0;
           $scope.getNSuggestedByText(entity).then( function(nSuggestedByText){
             var entitySummary = {
               id: entity.id,
@@ -374,7 +374,7 @@ $scope.socialMediaFilter = function(e,hasSocialMedia){
 $scope.getNSuggestedByText = function(entity) {
   var deferred = $q.defer();
   $http.get('api/entities/' + entity.id + '/byText').success(function(res){
-    deferred.resolve(res.length);
+    deferred.resolve(res[0]["count(ad)"] || 0);
   });
   return deferred.promise;
 };

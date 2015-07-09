@@ -18,6 +18,25 @@
     align-items: stretch;
 }
 
+.search-bar {
+background-color: #FFFFFF;
+h3 {
+color: #E6E6E6;
+border-right: 2px solid #FFFFFF;
+border-left: 2px solid #FFFFFF;
+border-top: 2px solid #FFFFFF;
+}
+
+}
+.search-body {
+background-color: #FAFAFA;
+border-right: 1px solid #000000;
+border-left: 1px solid #000000;
+border-bottom: 1px solid #000000;
+border-top: 1px solid #000000;
+
+}
+
 .col-md-4 {
     flex: 1;
     padding: 12px;

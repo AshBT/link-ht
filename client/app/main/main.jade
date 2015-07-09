@@ -3,75 +3,36 @@ div(ng-include='"components/navbar/navbar.html"')
 	.row
 		.col-md-12
 			.panel.panel-default
-				.panel-heading
-					h3 Elastic Search (Beta)
 				.panel-body
+					.col-md-3.form
+					.col-md-6.form
+						center
+							img(src='https://s3-us-west-1.amazonaws.com/generalmemex/Image/Link+HT.gif')
+							form(ng-submit='submitElasticSearch()' ng-click="counter = counter + 1" ng-init="counter=0")
+								input.search-query.form-control(type='text',ng-model='elasticSearchText', name='text', placeholder='Search...')
+								input.btn.btn-primary#submit(type='submit', value='Submit')
+				.search-body.panel-body(ng-if="aggregates.get('entityIds').length > 0")
 					.row
-						.col-md-12.form
-								form(ng-submit='submitElasticSearch()' ng-click="counter = counter + 1" ng-init="counter=0")
-									input.search-query.form-control(type='text',ng-model='elasticSearchText', name='text', placeholder='Search...')
-									input.btn.btn-primary#submit(type='submit', value='Submit')
-									br
-									br
-									p You've done {{counter}} Elastic Search searches
 
-	.row
-		.col-md-12
-			.panel.panel-default
-				.panel-heading
-					h3 Entity Graph Search
-				.panel-body
-					.row
-						.col-md-3
-							.col-md-12.form
-								form(ng-submit='submitSearch()')
-									input.search-query.form-control(type='text',ng-model='searchText', name='text', placeholder='Search...')
-									input.btn.btn-primary#submit(type='submit', value='Submit')
-							//- .col-md-12
-								//- h4 Search Filters
-								//- .col-md-12.custom-search-input
-								//- 	input.search-query.form-control(ng-model="filterPhone" type='text', placeholder='Phone Number')
-								//- .col-md-12.custom-search-input
-								//- 	input.search-query.form-control(ng-model="filterText" type='text', placeholder='Ad Text')
-							.col-md-12
-								br
-								h4 Controls
-
-								label Blur Images: 
-									input(type="checkbox", ng-model="blur", ng-init="checked=true")
-								label Has Face Picture: 
-									input(type="checkbox", ng-model="hasFacePic")
-								label Has Similar Ads: 
-									input(type="checkbox", ng-model="hasSimilarAds")
-								label Has Social Media 
-									input(type="checkbox", ng-model="hasSocialMedia")
-								br
-								br
-							
-						.col-md-3
-							h4 Aggregate Results
-
-							table.table.table-hover
-								tbody
-									tr
-										td Entities
-										td {{aggregates.get('entityIds').length}}
-									tr
-										td Ads
-										td {{aggregates.get('nAds')}}
-									tr
-										td Pictures
-										td {{aggregates.get('nPictures')}}
-									tr(ng-if="aggregates.get('age_min').length > 0")
-										td Age Range
-										td {{aggregates.get('age_min')}} to {{aggregates.get('age_max')}}
-									tr(ng-if="aggregates.get('rate60').length > 0")
-										td Price Range
-										td(ng-if="aggregates.get('price_max') != 9999"){{aggregates.get('price_min') | currency:"$"}} to {{aggregates.get('price_max') | currency:"$"}}
-						.col-md-6
+						.col-md-2
+							h4 Controls
+							label Blur Images: 
+								input(type="checkbox", ng-model="blur", ng-init="checked=true")
+							label Has Face Picture: 
+								input(type="checkbox", ng-model="hasFacePic")
+							label Has Similar Ads: 
+								input(type="checkbox", ng-model="hasSimilarAds")
+							label Has Social Media 
+								input(type="checkbox", ng-model="hasSocialMedia")
+						.col-md-10
+							h4 Search Results Summary
+							p You found {{aggregates.get('entityIds').length}} entities, which are made up of {{aggregates.get('nAds')}} ads with {{aggregates.get('nPictures')}} pictures. 
+							p(ng-if="aggregates.get('age_min').length > 0") The age range is {{aggregates.get('age_min')}} to {{aggregates.get('age_max')}}.
+							p(ng-if="aggregates.get('rate60').length > 0") The price range is {{aggregates.get('price_min') | currency:"$"}} to {{aggregates.get('price_max') | currency:"$"}}. 
+						.col-md-2
+						.col-md-10
 							accordion(close-others='oneAtATime')
-								accordion-group(heading='Search Result Details (Click Me!)', is-disabled='status.isFirstDisabled')
-									h4
+								accordion-group(heading='Detailed Search Results Summary', is-disabled='status.isFirstDisabled')
 									table.table.table-hover(ng-if="aggregates.get('entityIds').length > 0")
 										tbody
 											tr(ng-if="aggregates.get('websites').length > 0")
@@ -91,14 +52,12 @@ div(ng-include='"components/navbar/navbar.html"')
 												td {{aggregates.get('names').join(', ') | capitalize}}
 											tr(ng-if="aggregates.get('ethnicities').length > 0")
 												td Ethnicities
-												td {{aggregates.get('ethnicities').join(', ') | capitalize}}
+												td {{aggregates.get('ethnicities').join(', ') | capitalize}}				
 	.row
-
-		//- .col-md-12(ng-repeat="entity in entities | orderBy:'-nSuggested' | filter: { phone : filterPhone, text: filterText, gt : filterMinAge } ")
 		.col-md-12(ng-repeat="entity in entities1 | orderBy:'-nSuggested'  | filter:facesFilter | filter:socialMediaFilter | filter: similarAdsFilter")
 			.panel.panel-default
 				.panel-heading
-					h3 {{entity.nPosts}} Ads from Base Entity {{entity.phone | tel}}
+					h3 Entity {{entity.phone | tel}} with {{entity.nPosts}} Ads
 				.panel-body
 					.col-md-4
 						p Active since: <strong> {{entity.firstPostTime.toDateString()}} </strong>
@@ -136,5 +95,5 @@ div(ng-include='"components/navbar/navbar.html"')
 												ng-class="{blurry: blur == true, clear: blur != true}")
 
 	footer.footer
-		center Designed and Developed by Qadium 2015. All code is open source.
-		center About Help Terms Privacy
+		center Designed and Developed by Qadium 2015. Check out the open source code for Link HT on <a href='github.com/qadium/link-ht'> Github</a>.
+		center <a href=''> About </a> <a href=''> Help </a> <a href=''> Terms </a> <a href=''> Privacy </a>

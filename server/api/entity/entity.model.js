@@ -116,7 +116,7 @@ Entity.byImage = function(id, callback) {
     var query = [
         'MATCH (e:Entity)-[:BY_IMG]-(ad:Ad)',
         'WHERE ID(e) = {id} and not (e)-[:BY_PHONE]-(ad) and not (e)-[:BY_USER]-(ad) ',
-        'Return ad'
+        'Return count(ad)'
     ].join('\n');
 
     var params = {
@@ -135,7 +135,7 @@ Entity.byText = function(id, callback) {
     var query = [
         'MATCH (e:Entity)-[:BY_TXT]-(ad:Ad)',
         'WHERE ID(e) = {id} and not (e)-[:BY_PHONE]-(ad) and not (e)-[:BY_USER]-(ad) ',
-        'Return ad'
+        'Return count(ad)'
     ].join('\n');
 
     var params = {
