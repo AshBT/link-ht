@@ -1,5 +1,5 @@
 .panel.panel-default(ng-repeat='ad in ads')
-	.panel-heading.h1  {{source_map[ad.properties.sources_id]}} at {{ad.properties.posttime | date}}
+	.panel-heading.h1  {{sourceMap[ad.properties.sources_id]}} at {{ad.properties.posttime | date}}
 	.panel-body.vertical-layout
 		.item
 			h4 {{ad.properties.title}}

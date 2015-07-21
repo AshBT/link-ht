@@ -2,6 +2,9 @@
 
 angular.module('memexLinkerApp')
   .controller('NavbarCtrl', function ($scope, $location, Auth) {
+
+    $scope.logo = 'http://icons.iconarchive.com/icons/icons8/ios7/256/Very-Basic-Paper-Clip-icon.png';
+
     $scope.menu = [{
       'title': 'Search',
       'link': '/'
