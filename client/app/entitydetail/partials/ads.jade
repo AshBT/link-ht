@@ -1,4 +1,4 @@
-.panel.panel-default(ng-repeat='ad in ads')
+.panel.panel-default(ng-repeat='ad in $ngc.collection()')
 	.panel-heading.h1  {{sourceMap[ad.properties.sources_id]}} at {{ad.properties.posttime | date}}
 	.panel-body.vertical-layout
 		.item

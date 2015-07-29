@@ -96,18 +96,41 @@ angular.module('memexLinkerApp')
 	// Callback for changes in showSelector.
 	$scope.onShowSelector = function(showSelector) {
     	console.log('MapdirectivedemoCtrl onShowSelector');
-    	console.log(showSelector);
+    	if(showSelector) {
+			// 
+		} else {
+			$scope.$ngc.unfilterBy('latitude');
+			$scope.$ngc.unfilterBy('longitude');
+		}
     };
 
     // Callback for changes in geographic bounding box.
     $scope.onBoundsChange = function(bounds) {
     	console.log('MapdirectivedemoCtrl onBoundsChange');
     	console.log(bounds);
+    	$scope.$ngc.unfilterBy('latitude');
+		$scope.$ngc.unfilterBy('longitude');
+		var sw = bounds.sw;
+		var ne = bounds.ne;
+		$scope.$ngc.filterBy('latitude', {minLatitude: sw.latitude, maxLatitude: ne.latitude}, function(range, latitude) {
+			console.log('latitude: ' + latitude);
+			console.log(range);
+			return range.minLatitude <= latitude && latitude <= range.maxLatitude;
+		});
+
+		$scope.$ngc.filterBy('longitude', {minLon: sw.longitude, maxLon: ne.longitude}, function(range, lon) {
+			return range.minLon <= lon && lon <= range.maxLon;
+		});
     };
 
     // Callback for changes in date slider range.
     $scope.onRangeChange = function(range) {
     	console.log(range);
+		// $scope.$ngc.filterBy('timestamp', {minDate: range.minDate, maxDate: range.maxDate}, function(range, timestamp) {
+		// 	console.log('timestamp: ' + timestamp);
+		// 	console.log(range);
+		// 	return range.minDate <= timestamp && timestamp <= range.maxDate;
+		// });
     };
 
     $scope.data = [
@@ -280,8 +303,8 @@ angular.module('memexLinkerApp')
 				// });
 				// 
 				$q.all(promises).then(function(data){
-					console.log('Processing promises...');
-					console.log(data);
+					//console.log('Processing promises...');
+					//console.log(data);
 					var res = data[0].data;
 					if (res.linkTypes.indexOf('BY_PHONE') > -1) { ad.linkedByPhone = true; }
 					if (res.linkTypes.indexOf('BY_TXT') > -1) { ad.linkedByText = true; }
@@ -290,7 +313,7 @@ angular.module('memexLinkerApp')
 					if(data.length == 2) {
 						// geocoded
 						var point = data[1];
-						console.log(point);
+						//console.log(point);
 						//ad.latitude = point.latitude;
 						//ad.longitude = point.longitude;
 						
@@ -298,8 +321,9 @@ angular.module('memexLinkerApp')
 						ad.latitude = 34.05;
   						ad.longitude = -118.25;
 					}
-					console.log(ad);
+					//console.log(ad);
 					$scope.ads.push(ad);
+					$scope.$ngc.addModel(ad);
 				});
 
 			});
