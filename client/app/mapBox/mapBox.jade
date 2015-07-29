@@ -1,0 +1,19 @@
+
+.col-md-12
+	#map_canvas
+	ui-gmap-google-map(center='mb.map.center', zoom='mb.map.zoom', draggable='true', bounds='mb.map.bounds')
+		ui-gmap-markers(models='mb.data', coords="'self'", icon="'icon'")
+		ui-gmap-rectangle(ng-if='mb.showSelector', bounds='mb.bounds', draggable='true', editable='true', fill="'#FFFFFF .5'")
+
+.col-md-12
+	form.form-horizontal
+	.form-group
+		.col-xs-10
+			.checkbox
+				label
+					input(type='checkbox' ng-model='mb.showSelector') 
+					| Select by Geographic Bounding Box
+
+.col-md-12
+	| Filter by Date Range
+	div(range-slider='', min='mb.dateSlider.range.MIN', max='mb.dateSlider.range.MAX', model-min='mb.dateSlider.minDate', model-max='mb.dateSlider.maxDate')

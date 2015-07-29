@@ -7,10 +7,10 @@ div(ng-include='"components/navbar/navbar.html"')
 				.panel-heading Entity: {{entity.phone | tel}}
 				.panel-body.vertical-layout
 					.item
-						col-md-3(ng-if="face_image_url.length==0")
+						col-md-3(ng-if="faceImageUrl.length==0")
 							img.responsive(ng-src="http://upload.wikimedia.org/wikipedia/commons/1/1a/Black_-_replace_this_image_female.svg",
 								style="max-height:80px; margin:0 auto;")
-						col-md-3(ng-if="face_image_url.length >0", ng-repeat='img in face_image_url | limitTo:5')
+						col-md-3(ng-if="faceImageUrl.length >0", ng-repeat='img in faceImageUrl | limitTo:5')
 							img.responsive(ng-src="{{img}}"
 								style="max-height:80px; margin:0 auto;"
 								ng-class="{blurry: blur == true, clear: blur != true}")
@@ -23,11 +23,11 @@ div(ng-include='"components/navbar/navbar.html"')
 						input(type="checkbox" ng-model="blur")
 					.item 
 						button.btn-success(ng-click='saveEntity()') Save Entity 
-
-			.panel.panel-default(style="height: 300px")
-				.panel-heading Map
-				ui-gmap-google-map(center='map.center', zoom='map.zoom')
-					ui-gmap-markers(models='markers', coords="'self'", icon="'icon'")
+			
+			//- .panel.panel-default(style="height: 300px")
+			//- 	.panel-heading Map
+			//- 	ui-gmap-google-map(center='map.center', zoom='map.zoom')
+			//- 		ui-gmap-markers(models='markers', coords="'self'", icon="'icon'")
 
 			.panel.panel-default
 				.panel-heading Entity Identifiers
@@ -38,13 +38,6 @@ div(ng-include='"components/navbar/navbar.html"')
 						li(ng-if="entity.instagram.length > 0") Instagram: {{entity.instagram.join(', ') }}
 						li(ng-if="entity.youtube.length > 0") Youtube: {{entity.youtube.join(', ') }}
 						li(ng-if="entity.yelp.length > 0") Yelp: {{entity.yelp.join(', ') }}
-
-							//- li Twitter: <input type="text" name="twitter" ng-model="twitter" required> 
-							//- li Instagram: <input type="text" name="instagram" ng-model="instagram" required>
-							//- li Youtube: <input type="text" name="youtube" ng-model="youtube" required>
-							//- li Yelp: <input type="text" name="yelp" ng-model="yelp" required>
-						//- .item
-						//- 	button.btn-primary() Submit New Attributes 
 
 			.panel.panel-default
 				.panel-heading Entity Details
@@ -59,18 +52,11 @@ div(ng-include='"components/navbar/navbar.html"')
 						li(ng-if="entity.eyes.length > 0") Eyes: {{entity.eyes.join(', ')}}
 						li(ng-if="entity.hair.length > 0") Hair: {{entity.hair.join(', ')}}
 						li(ng-if="entity.cities.length > 0") Cities: {{entity.cities.join(', ') | capitalize}}
-
-
-			
 		.col-md-9
-			//- .panel.panel-default
-			//- 	.panel-heading Active Since {{entity.postTimes[0]}}
-			//- 	entity-heatmap(config='heatmapConfig', entityId='id')
-
-
+			map-box(data='ads' on-bounds-change='onBoundsChange' on-show-selector='onShowSelector' on-range-change='onRangeChange')
 			.panel.panel-default
 				tabset
-					tab(heading='{{ads.length}} Ads and Reviews')
+					tab(heading='{{$ngc.collection().length}} Ads and Reviews')
 						include ./partials/ads.jade
 					tab(heading='{{imageUrls.length}} Images')
 						include ./partials/images.jade

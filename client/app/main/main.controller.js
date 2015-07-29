@@ -336,7 +336,7 @@ $scope.submitElasticSearch = function(){
     console.log($scope.elasticSearchText);
     $http.post('/api/elastics/search', {elasticSearchText : $scope.elasticSearchText}).success(function(res) {
       $scope.entities1 = [];
-      console.log(res)
+      //console.log(res)
       var returnedEntities = _.map(res, function(e){
         return {
           'id': e._node._id,
@@ -353,7 +353,7 @@ $scope.submitElasticSearch = function(){
           });
         });
       });
-    };
+    }
   };
 
 
