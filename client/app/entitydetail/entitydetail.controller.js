@@ -95,7 +95,6 @@ angular.module('memexLinkerApp')
 
 	// Callback for changes in showSelector.
 	$scope.onShowSelector = function(showSelector) {
-    	console.log('MapdirectivedemoCtrl onShowSelector');
     	if(showSelector) {
 			// 
 		} else {
@@ -106,15 +105,11 @@ angular.module('memexLinkerApp')
 
     // Callback for changes in geographic bounding box.
     $scope.onBoundsChange = function(bounds) {
-    	console.log('MapdirectivedemoCtrl onBoundsChange');
-    	console.log(bounds);
     	$scope.$ngc.unfilterBy('latitude');
 		$scope.$ngc.unfilterBy('longitude');
 		var sw = bounds.sw;
 		var ne = bounds.ne;
 		$scope.$ngc.filterBy('latitude', {minLatitude: sw.latitude, maxLatitude: ne.latitude}, function(range, latitude) {
-			console.log('latitude: ' + latitude);
-			console.log(range);
 			return range.minLatitude <= latitude && latitude <= range.maxLatitude;
 		});
 
@@ -125,64 +120,10 @@ angular.module('memexLinkerApp')
 
     // Callback for changes in date slider range.
     $scope.onRangeChange = function(range) {
-    	console.log(range);
-		// $scope.$ngc.filterBy('timestamp', {minDate: range.minDate, maxDate: range.maxDate}, function(range, timestamp) {
-		// 	console.log('timestamp: ' + timestamp);
-		// 	console.log(range);
-		// 	return range.minDate <= timestamp && timestamp <= range.maxDate;
-		// });
+		$scope.$ngc.filterBy('timestamp', {minDate: range.minDate, maxDate: range.maxDate}, function(range, timestamp) {
+			return range.minDate <= timestamp && timestamp <= range.maxDate;
+		});
     };
-
-    $scope.data = [
-  		{
-  			id: 0,
-  			latitude: 37.7833, 
-  			longitude: -122.4167,
-  			timestamp: Date.UTC(2015,5,1),
-  			city : 'San Francisco',
-  			state: 'California'
-  		},
-  		{
-  			id: 1,
-  			latitude: 40.7127, 
-  			longitude: -74.0059,
-  			timestamp: Date.UTC(2015,1,1),
-  			city : 'New York',
-  			state : 'New York' 
-  		},
-  		{
-  			id: 2,
-  			latitude: 25.7753, 
-  			longitude: -80.2089,
-  			timestamp: Date.UTC(2015,3,1),
-  			city : 'Miami',
-  			state : 'Florida' 
-  		},
-  		{
-  			id: 3,
-  			latitude: 47.6097, 
-  			longitude: -122.3331,
-  			timestamp: Date.UTC(2015,1,1),
-  			city : 'Seatlle',
-  			state : 'Washington' 
-  		},
-  		{
-  			id: 4,
-  			latitude: 41.8369,
-  			longitude: -87.6847,
-  			timestamp: Date.UTC(2015,1,1),
-  			city : 'Chicago',
-  			state : 'Illinois'
-  		},
-  		{
-  			id: 5,
-  			latitude: 34.05,
-  			longitude: -118.25,
-  			timestamp: Date.UTC(2015,4,9),
-  			city : 'Los Angeles',
-  			state : 'California' 
-  		}
-  	];
 
 	// --- SCOPE FUNCTIONS --- //
 
@@ -295,16 +236,8 @@ angular.module('memexLinkerApp')
 				if(element.ad.properties.city !== undefined) {
 					promises.push(geocodeCity(element.ad.properties.city));
 				}
-
-				// $http.post('api/interactions/linkTypes', {entityId : $scope.id, adId : ad.id}).success(function(res){
-				// 			if (res.linkTypes.indexOf('BY_PHONE') > -1) { ad.linkedByPhone = true; }
-				// 			if (res.linkTypes.indexOf('BY_TXT') > -1) { ad.linkedByText = true; }
-				// 			if (res.linkTypes.indexOf('BY_IMG') > -1) { ad.linkedByImage = true; }
-				// });
-				// 
 				$q.all(promises).then(function(data){
-					//console.log('Processing promises...');
-					//console.log(data);
+
 					var res = data[0].data;
 					if (res.linkTypes.indexOf('BY_PHONE') > -1) { ad.linkedByPhone = true; }
 					if (res.linkTypes.indexOf('BY_TXT') > -1) { ad.linkedByText = true; }
@@ -313,15 +246,10 @@ angular.module('memexLinkerApp')
 					if(data.length == 2) {
 						// geocoded
 						var point = data[1];
-						//console.log(point);
-						//ad.latitude = point.latitude;
-						//ad.longitude = point.longitude;
-						
-						// Lets put them all in Los Angeles, for now!
-						ad.latitude = 34.05;
-  						ad.longitude = -118.25;
+
+						ad.latitude = point.latitude;
+  						ad.longitude = point.longitude;
 					}
-					//console.log(ad);
 					$scope.ads.push(ad);
 					$scope.$ngc.addModel(ad);
 				});
@@ -368,7 +296,6 @@ angular.module('memexLinkerApp')
 	}
 
 	function updateEntity() {
-		console.log($scope.ads);
 		$scope.entity.cities = uniqueFlatAndDefined(collectAdProperty2($scope.ads, 'city')).sort();
 		$scope.entity.postTime = uniqueFlatAndDefined(collectAdProperty($scope.ads, 'posttime')).sort();
 		$scope.entity.age = uniqueFlatAndDefined(collectAdProperty($scope.ads, 'age')).sort();
