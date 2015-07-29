@@ -23,11 +23,11 @@ div(ng-include='"components/navbar/navbar.html"')
 						input(type="checkbox" ng-model="blur")
 					.item 
 						button.btn-success(ng-click='saveEntity()') Save Entity 
-
-			.panel.panel-default(style="height: 300px")
-				.panel-heading Map
-				ui-gmap-google-map(center='map.center', zoom='map.zoom')
-					ui-gmap-markers(models='markers', coords="'self'", icon="'icon'")
+			
+			//- .panel.panel-default(style="height: 300px")
+			//- 	.panel-heading Map
+			//- 	ui-gmap-google-map(center='map.center', zoom='map.zoom')
+			//- 		ui-gmap-markers(models='markers', coords="'self'", icon="'icon'")
 
 			.panel.panel-default
 				.panel-heading Entity Identifiers
@@ -53,7 +53,7 @@ div(ng-include='"components/navbar/navbar.html"')
 						li(ng-if="entity.hair.length > 0") Hair: {{entity.hair.join(', ')}}
 						li(ng-if="entity.cities.length > 0") Cities: {{entity.cities.join(', ') | capitalize}}
 		.col-md-9
-
+			map-box(data='ads' on-bounds-change='onBoundsChange' on-show-selector='onShowSelector' on-range-change='onRangeChange')
 			.panel.panel-default
 				tabset
 					tab(heading='{{ads.length}} Ads and Reviews')

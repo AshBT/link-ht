@@ -2,7 +2,7 @@
 
 // TODO: inject an entity service, and use it to get the entity object
 angular.module('memexLinkerApp')
-.controller('EntitydetailCtrl', function ($scope, $http, $stateParams, $q, $modal, lodash, Auth, $sce) {
+.controller('EntitydetailCtrl', function ($scope, $http, $stateParams, $q, $modal, lodash, Auth, $sce, Crossfilter) {
 	var _ = lodash;
 
 	// --- SCOPE VARIABLES --- //
@@ -88,6 +88,78 @@ angular.module('memexLinkerApp')
 				 //   title: 'title'
 				 // }
 				 ];
+
+	// ng-crossfilter. collection | primary key | strategy | properties
+	$scope.$ngc = new Crossfilter($scope.ads, 'id', 'persistent', ['id','latitude', 'longitude', 'timestamp']);
+
+
+	// Callback for changes in showSelector.
+	$scope.onShowSelector = function(showSelector) {
+    	console.log('MapdirectivedemoCtrl onShowSelector');
+    	console.log(showSelector);
+    };
+
+    // Callback for changes in geographic bounding box.
+    $scope.onBoundsChange = function(bounds) {
+    	console.log('MapdirectivedemoCtrl onBoundsChange');
+    	console.log(bounds);
+    };
+
+    // Callback for changes in date slider range.
+    $scope.onRangeChange = function(range) {
+    	console.log(range);
+    };
+
+    $scope.data = [
+  		{
+  			id: 0,
+  			latitude: 37.7833, 
+  			longitude: -122.4167,
+  			timestamp: Date.UTC(2015,5,1),
+  			city : 'San Francisco',
+  			state: 'California'
+  		},
+  		{
+  			id: 1,
+  			latitude: 40.7127, 
+  			longitude: -74.0059,
+  			timestamp: Date.UTC(2015,1,1),
+  			city : 'New York',
+  			state : 'New York' 
+  		},
+  		{
+  			id: 2,
+  			latitude: 25.7753, 
+  			longitude: -80.2089,
+  			timestamp: Date.UTC(2015,3,1),
+  			city : 'Miami',
+  			state : 'Florida' 
+  		},
+  		{
+  			id: 3,
+  			latitude: 47.6097, 
+  			longitude: -122.3331,
+  			timestamp: Date.UTC(2015,1,1),
+  			city : 'Seatlle',
+  			state : 'Washington' 
+  		},
+  		{
+  			id: 4,
+  			latitude: 41.8369,
+  			longitude: -87.6847,
+  			timestamp: Date.UTC(2015,1,1),
+  			city : 'Chicago',
+  			state : 'Illinois'
+  		},
+  		{
+  			id: 5,
+  			latitude: 34.05,
+  			longitude: -118.25,
+  			timestamp: Date.UTC(2015,4,9),
+  			city : 'Los Angeles',
+  			state : 'California' 
+  		}
+  	];
 
 	// --- SCOPE FUNCTIONS --- //
 
@@ -184,19 +256,52 @@ angular.module('memexLinkerApp')
 
 	function updateLinked() {
 		$http.get('api/entities/' + $scope.id + '/linked').success(function(res){
-			$scope.ads = _.map(res, function(element){ 
+			_.map(res, function(element){ 
 				var ad = {
 					'id':element.ad._id,
 					'labels':element.ad.labels,
-					'properties':element.ad.properties
+					'properties':element.ad.properties,
+					'timestamp': Date.parse(element.ad.properties.posttime)
 				};
 
-				$http.post('api/interactions/linkTypes', {entityId : $scope.id, adId : ad.id}).success(function(res){
+				var promises = [];
+
+				promises.push($http.post('api/interactions/linkTypes', {entityId : $scope.id, adId : ad.id}));
+
+				// geocode ad
+				if(element.ad.properties.city !== undefined) {
+					promises.push(geocodeCity(element.ad.properties.city));
+				}
+
+				// $http.post('api/interactions/linkTypes', {entityId : $scope.id, adId : ad.id}).success(function(res){
+				// 			if (res.linkTypes.indexOf('BY_PHONE') > -1) { ad.linkedByPhone = true; }
+				// 			if (res.linkTypes.indexOf('BY_TXT') > -1) { ad.linkedByText = true; }
+				// 			if (res.linkTypes.indexOf('BY_IMG') > -1) { ad.linkedByImage = true; }
+				// });
+				// 
+				$q.all(promises).then(function(data){
+					console.log('Processing promises...');
+					console.log(data);
+					var res = data[0].data;
 					if (res.linkTypes.indexOf('BY_PHONE') > -1) { ad.linkedByPhone = true; }
 					if (res.linkTypes.indexOf('BY_TXT') > -1) { ad.linkedByText = true; }
 					if (res.linkTypes.indexOf('BY_IMG') > -1) { ad.linkedByImage = true; }
+
+					if(data.length == 2) {
+						// geocoded
+						var point = data[1];
+						console.log(point);
+						//ad.latitude = point.latitude;
+						//ad.longitude = point.longitude;
+						
+						// Lets put them all in Los Angeles, for now!
+						ad.latitude = 34.05;
+  						ad.longitude = -118.25;
+					}
+					console.log(ad);
+					$scope.ads.push(ad);
 				});
-				return ad;
+
 			});
 			updateEntity();
 		});
@@ -205,13 +310,15 @@ angular.module('memexLinkerApp')
 	function updateSuggestedText() {
 		$http.get('api/entities/' + $scope.id + '/byText').success(function(res){
 			$scope.suggestedAds = _.map(res, function(element){ 
-				var ad = {
+				if(element.ad !== undefined && element.ad._id !== undefined) {
+					var ad = {
 					'id':element.ad._id,
 					'labels':element.ad.labels,
 					'properties':element.ad.properties,
 					'suggestedByText':true
 				};
-				return ad;
+				return ad;	
+				}
 			});
 
 			updateEntity();
@@ -221,13 +328,15 @@ angular.module('memexLinkerApp')
 	function updateSuggestedImage() {
 		$http.get('api/entities/' + $scope.id + '/byImage').success(function(res){
 			$scope.suggestedAds = _.map(res, function(element){ 
-				var ad = {
-					'id':element.ad._id,
-					'labels':element.ad.labels,
-					'properties':element.ad.properties,
-					'suggestedByImage':true
-				};
-				return ad;
+				if(element.ad !== undefined && element.ad._id !== undefined) {
+					var ad = {
+						'id':element.ad._id,
+						'labels':element.ad.labels,
+						'properties':element.ad.properties,
+						'suggestedByImage':true
+					};
+					return ad;
+				}
 			});
 
 			updateEntity();
@@ -235,6 +344,7 @@ angular.module('memexLinkerApp')
 	}
 
 	function updateEntity() {
+		console.log($scope.ads);
 		$scope.entity.cities = uniqueFlatAndDefined(collectAdProperty2($scope.ads, 'city')).sort();
 		$scope.entity.postTime = uniqueFlatAndDefined(collectAdProperty($scope.ads, 'posttime')).sort();
 		$scope.entity.age = uniqueFlatAndDefined(collectAdProperty($scope.ads, 'age')).sort();
@@ -289,16 +399,17 @@ angular.module('memexLinkerApp')
 		}
 		$scope.entity.modePrice = mode($scope.entity.price);
 		
-		$scope.imageUrls = _.flatten(
+		var rawImageUrls = _.flatten(
 			_.map($scope.ads, function(ad) {
 				return ad.properties.image_locations;
 			}),
 			true
 			);
-		$scope.imageUrls = uniqueFlatAndDefined(_.filter($scope.imageUrls, function(element){
-			return ! _.isUndefined(element);
-		}));
+		// $scope.imageUrls = uniqueFlatAndDefined(_.filter(rawImageUrls, function(element){
+		// 	return ! _.isUndefined(element);
+		// }));
 
+		$scope.imageUrls = [];
 
 		$scope.faceImageUrl = _.flatten(
 			_.map($scope.ads, function(ad) {
@@ -376,10 +487,9 @@ angular.module('memexLinkerApp')
 		$scope.entity.nFaces = res._node.properties.nFaces;
 	});
  
-
 	updateLinked();
 	updateSuggestedText();
-	updateSuggestedImage(); 
+	updateSuggestedImage();
 });
 
 // TODO: put this under components

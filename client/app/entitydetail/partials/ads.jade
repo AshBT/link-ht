@@ -7,7 +7,7 @@
 			p: a(href='{{ad.properties.url}}') View original post
 		.item
 			row
-				col-md-3(ng-repeat = 'img in ad.properties.image_locations')
+				col-md-3(ng-repeat = 'img in ad.properties.image_locations track by $index')
 					img.responsive(ng-src = "{{img}}" 
 						style="max-height:100px; margin:0 auto;"
 						ng-class="{blurry: blur == true, clear: blur != true}")

@@ -13,6 +13,8 @@
     <!-- Place favicon.ico and apple-touch-icon.png in the root directory -->
     <!-- build:css(client) app/vendor.css -->
       <!-- bower:css -->
+      <link rel="stylesheet" href="bower_components/angular-rangeslider/angular.rangeSlider.css" />
+      <link rel="stylesheet" href="bower_components/angular-chart.js/dist/angular-chart.css" />
       <!-- endbower -->
     <!-- endbuild -->
     <!-- build:css({.tmp,client}) app/app.css -->
@@ -53,6 +55,14 @@
       <script src="bower_components/angular-google-maps/dist/angular-google-maps.js"></script>
       <script src="bower_components/hashmap/hashmap.js"></script>
       <script src="bower_components/elasticsearch/elasticsearch.js"></script>
+      <script src="bower_components/angular-rangeslider/angular.rangeSlider.js"></script>
+      <script src="bower_components/d3/d3.js"></script>
+      <script src="bower_components/angular-charts/dist/angular-charts.js"></script>
+      <script src="bower_components/crossfilter/crossfilter.js"></script>
+      <script src="bower_components/underscore/underscore.js"></script>
+      <script src="bower_components/ng-crossfilter/dist/ng-crossfilter.js"></script>
+      <script src="bower_components/Chart.js/Chart.js"></script>
+      <script src="bower_components/angular-chart.js/dist/angular-chart.js"></script>
       <!-- endbower -->
       <script src="socket.io-client/socket.io.js"></script>
     <!-- endbuild -->
@@ -72,6 +82,8 @@
           <script src="app/imagestream/imagestream.js"></script>
           <script src="app/main/main.controller.js"></script>
           <script src="app/main/main.js"></script>
+          <script src="app/mapBox/mapBox.directive.js"></script>
+          <script src="app/mapfilter/mapfilter.directive.js"></script>
           <script src="app/posts/posts.controller.js"></script>
           <script src="app/posts/posts.js"></script>
           <script src="app/savedEntities/savedEntities.controller.js"></script>
