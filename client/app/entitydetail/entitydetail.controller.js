@@ -149,6 +149,7 @@ angular.module('memexLinkerApp')
     $scope.id = $stateParams.id;
     //$scope.user = null;
 
+
     $scope.heatmapConfig = {
         entityId: $scope.id,
         start: new Date(2013, 0),
@@ -161,6 +162,7 @@ angular.module('memexLinkerApp')
 
     $scope.entity = {
         phone:'',
+        adsid:[],
         email:[],
         name:[],
         city:[],
@@ -318,6 +320,7 @@ angular.module('memexLinkerApp')
     }
 
     function updateEntity() {
+        $scope.entity.adsid= uniqueFlatAndDefined(collectAdProperty2($scope.ads, 'id')).sort();
         $scope.entity.cities= uniqueFlatAndDefined(collectAdProperty2($scope.ads, 'city')).sort();
         $scope.entity.postTime= uniqueFlatAndDefined(collectAdProperty($scope.ads, 'posttime')).sort();
         $scope.entity.age = uniqueFlatAndDefined(collectAdProperty($scope.ads, 'age')).sort();
@@ -428,6 +431,10 @@ angular.module('memexLinkerApp')
             });
         }
     } 
+    // var boom = "ads_id%3A" + entity.adsid[0]
+    var boom = "ads_id%3A32711920%20OR%20ads_id%3A32711944"
+    $scope.imagecat = $sce.trustAsResourceUrl("https://darpamemex:darpamemex@imagecat.memexproxy.com/imagespace/#search/" + boom);
+
     // The following function requires access to the internet. We need to develop an offline version of this geocoder.
     var geocoder = new google.maps.Geocoder();
     function geocodeCity(cityName) {

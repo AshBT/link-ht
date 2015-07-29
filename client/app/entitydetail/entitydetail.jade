@@ -76,6 +76,8 @@ div(ng-include='"components/navbar/navbar.html"')
 						include ./partials/images.jade
 					tab(heading='{{suggestedAds.length}} Similar Ads')
 						include ./partials/suggested.jade
+					tab(heading='Image Space')
+						include ./partials/imagespace.jade
 					tab(heading='{{annotations.length}} Annotations')
 						include ./partials/annotations.jade
 					tab(heading='{{entity.twitter.length + entity.instagram.length + entity.youtube.length + entity.yelp.length}} Social Media Posts')
