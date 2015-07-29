@@ -23,7 +23,7 @@ function mapBox() {
 	return directive;
 
 	function linkFunc(scope, el, attr, ctrl) {
-		console.log('mapBox linkFunc');
+		//
 	}
 }
 
@@ -32,7 +32,6 @@ MapBoxController.$inject = ['$scope'];
 function MapBoxController($scope) {
 	var mb = this;
 
-	console.log('MapBoxController');
 	// mb.data = [
  //  		{
  //  			id: 0,
@@ -88,12 +87,12 @@ function MapBoxController($scope) {
 	 * @return {[type]} [description]
 	 */
 	function initRectangleSelector (map) {
-		console.log('initRectangleSelector');
+		//console.log('initRectangleSelector');
 		var center = map.center;
 		var bounds = map.bounds;
-		console.log(map.center.latitude);
-		console.log(map.center.longitude);
-		console.log(bounds);
+		//console.log(map.center.latitude);
+		//console.log(map.center.longitude);
+		//console.log(bounds);
 
 		var _width = Math.abs(bounds.northeast.longitude - bounds.southwest.longitude);
 		var _height = Math.abs(bounds.northeast.latitude - bounds.southwest.latitude);

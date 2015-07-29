@@ -105,6 +105,7 @@ angular.module('memexLinkerApp')
 
     // Callback for changes in geographic bounding box.
     $scope.onBoundsChange = function(bounds) {
+    	console.log(bounds);
     	$scope.$ngc.unfilterBy('latitude');
 		$scope.$ngc.unfilterBy('longitude');
 		var sw = bounds.sw;
@@ -253,9 +254,7 @@ angular.module('memexLinkerApp')
 					$scope.ads.push(ad);
 					$scope.$ngc.addModel(ad);
 				});
-
 			});
-			updateEntity();
 		});
 	}
 
@@ -272,8 +271,6 @@ angular.module('memexLinkerApp')
 				return ad;	
 				}
 			});
-
-			updateEntity();
 		});
 	}
 
@@ -290,10 +287,17 @@ angular.module('memexLinkerApp')
 					return ad;
 				}
 			});
-
-			updateEntity();
 		});
 	}
+
+	// $scope.$watch('$scope.$ngc', function(){
+	// 	console.log('ads changed');
+	// 	updateEntity();
+	// }, true);
+
+	$scope.$on('crossfilter/updated', function(event, collection, identifier) {
+		updateEntity();
+	});
 
 	function updateEntity() {
 		$scope.entity.cities = uniqueFlatAndDefined(collectAdProperty2($scope.ads, 'city')).sort();
@@ -356,11 +360,9 @@ angular.module('memexLinkerApp')
 			}),
 			true
 			);
-		// $scope.imageUrls = uniqueFlatAndDefined(_.filter(rawImageUrls, function(element){
-		// 	return ! _.isUndefined(element);
-		// }));
-
-		$scope.imageUrls = [];
+		$scope.imageUrls = uniqueFlatAndDefined(_.filter(rawImageUrls, function(element){
+			return ! _.isUndefined(element);
+		}));
 
 		$scope.faceImageUrl = _.flatten(
 			_.map($scope.ads, function(ad) {
