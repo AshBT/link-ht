@@ -30,6 +30,10 @@ angular.module('memexLinkerApp')
 		yelp:[]
 	};
 
+
+    var boom = "ads_id%3A32711920%20OR%20ads_id%3A32711944"
+    $scope.imagecat = $sce.trustAsResourceUrl("https://darpamemex:darpamemex@imagecat.memexproxy.com/imagespace/#search/" + boom);
+
 	$scope.blur = true;
 	$scope.ads = [];
 	$scope.imageUrls = [];

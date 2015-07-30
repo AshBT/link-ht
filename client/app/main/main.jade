@@ -7,7 +7,8 @@ div(ng-include='"components/navbar/navbar.html"')
 					.col-md-3.form
 					.col-md-6.form
 						center
-							img(src='https://s3-us-west-1.amazonaws.com/generalmemex/Image/Link+HT.gif')
+							//- img(src='https://s3-us-west-1.amazonaws.com/generalmemex/Image/Link+HT.gif')
+							h1 <strong> Link HT </strong>
 							form(ng-submit='submitElasticSearch()' ng-click="counter = counter + 1" ng-init="counter=0")
 								input.search-query.form-control(type='text',ng-model='elasticSearchText', name='text', placeholder='Search...')
 								input.btn.btn-primary#submit(type='submit', value='Submit')
@@ -25,9 +26,9 @@ div(ng-include='"components/navbar/navbar.html"')
 								input(type="checkbox", ng-model="hasSocialMedia")
 						.col-md-10
 							h4 Search Results Summary
-							p You found {{aggregates.get('entityIds').length}} entities, which are made up of {{aggregates.get('nAds')}} ads with {{aggregates.get('nPictures')}} pictures. 
-							p(ng-if="aggregates.get('age_min').length > 0") The age range is {{aggregates.get('age_min')}} to {{aggregates.get('age_max')}}.
-							p(ng-if="aggregates.get('rate60').length > 0") The price range is {{aggregates.get('price_min') | currency:"$"}} to {{aggregates.get('price_max') | currency:"$"}}. 
+							p You found <strong> {{aggregates.get('entityIds').length}} entities </strong> , which are made up of <strong> {{aggregates.get('nAds')}} ads </strong> with <strong> {{aggregates.get('nPictures')}} </strong>pictures. 
+							p(ng-if="aggregates.get('age_min').length > 0") The age range extracted from the returns ads is {{aggregates.get('age_min')}} to {{aggregates.get('age_max')}}.
+							p(ng-if="aggregates.get('rate60').length > 0") The price range extracted from the returns ads is {{aggregates.get('price_min') | currency:"$"}} to {{aggregates.get('price_max') | currency:"$"}}. 
 						.col-md-2
 						.col-md-10
 							accordion(close-others='oneAtATime')
