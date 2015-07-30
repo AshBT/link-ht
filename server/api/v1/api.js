@@ -92,6 +92,46 @@ module.exports = (function() {
     });
   }
 
+  /** _update
+   *
+   * This updates the elasticsearch instance.
+   * Takes an entity_id, a username, a blob object, the operation,
+   * and the http response object.
+   *
+   * The operation is one of 'add' or 'remove'.
+   */
+  var _update = function(entity_id, user, blob, operation, res) {
+    var script;
+    switch(operation) {
+      case 'add':
+        script = "if (ctx._source.containsKey(key)) { ctx._source[key] += blob } else { ctx._source[key] = [blob] }";
+        break;
+      case 'remove':
+        script = "if (ctx._source.containsKey(key)) { ctx._source[key] -= blob }";
+        break;
+      default:
+        throw new Error("Invalid operation '"+operation+"' requested.")
+    }
+
+    db.elasticsearch.update({
+      index: 'entities',
+      type: 'entity',
+      id: entity_id,
+      retryOnConflict: 5,
+      body: {
+        script: script,
+        params: {
+          key: user,
+          blob: blob
+        }
+      }
+    }).then(function(response) {
+      res.json(response)
+    }, function(error) {
+      return res.status(400).json({error: error});
+    })
+  }
+
   var search = function(req, res) {
     var number_per_page = req.query.size || 10,
         page = req.query.page || 1,
@@ -171,23 +211,7 @@ module.exports = (function() {
         // once we have successfully written into the entities table, we
         // also have to update elasticsearch
         var blob = JSON.parse(rows[0].json);
-        db.elasticsearch.update({
-          index: 'entities',
-          type: 'entity',
-          id: entity_id,
-          retryOnConflict: 5,
-          body: {
-            script: "if (ctx._source.containsKey(key)) { ctx._source[key] += blob } else { ctx._source[key] = [blob] }",
-            params: {
-              key: user,
-              blob: blob
-            }
-          }
-        }).then(function(response) {
-            res.json(response)
-          }, function(error) {
-          return res.status(400).json({error: error});
-        })
+        _update(entity_id, user, blob, 'add', res);
       });
     });
   }
@@ -197,12 +221,24 @@ module.exports = (function() {
         ad_id = req.params.ad_id,
         user = req.query.user || "auto";
 
-    db.mysql.query('SELECT 1', function(err, rows) {
+    // first, insert into the table
+    var query = "DELETE FROM entities WHERE ad_id=? AND entity_id=? AND user=?";
+    db.mysql.query(query, [ad_id, entity_id, user], function(err, rows) {
       if (err) {
-        res.status(400).json({error: err});
-        return
+        return res.status(400).json({error: err});
       }
-      res.json(rows)
+
+      // upon a successful delete, let's find the json for the matching ad
+      db.mysql.query("SELECT json FROM ads WHERE id=?", ad_id, function(err, rows) {
+        if (err) {
+          return res.status(400).json({error: err});
+        }
+
+        // once we have successfully deleted from the entities table, we
+        // also have to update elasticsearch
+        var blob = JSON.parse(rows[0].json);
+        _update(entity_id, user, blob, 'remove', res);
+      });
     });
   }
 
