@@ -22,7 +22,6 @@
     "angular-google-maps": "~2.1.1",
     "hashmap": "~2.0.3",
     "bootswatch": "3.3.4+1",
-    "elasticsearch": ">=5.0.0",
     "angular-rangeslider": "~0.0.14",
     "angular-charts": "~0.2.7",
     "ng-crossfilter": "~2.5.0",
