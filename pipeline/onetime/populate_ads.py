@@ -65,6 +65,7 @@ def worker(q, tables, sql_engine, es_client):
   """
   insert_ads = tables['ads'].insert().prefix_with('IGNORE')
   insert_link = tables['phone_link'].insert()
+  insert_text_link = tables['text_link'].insert().prefix_with('IGNORE')
   insert_entity = tables['entities'].insert()
   entity = tables['entities']
   while True:
@@ -77,11 +78,17 @@ def worker(q, tables, sql_engine, es_client):
       # store the blob into sql
       blob_json_string = json.dumps(blob, ensure_ascii=False).encode('utf8').decode('utf8')
       conn.execute(insert_ads, id=blob['id'], json=blob_json_string)
+
+      # add to text_link table
+      if 'text_signature' in blob and blob['text_signature']:
+        text_signature = blob['text_signature']
+        conn.execute(insert_link, ad_id=blob['id'], text_id=text_signature)
+
       # process phone numbers and add to phone_link table
       phone_list = get_phone_list(work)
       new_phone_list = None
       if phone_list:
-        # now, find all exisitng bolb id, phone number pairs
+        # now, find all exisitng blob id, phone number pairs
         s = sql.select([entity.c.entity_id]).where(
               sql.and_(
                 entity.c.entity_id.in_(phone_list),
@@ -145,12 +152,21 @@ def worker_process(reader, worker_process_id):
     sql.Column('json', sql.UnicodeText),
     sql.Column('created', sql.TIMESTAMP, server_default=sql.text('NOW()'))
   )
+
   # create the phone link table
   phone_link = sql.Table('phone_link', metadata,
     sql.Column('ad_id', None, sql.ForeignKey('ads.id'), primary_key=True, index=True),
     sql.Column('phone_id', sql.String(15), primary_key=True, index=True),
     sql.Column('created', sql.TIMESTAMP, server_default=sql.text('NOW()')),
     sql.UniqueConstraint('ad_id', 'phone_id')
+  )
+
+  # create the text link table
+  text_link = sql.Table('text_link', metadata,
+    sql.Column('ad_id', None, sql.ForeignKey('ads.id'), primary_key=True, index=True),
+    sql.Column('text_id', sql.String(64), primary_key=True, index=True),
+    sql.Column('created', sql.TIMESTAMP, server_default=sql.text('NOW()')),
+    sql.UniqueConstraint('ad_id', 'text_id')
   )
 
   # create the entities table if it doesn't exist
@@ -169,7 +185,8 @@ def worker_process(reader, worker_process_id):
   tables = {
     'ads': ads,
     'entities': entities,
-    'phone_link': phone_link
+    'phone_link': phone_link,
+    'text_link': text_link
   }
   workers = map(lambda x: gevent.spawn(x, q, tables, engine, dst), [worker]*NUM_WORKERS)
 
