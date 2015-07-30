@@ -2,7 +2,7 @@
 .col-md-12
 	#map_canvas
 	ui-gmap-google-map(center='mb.map.center', zoom='mb.map.zoom', draggable='true', bounds='mb.map.bounds')
-		ui-gmap-markers(models='mb.data', coords="'self'", icon="'icon'")
+		ui-gmap-markers(models='mb.data', coords="'self'", icon="'icon'", doCluster='true')
 		ui-gmap-rectangle(ng-if='mb.showSelector', bounds='mb.bounds', draggable='true', editable='true', fill="'#FFFFFF .5'")
 
 .col-md-12
