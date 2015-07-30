@@ -22,6 +22,11 @@ SQL_HOST=os.getenv('SQL_HOST', 'localhost')
 SQL_PASS=os.getenv('SQL_PASS', '')
 SQL_DB=os.getenv('SQL_DB', '')
 
+SQL_USER='root'
+SQL_HOST='localhost'
+SQL_PASS=''
+SQL_DB='link_ht'
+
 ELS_USER=os.getenv('ELS_USER', '')
 ELS_PASS=os.getenv('ELS_PASS', '')
 ELS_HOST=os.getenv('ELS_HOST', 'localhost')
@@ -70,7 +75,8 @@ def worker(q, tables, sql_engine, es_client):
     conn = sql_engine.connect()
     with conn.begin() as trans:
       # store the blob into sql
-      conn.execute(insert_ads, id=blob['id'], json=unicode(json.dumps(blob)))
+      blob_json_string = json.dumps(blob, ensure_ascii=False).encode('utf8').decode('utf8')
+      conn.execute(insert_ads, id=blob['id'], json=blob_json_string)
       # process phone numbers and add to phone_link table
       phone_list = get_phone_list(work)
       new_phone_list = None
@@ -104,15 +110,15 @@ def worker(q, tables, sql_engine, es_client):
           es_client.update(index='entities',
             doc_type='entity',
             id=number,
-            retry_on_conflict=15,
-            body={"script": "ctx._source[key] += blob",
-              "params": {
-                "key": "base",
-                "blob": blob
+            retry_on_conflict=32,
+            body={u"script": u"ctx._source[key] += blob",
+              u"params": {
+                u"key": u"base",
+                u"blob": blob
               },
-              "upsert": {
-                "entity": number,
-                "base": [blob]
+              u"upsert": {
+                u"entity": number,
+                u"base": [blob]
               }})
       trans.commit()
     gevent.sleep(0)
