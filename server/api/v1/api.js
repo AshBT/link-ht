@@ -2,7 +2,9 @@
 
 // (ECHU): Trying a new style for exporting modules.
 module.exports = (function() {
-  var db = require('../../databases')
+  var db = require('../../databases'),
+      mysql = require('mysql'),
+      _ = require('lodash');
 
   var _search = function(query, size, page) {
     var starting_from = (page - 1) * size;
@@ -132,6 +134,15 @@ module.exports = (function() {
     })
   }
 
+  var _construct_link = function(entity_id, linker, column_name, reason) {
+      return "(SELECT t2.ad_id as id, json, "+mysql.escape(reason)+" as reason " +
+        "FROM entities as e "+
+        "JOIN "+mysql.escapeId(linker)+" as t1 ON e.ad_id = t1.ad_id " +
+        "JOIN "+mysql.escapeId(linker)+" as t2 ON t2."+mysql.escapeId(column_name)+"=t1."+mysql.escapeId(column_name)+" AND NOT t2.ad_id IN (SELECT ad_id from entities where entity_id="+mysql.escape(entity_id)+") " +
+        "JOIN ads ON t2.ad_id=ads.id " +
+        "WHERE e.entity_id="+mysql.escape(entity_id)+")"
+  }
+
   var search = function(req, res) {
     var number_per_page = req.query.size || 10,
         page = req.query.page || 1,
@@ -242,12 +253,31 @@ module.exports = (function() {
     });
   }
 
+  var suggestAd = function(req, res) {
+    var entity_id = req.params.id,
+        number_per_page = req.query.size || 10,
+        page = req.query.page || 1,
+        count = req.query.count || "no";
+    var starting_from = (page - 1) * number_per_page;
+
+    var query = "SELECT id, json, group_concat(reason) as reasons FROM ("+
+      _construct_link(entity_id, 'phone_link', 'phone_id', 'phone') +
+      " UNION ALL " +
+      _construct_link(entity_id, 'text_link', 'text_id', 'text') +
+      ") as t GROUP BY id ORDER BY id LIMIT ?,?"
+
+    console.log(query)
+    db.mysql.query(query, [starting_from, number_per_page], function(err, rows) {
+      if (err) {
+        return res.status(400).json({error: err});
+      }
+      res.json(rows)
+    })
+  }
+
   return {
     search: search,
-    suggestAd: function(req, res) {
-      var id = req.params.id;
-      console.log("id: " + id)
-    },
+    suggestAd: suggestAd,
     getEntity: getEntity,
     attachAd: attachAd,
     detachAd: detachAd
