@@ -264,14 +264,28 @@ module.exports = (function() {
       _construct_link(entity_id, 'phone_link', 'phone_id', 'phone') +
       " UNION ALL " +
       _construct_link(entity_id, 'text_link', 'text_id', 'text') +
-      ") as t GROUP BY id ORDER BY id LIMIT ?,?"
+      ") GROUP BY id ORDER BY id LIMIT ?,?"
+
+    var count_query = "SELECT count(distinct id) FROM ("+
+      _construct_link(entity_id, 'phone_link', 'phone_id', 'phone') +
+      " UNION ALL " +
+      _construct_link(entity_id, 'text_link', 'text_id', 'text') +
+      ")"
 
     console.log(query)
     db.mysql.query(query, [starting_from, number_per_page], function(err, rows) {
       if (err) {
         return res.status(400).json({error: err});
       }
-      res.json(rows)
+      var payload = {suggestions: rows}
+      if (count === "yes") {
+        db.mysql.query(count_query, function(err, rows) {
+          payload.total = rows[0]
+          res.json(payload)
+        })
+      } else {
+        res.json(payload)
+      }
     })
   }
 
