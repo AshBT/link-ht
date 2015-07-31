@@ -10,7 +10,6 @@ angular.module('memexLinkerApp', [
   'uiGmapgoogle-maps',
   'akoenig.deckgrid',
   'ngLodash',
-  'Chart.js',
   'ui-rangeSlider',
   'ngCrossfilter'
 ])
