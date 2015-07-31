@@ -38,7 +38,7 @@ ELS_QAD_HOSTS=os.getenv('ELS_QAD_HOSTS', 'localhost')
 QUEUE_SIZE=1024
 NUM_WORKERS=8
 NUM_PROCESS=8
-LIMIT = 100000
+LIMIT = 1000
 
 # populate phone list
 def get_phone_list(data):
