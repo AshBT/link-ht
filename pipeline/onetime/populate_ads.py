@@ -82,7 +82,7 @@ def worker(q, tables, sql_engine, es_client):
       # add to text_link table
       if 'text_signature' in blob and blob['text_signature']:
         text_signature = blob['text_signature']
-        conn.execute(insert_link, ad_id=blob['id'], text_id=text_signature)
+        conn.execute(insert_text_link, ad_id=blob['id'], text_id=text_signature)
 
       # process phone numbers and add to phone_link table
       phone_list = get_phone_list(work)
