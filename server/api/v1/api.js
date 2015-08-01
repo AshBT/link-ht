@@ -4,13 +4,14 @@
 module.exports = (function() {
   var db = require('../../databases'),
       mysql = require('mysql'),
+      config = require('../../config/environment'),
       _ = require('lodash');
 
   var _search = function(query, size, page) {
     var starting_from = (page - 1) * size;
 
     return db.elasticsearch.search({
-      index: 'entities',
+      index: config.elasticsearch.index,
       type: 'entity',
       size: size,
       from: starting_from,
@@ -37,7 +38,7 @@ module.exports = (function() {
 
   var _count = function(query) {
     return db.elasticsearch.count({
-      index: 'entities',
+      index: config.elasticsearch.index,
       type: 'entity',
       body: {
         query: {
@@ -71,7 +72,7 @@ module.exports = (function() {
     var starting_from = (page - 1) * size;
 
     return db.elasticsearch.getSource({
-      index: 'entities',
+      index: config.elasticsearch.index,
       type: 'entity',
       id: entity_id
     }).then(function (source) {
@@ -86,7 +87,7 @@ module.exports = (function() {
       }
       ads.sort();
       return {status: 200, payload: {
-        count: ads.length,
+        total: ads.length,
         ads: ads.slice(starting_from, starting_from + size)
       }};
     }, function (error) {
@@ -116,7 +117,7 @@ module.exports = (function() {
     }
 
     db.elasticsearch.update({
-      index: 'entities',
+      index: config.elasticsearch.index,
       type: 'entity',
       id: entity_id,
       retryOnConflict: 5,
@@ -195,7 +196,7 @@ module.exports = (function() {
         }
         return_result.ads = result.payload.ads;
         if (count === "yes") {
-          return_result.count = result.payload.count;
+          return_result.total = result.payload.total;
         }
         res.json(return_result);
       });
