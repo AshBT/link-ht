@@ -17,7 +17,8 @@ module.exports = {
 
   elasticsearch: {
     hosts: ['http://localhost:9200'],
-    log: 'trace'
+    log: 'trace',
+    index: 'entities'
   },
   seedDB: true
 };

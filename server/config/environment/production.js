@@ -34,6 +34,7 @@ module.exports = {
     log: [{
       type: 'stdio',
       levels: ['error', 'warning']
-    }]
+    }],
+    index: 'entities-prod'
   }
 };
