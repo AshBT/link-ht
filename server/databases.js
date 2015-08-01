@@ -2,27 +2,23 @@
 
 /* any database clients should go here. */
 module.exports = (function() {
+  var config = require('./config/environment')
 
   var connect_elasticsearch = function() {
     var elasticsearch = require('elasticsearch');
-    var LINK_HT_ES_HOST = process.env['LINK_HT_ES_HOST'] || 'http://localhost:9200';
     return new elasticsearch.Client({
-      host: LINK_HT_ES_HOST,
-      log: 'trace'
+      host: config.elasticsearch.hosts,
+      log:  config.elasticsearch.log
     });
   }
 
   var connect_mysql = function() {
     var mysql = require('mysql');
-    var SQL_USER = process.env['SQL_USER'] || 'root',
-        SQL_HOST = process.env['SQL_HOST'] || 'localhost',
-        SQL_PASS = process.env['SQL_PASS'] || '',
-        SQL_DB = process.env['SQL_DB'] || 'link_ht';
     return mysql.createConnection({
-      host     : SQL_HOST,
-      user     : SQL_USER,
-      password : SQL_PASS,
-      database : SQL_DB
+      host     : config.mysql.host,
+      user     : config.mysql.user,
+      password : config.mysql.password,
+      database : 'link_ht'
     });
   }
 
