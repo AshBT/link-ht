@@ -1,4 +1,5 @@
 import phonenumbers as ph
+import ftfy
 
 def __standardize(number):
   num = u"+{}".format(number.lstrip("+"))
@@ -18,6 +19,12 @@ def standardize_number(number):
 
 def standardize_numbers(phone_numbers):
   return filter(None, map(standardize_number, phone_numbers))
+
+def fix_encoding(elem):
+    if isinstance(elem, unicode):
+        return ftfy.fix_encoding(elem)
+    else:
+        return elem
 
 if __name__ == "__main__":
   my_nums = ["650 450 3926", "(650) 450 3926", "+16504503926", "16504503926"]
