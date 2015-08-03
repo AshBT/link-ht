@@ -10,6 +10,7 @@ angular.module('memexLinkerApp')
 	// Aggregate details about this entitiy.
 	$scope.entity = {
 		phone:'',
+		adsid:[],
 		email:[],
 		name:[],
 		city:[],
@@ -33,7 +34,7 @@ angular.module('memexLinkerApp')
 
     var boom = "ads_id%3A32711920%20OR%20ads_id%3A32711944"
     $scope.imagecat = $sce.trustAsResourceUrl("https://darpamemex:darpamemex@imagecat.memexproxy.com/imagespace/#search/" + boom);
-
+	// $scope.imagecat = []
 	$scope.blur = true;
 	$scope.ads = [];
 	$scope.imageUrls = [];
@@ -305,6 +306,7 @@ angular.module('memexLinkerApp')
 
 	function updateEntity() {
 		$scope.entity.cities = uniqueFlatAndDefined(collectAdProperty2($scope.ads, 'city')).sort();
+		$scope.entity.adsid = uniqueFlatAndDefined(collectAdProperty2($scope.ads, 'id')).sort().slice(0,10);
 		$scope.entity.postTime = uniqueFlatAndDefined(collectAdProperty($scope.ads, 'posttime')).sort();
 		$scope.entity.age = uniqueFlatAndDefined(collectAdProperty($scope.ads, 'age')).sort();
 		$scope.entity.ethnicities = uniqueFlatAndDefined(collectAdProperty($scope.ads, 'ethnicity')).sort();
@@ -447,7 +449,11 @@ angular.module('memexLinkerApp')
 	updateLinked();
 	updateSuggestedText();
 	updateSuggestedImage();
+	// $scope.imagecat = $sce.trustAsResourceUrl("https://darpamemex:darpamemex@imagecat.memexproxy.com/imagespace/#search/" + "ads_id%3A" + entity.adsid.join("%20OR%20ads_id%3A"));
+
+
 });
+
 
 // TODO: put this under components
 angular.module('memexLinkerApp').
