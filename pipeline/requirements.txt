@@ -5,3 +5,4 @@ gevent
 gipc
 requests
 phonenumbers
+ftfy

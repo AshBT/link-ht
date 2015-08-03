@@ -19,6 +19,9 @@ module.exports = function(app) {
   // V1 API endpoints
   app.use('/api/v1', require('./api/v1'));
 
+  // google app engine handlers
+  app.use(require('./lib/appengine-handlers'));
+
   app.use('/auth', require('./auth'));
 
   // All undefined asset or api routes should return a 404

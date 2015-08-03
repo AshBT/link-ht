@@ -13,19 +13,15 @@ import datetime
 import warnings
 import json
 import os
+import sys
 
 import utils
 
 # env variables
-SQL_USER=os.getenv('SQL_USER', '')
+SQL_USER=os.getenv('SQL_USER', 'root')
 SQL_HOST=os.getenv('SQL_HOST', 'localhost')
 SQL_PASS=os.getenv('SQL_PASS', '')
-SQL_DB=os.getenv('SQL_DB', '')
-
-SQL_USER='root'
-SQL_HOST='localhost'
-SQL_PASS=''
-SQL_DB='link_ht'
+SQL_DB=os.getenv('SQL_DB', 'link_ht')
 
 ELS_USER=os.getenv('ELS_USER', '')
 ELS_PASS=os.getenv('ELS_PASS', '')
@@ -49,12 +45,72 @@ def get_phone_list(data):
         phone_list = []
     return phone_list
 
+# create the sql tables
+def create_tables(create=True):
+    mysql = "mysql+pymysql://{user}:{passwd}@{host}/{db}?charset=utf8mb4".format(user=SQL_USER, passwd=SQL_PASS, host=SQL_HOST, db=SQL_DB)
+    engine = sql.create_engine(mysql, echo=False, pool_size=20)
+
+    # create the ads table if it doesn't exist
+    metadata = sql.MetaData()
+    ads = sql.Table('ads', metadata,
+      sql.Column('id', sql.Integer, primary_key=True, index=True),
+      sql.Column('json', sql.UnicodeText),
+      sql.Column('created', sql.TIMESTAMP, server_default=sql.text('NOW()')),
+      mysql_charset='utf8mb4'
+    )
+
+    # create the phone link table
+    phone_link = sql.Table('phone_link', metadata,
+      sql.Column('ad_id', None, sql.ForeignKey('ads.id'), primary_key=True, index=True),
+      sql.Column('phone_id', sql.String(15), primary_key=True, index=True),
+      sql.Column('created', sql.TIMESTAMP, server_default=sql.text('NOW()')),
+      sql.UniqueConstraint('ad_id', 'phone_id'),
+      mysql_charset='utf8mb4'
+    )
+
+    # create the text link table
+    text_link = sql.Table('text_link', metadata,
+      sql.Column('ad_id', None, sql.ForeignKey('ads.id'), primary_key=True, index=True),
+      sql.Column('text_id', sql.String(64), primary_key=True, index=True),
+      sql.Column('created', sql.TIMESTAMP, server_default=sql.text('NOW()')),
+      sql.UniqueConstraint('ad_id', 'text_id'),
+      mysql_charset='utf8mb4'
+    )
+
+    # create the entities table if it doesn't exist
+    entities = sql.Table('entities', metadata,
+      sql.Column('ad_id', None, sql.ForeignKey('ads.id'), primary_key=True, index=True),
+      sql.Column('entity_id', None, sql.ForeignKey('phone_link.phone_id'), primary_key=True, index=True),
+      sql.Column('user', sql.String(50), primary_key=True, index=True),
+      sql.Column('created', sql.TIMESTAMP, server_default=sql.text('NOW()')),
+      sql.UniqueConstraint('ad_id', 'entity_id', 'user'),
+      mysql_charset='utf8mb4'
+    )
+
+    if create:
+      metadata.create_all(engine)
+      return engine
+
+    return ({
+        'ads': ads,
+        'entities': entities,
+        'phone_link': phone_link,
+        'text_link': text_link
+      }, engine)
+
 # simple helper to use with pipeline
 def send_to_plumber(payload):
   data = {u"data": payload}
   r = requests.post(LINK_HT_PIPELINE, data=json.dumps(data))
-  r.raise_for_status()
-  return r.json()['data']
+  if r.status_code != 200:
+    # dunno what happened
+    print >> sys.stderr, repr(r)
+    return payload
+  elif r.json()['metadata']['errors']:
+    print >> sys.stderr, json.dumps(r.json()['metadata']['errors'])
+    return r.json()['data']
+  else:
+    return r.json()['data']
 
 def worker(q, tables, sql_engine, es_client):
   """
@@ -76,13 +132,13 @@ def worker(q, tables, sql_engine, es_client):
     conn = sql_engine.connect()
     with conn.begin() as trans:
       # store the blob into sql
-      blob_json_string = json.dumps(blob, ensure_ascii=False).encode('utf8').decode('utf8')
+      blob_json_string = utils.fix_encoding(json.dumps(blob, ensure_ascii=False))
       conn.execute(insert_ads, id=blob['id'], json=blob_json_string)
 
       # add to text_link table
       if 'text_signature' in blob and blob['text_signature']:
         text_signature = blob['text_signature']
-        conn.execute(insert_link, ad_id=blob['id'], text_id=text_signature)
+        conn.execute(insert_text_link, ad_id=blob['id'], text_id=text_signature)
 
       # process phone numbers and add to phone_link table
       phone_list = get_phone_list(work)
@@ -130,7 +186,7 @@ def worker(q, tables, sql_engine, es_client):
       trans.commit()
     gevent.sleep(0)
 
-def worker_process(reader, worker_process_id):
+def worker_process(reader):
   # set up the work queue
   q = gevent.queue.Queue(maxsize=QUEUE_SIZE)
 
@@ -142,52 +198,10 @@ def worker_process(reader, worker_process_id):
   es_instances = ["http://{host}:9200".format(host=h) for h in ELS_QAD_HOSTS.split(',')]
   dst = es.Elasticsearch(es_instances, timeout=60, retry_on_timeout=True)
 
-  mysql = "mysql+pymysql://{user}:{passwd}@{host}/{db}?charset=utf8mb4".format(user=SQL_USER, passwd=SQL_PASS, host=SQL_HOST, db=SQL_DB)
-  engine = sql.create_engine(mysql, echo=False, pool_size=20)
-
-  # create the ads table if it doesn't exist
-  metadata = sql.MetaData()
-  ads = sql.Table('ads', metadata,
-    sql.Column('id', sql.Integer, primary_key=True, index=True),
-    sql.Column('json', sql.UnicodeText),
-    sql.Column('created', sql.TIMESTAMP, server_default=sql.text('NOW()'))
-  )
-
-  # create the phone link table
-  phone_link = sql.Table('phone_link', metadata,
-    sql.Column('ad_id', None, sql.ForeignKey('ads.id'), primary_key=True, index=True),
-    sql.Column('phone_id', sql.String(15), primary_key=True, index=True),
-    sql.Column('created', sql.TIMESTAMP, server_default=sql.text('NOW()')),
-    sql.UniqueConstraint('ad_id', 'phone_id')
-  )
-
-  # create the text link table
-  text_link = sql.Table('text_link', metadata,
-    sql.Column('ad_id', None, sql.ForeignKey('ads.id'), primary_key=True, index=True),
-    sql.Column('text_id', sql.String(64), primary_key=True, index=True),
-    sql.Column('created', sql.TIMESTAMP, server_default=sql.text('NOW()')),
-    sql.UniqueConstraint('ad_id', 'text_id')
-  )
-
-  # create the entities table if it doesn't exist
-  entities = sql.Table('entities', metadata,
-    sql.Column('ad_id', None, sql.ForeignKey('ads.id'), primary_key=True, index=True),
-    sql.Column('entity_id', None, sql.ForeignKey('phone_link.phone_id'), primary_key=True, index=True),
-    sql.Column('user', sql.String(50), primary_key=True, index=True),
-    sql.Column('created', sql.TIMESTAMP, server_default=sql.text('NOW()')),
-    sql.UniqueConstraint('ad_id', 'entity_id', 'user')
-  )
-
-  if worker_process_id == 0:
-    metadata.create_all(engine)
+  # create the Table objects (but not the actual tables themselves)
+  tables, engine = create_tables(False)
 
   # set up the workers
-  tables = {
-    'ads': ads,
-    'entities': entities,
-    'phone_link': phone_link,
-    'text_link': text_link
-  }
   workers = map(lambda x: gevent.spawn(x, q, tables, engine, dst), [worker]*NUM_WORKERS)
 
   # now iterate over all the ads to put them into our SQL db and ES instance
@@ -211,13 +225,17 @@ def worker_process(reader, worker_process_id):
     gevent.joinall(workers)
 
 if __name__ == "__main__":
+  # create the sql tables (if they don't already exist)
+  engine = create_tables()
+  engine.dispose()
+
   es_instance = "https://{user}:{passwd}@{host}:9200".format(user=ELS_USER, passwd=ELS_PASS, host=ELS_HOST)
   client = es.Elasticsearch([es_instance], timeout=60, retry_on_timeout=True)
 
   all_ads = eshelp.scan(client, index="memex_ht", doc_type="ad", scroll='15m')
 
   pipes = [gipc.pipe() for _ in xrange(NUM_PROCESS)]
-  processes = [gipc.start_process(target=worker_process, args=(r,i)) for i, (r, _) in enumerate(pipes)]
+  processes = [gipc.start_process(target=worker_process, args=(r,)) for r, _ in pipes]
   try:
     with warnings.catch_warnings():
       warnings.simplefilter("ignore")

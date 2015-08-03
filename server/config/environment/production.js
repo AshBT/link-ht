@@ -2,6 +2,7 @@
 
 // Production specific configuration
 // =================================
+var env = require('./utils');
 module.exports = {
   // Server IP
   ip:       process.env.OPENSHIFT_NODEJS_IP ||
@@ -20,5 +21,20 @@ module.exports = {
             process.env.OPENSHIFT_MONGODB_DB_URL+process.env.OPENSHIFT_APP_NAME ||
             'mongodb://' + process.env.MONGO_PORT_27017_TCP_ADDR + ':' + process.env.MONGO_PORT_27017_TCP_PORT + '/memexlinker' ||
             'mongodb://localhost/memexlinker'
+  },
+
+  mysql: {
+    user: env.required('SQL_USER'),
+    password: env.required('SQL_PASS'),
+    host: env.required('SQL_HOST')
+  },
+
+  elasticsearch: {
+    hosts: env.required('ELS_HOSTS').split(","),
+    log: [{
+      type: 'stdio',
+      levels: ['error', 'warning']
+    }],
+    index: 'entities-prod'
   }
 };

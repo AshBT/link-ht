@@ -4,13 +4,14 @@
 module.exports = (function() {
   var db = require('../../databases'),
       mysql = require('mysql'),
+      config = require('../../config/environment'),
       _ = require('lodash');
 
   var _search = function(query, size, page) {
     var starting_from = (page - 1) * size;
 
     return db.elasticsearch.search({
-      index: 'entities',
+      index: config.elasticsearch.index,
       type: 'entity',
       size: size,
       from: starting_from,
@@ -37,7 +38,7 @@ module.exports = (function() {
 
   var _count = function(query) {
     return db.elasticsearch.count({
-      index: 'entities',
+      index: config.elasticsearch.index,
       type: 'entity',
       body: {
         query: {
@@ -71,7 +72,7 @@ module.exports = (function() {
     var starting_from = (page - 1) * size;
 
     return db.elasticsearch.getSource({
-      index: 'entities',
+      index: config.elasticsearch.index,
       type: 'entity',
       id: entity_id
     }).then(function (source) {
@@ -86,7 +87,7 @@ module.exports = (function() {
       }
       ads.sort();
       return {status: 200, payload: {
-        count: ads.length,
+        total: ads.length,
         ads: ads.slice(starting_from, starting_from + size)
       }};
     }, function (error) {
@@ -116,7 +117,7 @@ module.exports = (function() {
     }
 
     db.elasticsearch.update({
-      index: 'entities',
+      index: config.elasticsearch.index,
       type: 'entity',
       id: entity_id,
       retryOnConflict: 5,
@@ -195,7 +196,7 @@ module.exports = (function() {
         }
         return_result.ads = result.payload.ads;
         if (count === "yes") {
-          return_result.count = result.payload.count;
+          return_result.total = result.payload.total;
         }
         res.json(return_result);
       });
@@ -255,8 +256,8 @@ module.exports = (function() {
 
   var suggestAd = function(req, res) {
     var entity_id = req.params.id,
-        number_per_page = req.query.size || 10,
-        page = req.query.page || 1,
+        number_per_page = parseInt(req.query.size) || 10,
+        page = parseInt(req.query.page) || 1,
         count = req.query.count || "no";
     var starting_from = (page - 1) * number_per_page;
 
@@ -266,12 +267,25 @@ module.exports = (function() {
       _construct_link(entity_id, 'text_link', 'text_id', 'text') +
       ") as t GROUP BY id ORDER BY id LIMIT ?,?"
 
-    console.log(query)
+    var count_query = "SELECT count(distinct id) as total FROM ("+
+      _construct_link(entity_id, 'phone_link', 'phone_id', 'phone') +
+      " UNION ALL " +
+      _construct_link(entity_id, 'text_link', 'text_id', 'text') +
+      ") as t"
+
     db.mysql.query(query, [starting_from, number_per_page], function(err, rows) {
       if (err) {
         return res.status(400).json({error: err});
       }
-      res.json(rows)
+      var payload = {suggestions: rows}
+      if (count === "yes") {
+        db.mysql.query(count_query, function(err, rows) {
+          payload.total = rows[0].total;
+          res.json(payload)
+        })
+      } else {
+        res.json(payload)
+      }
     })
   }
 
