@@ -20,5 +20,12 @@ module.exports = {
     log: 'trace',
     index: 'entities'
   },
+
+  neo4j: {
+    host: 'http://localhost:7474',
+    user: 'neo4j',
+    password: 'password'
+  },
+
   seedDB: true
 };
