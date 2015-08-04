@@ -36,5 +36,11 @@ module.exports = {
       levels: ['error', 'warning']
     }],
     index: 'entities-prod'
+  },
+
+  neo4j: {
+    host: env.required('NEO_HOST'),
+    user: env.required('NEO_USER'),
+    password: env.required('NEO_PASS')
   }
 };

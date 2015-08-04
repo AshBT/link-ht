@@ -16,6 +16,11 @@ import os
 import sys
 
 import utils
+import logging
+
+logging.basicConfig(format='[%(asctime)-15s][%(processName)s][%(threadName)s] %(message)s')
+log = logging.getLogger('ingest')
+log.setLevel(logging.INFO)
 
 # env variables
 SQL_USER=os.getenv('SQL_USER', 'root')
@@ -34,7 +39,7 @@ ELS_QAD_HOSTS=os.getenv('ELS_QAD_HOSTS', 'localhost')
 QUEUE_SIZE=1024
 NUM_WORKERS=8
 NUM_PROCESS=8
-LIMIT = 100000
+LIMIT = 10000
 
 # populate phone list
 def get_phone_list(data):
@@ -126,7 +131,9 @@ def worker(q, tables, sql_engine, es_client):
   entity = tables['entities']
   while True:
     work = q.get()
+    log.info("got work, queue size: {}".format(q.qsize()))
     if work == "DONE":
+      log.info("terminating....")
       break
     blob = send_to_plumber(work)
     conn = sql_engine.connect()
@@ -202,32 +209,53 @@ def worker_process(reader):
   tables, engine = create_tables(False)
 
   # set up the workers
-  workers = map(lambda x: gevent.spawn(x, q, tables, engine, dst), [worker]*NUM_WORKERS)
+  workers = [gevent.spawn(worker, q, tables, engine, dst) for _ in xrange(NUM_WORKERS)]
 
   # now iterate over all the ads to put them into our SQL db and ES instance
   try:
     with warnings.catch_warnings():
       warnings.simplefilter("ignore")
+      count = 0
       while True:
         work = reader.get()
+        count += 1
+        #log.info("work received {}".format(count))
+        gevent.sleep(0)
         if work == "DONE":
+          log.info("terminating process....")
           break
         q.put(work)
-        print "[{}][{}]: queue size {}".format(datetime.datetime.now(), os.getpid(), q.qsize())
-
+        log.info("queue size {}".format(q.qsize()))
         gevent.sleep(0)
   finally:
     # now terminate the workers
-    for _ in workers:
+    for i in xrange(NUM_WORKERS):
+      log.info("terminating greenlet {}".format(i))
       q.put("DONE")
 
     # wait for them all to finish
     gevent.joinall(workers)
 
+def main_worker(w, q):
+  """ We put the main worker behind a queue to limit the rate at which
+  we write to the pipes.
+  """
+  while True:
+    work = q.get()
+    w.put(work)
+    gevent.sleep(0)
+    if work == "DONE":
+      log.info("main worker done...")
+      break
+
+
 if __name__ == "__main__":
   # create the sql tables (if they don't already exist)
   engine = create_tables()
   engine.dispose()
+
+  # set up the main queue
+  main_queue = gevent.queue.Queue(maxsize=QUEUE_SIZE)
 
   es_instance = "https://{user}:{passwd}@{host}:9200".format(user=ELS_USER, passwd=ELS_PASS, host=ELS_HOST)
   client = es.Elasticsearch([es_instance], timeout=60, retry_on_timeout=True)
@@ -235,7 +263,9 @@ if __name__ == "__main__":
   all_ads = eshelp.scan(client, index="memex_ht", doc_type="ad", scroll='15m')
 
   pipes = [gipc.pipe() for _ in xrange(NUM_PROCESS)]
-  processes = [gipc.start_process(target=worker_process, args=(r,)) for r, _ in pipes]
+  processes = [gipc.start_process(target=worker_process, args=(r,)) for (r,_) in pipes]
+  workers = [gevent.spawn(main_worker, w, main_queue) for (_,w) in pipes]
+
   try:
     with warnings.catch_warnings():
       warnings.simplefilter("ignore")
@@ -244,17 +274,16 @@ if __name__ == "__main__":
         if count > LIMIT:
           break
         # send the data up to our link-ht-pipeline
-        _, w = pipes[count % NUM_PROCESS]
-        w.put(e['_source'])
-        print "[{}] count: {}".format(datetime.datetime.now(), count)
+        main_queue.put(e['_source'])
+        log.info("count: {}, queue size: {}".format(count, main_queue.qsize()))
   finally:
     # shut down the processes
-    for _, w in pipes:
-      w.put("DONE")
-
-    for r,w in pipes:
-      w.close()
+    for _ in workers:
+      main_queue.put("DONE")
 
     for p in processes:
-      print "[{}] waiting for process: {}".format(datetime.datetime.now(), p.pid)
+      log.info("waiting for process: {}".format(p.pid))
       p.join()
+
+    # wait for workers
+    gevent.joinall(workers)
