@@ -12,6 +12,24 @@ div(ng-include='"components/navbar/navbar.html"')
 							form(ng-submit='submitElasticSearch()' ng-click="counter = counter + 1" ng-init="counter=0")
 								input.search-query.form-control(type='text',ng-model='elasticSearchText', name='text', placeholder='Search...')
 								input.btn.btn-primary#submit(type='submit', value='Submit')
+					.col-md-3.form
+					.col-md-12
+						.panel.panel-default
+							.panel-heading
+								select.fr(ng-model='sizeLimit')
+									option(value='5292880') 5MB Upload Limit
+									option(value='10585760') 10MB Upload Limit
+									option(value='15878640') 15MB Upload Limit
+								h3.panel-title Step 2: Upload The File
+							.panel-body
+								input.bottom-marg-15(type='file', name='file', file='')
+								// Progress Bar
+								.progress
+									.progress-bar(role='progressbar', aria-valuenow='{{ uploadProgress }}', aria-valuemin='0', aria-valuemax='100', style='width: {{ uploadProgress }}%;')
+										| {{ uploadProgress == 0 ? '' : uploadProgress + '%' }}
+								a.btn.btn-primary.btn-block.btn-lg(ng-click='upload()') Upload
+
+
 				.search-body.panel-body(ng-if="aggregates.get('entityIds').length > 0")
 					.row
 						.col-md-2
