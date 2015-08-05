@@ -31,6 +31,7 @@ SQL_DB=os.getenv('SQL_DB', 'link_ht')
 ELS_USER=os.getenv('ELS_USER', '')
 ELS_PASS=os.getenv('ELS_PASS', '')
 ELS_HOST=os.getenv('ELS_HOST', 'localhost')
+ELS_PORT=os.getenv('ELS_PORT', 9200)
 
 LINK_HT_PIPELINE=os.getenv('LINK_HT_PIPELINE', 'localhost')
 
@@ -106,7 +107,7 @@ def create_tables(create=True):
 # simple helper to use with pipeline
 def send_to_plumber(payload):
   data = {u"data": payload}
-  r = requests.post(LINK_HT_PIPELINE, data=json.dumps(data))
+  r = requests.post(LINK_HT_PIPELINE, json=data)
   if r.status_code != 200:
     # dunno what happened
     print >> sys.stderr, repr(r)
@@ -198,7 +199,7 @@ def worker_process(reader):
   q = gevent.queue.Queue(maxsize=QUEUE_SIZE)
 
   # source of info
-  es_instance = "https://{user}:{passwd}@{host}:9200".format(user=ELS_USER, passwd=ELS_PASS, host=ELS_HOST)
+  es_instance = "https://{user}:{passwd}@{host}:{port}".format(user=ELS_USER, passwd=ELS_PASS, host=ELS_HOST, port=ELS_PORT)
   es_src = es.Elasticsearch([es_instance], timeout=60, retry_on_timeout=True)
 
   # dest of info
@@ -257,7 +258,7 @@ if __name__ == "__main__":
   # set up the main queue
   main_queue = gevent.queue.Queue(maxsize=QUEUE_SIZE)
 
-  es_instance = "https://{user}:{passwd}@{host}:9200".format(user=ELS_USER, passwd=ELS_PASS, host=ELS_HOST)
+  es_instance = "https://{user}:{passwd}@{host}:{port}".format(user=ELS_USER, passwd=ELS_PASS, host=ELS_HOST, port=ELS_PORT)
   client = es.Elasticsearch([es_instance], timeout=60, retry_on_timeout=True)
 
   all_ads = eshelp.scan(client, index="memex_ht", doc_type="ad", scroll='15m')
