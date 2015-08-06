@@ -5,148 +5,29 @@ div(ng-include='"components/navbar/navbar.html"')
 		.col-md-12
 			.panel.panel-default
 				.panel-heading
-					//- h4 Ads in Last 24 Hours
-					//- h4 Streaming Ads View Currently Under Development
 					h2 Frequently Asked Questions
 				.panel-body
 						.com-md-12
-							
-							h4 What is Link HT?
-							p Link HT is a front-end web app that sits on top of Link Plumber, and is applied to commercial sex ad data collected by IST Research. The web app allows users to link together ads to create and organize entities. Entities are collections of ads that are initially grouped together based on phone numbers. Once entities are initialized, a user can change the group of ads that define an entity by detaching or adding an ad to an entity using automated suggestions. All user suggestions/inputs are tagged by username and persisted across the database, but can be ignored by other users if they disagree with the suggestion. 
-							p Link HT’s is designed for investigations. Like traditional search engines, Link HT provides full text search. However, instead of returning a list of URLs to pages containing the search term, Link HT returns a list of entities containing the search term. In other words, a search on the word “Memex” would return not just the ads that contained “Memex,” but those ads’ entities: all the ads sharing the same phone number (or other user confirmed similarity metrics) as the ads containing “Memex.” 
 							h4 Why Link HT?
-							p Investigators need a domain-specific search interface to solve investigative puzzles. Search engines and other domain-specific search tools only provide full-text search and intelligent ranking of results. This means that investigators must continually pivot their searches based on new identifiers. In addition to full-text search and intelligent ranking, Link HT aggregates ads into entities and provides suggestions to further refine entities. These suggestions are based on algorithms designed by experts and piped into Link Plumber. Link HT simplifies an investigator's workflow by building initial entities and providing a streamlined process for investigators to build a case. By providing a platform to explore entities, Link HT reduces the time and number of searches an investigator must complete to build out and find an entity.  
-							h4 What is an entity?
-							p An entity is a collection of ads and reviews. An entity is a construct that is initially based on ads containing the same phone number and ultimately based on how a user adds and removes ads to and from an entity. For simplicity sake, we've labeled each entity by the phone number(s) contained in that entity. 
-							p For example, imagine ten ads sharing the same phone number. Those ten ads will be considered the same entity. Link provides suggestions of ads that may be related to the entity, and a user can confirm these suggestions. A confirmed suggestion incorporates the ad to the entity, and the entity now has 11 ads.
-							h4 What is the backend database?
-							p Neo4j 2.2 with Elastic Search
-							h4 How do you set up the backend database?
-							a(href='https://github.com/qadium/plumber') Click here to view the Link Plumber Github page to set up the back end 
-							h4 What are some example searches that display Link HT's features
-							p Any search works, but here's a couple suggestions search terms. 
+							p As an investigator, you build a case based on tracking down tips. Link HT helps you automate the time-consuming aspects of building a case and streamlines entity-resolution. Link HT automatically groups together ads that share the same phone number or e-mail address, displays all relevant information extracted from that group, and suggest other ads that are likely to be associated with that group. 
+							h4 What is Link HT?
+							p Link HT is Link tailored to human trafficking investigations.
+							h4 What is Link?
+							p Link is an <strong> entity-centric, domain-specific </strong> search tool integrating investigative search with case-building. Rather than providing search results as a list of documents like traditional search engines, Link provides search results as a list of <strong> groups of documents </strong>. Documents are grouped together by high assurance linkages and user refinements.
+							h4 What's a group in Link HT?
+							p A group is a collection of ads and reviews. 
+							h4 How are ads and reviews grouped together in groups?
+							p Initially, groups are collections of ads and reviews that contain the same phone number or e-mail address. As users explore the groups, Link provides suggestions for ads that should also be included in those groups. Users can confirm suggestions and add the ad to the group or remove an add from a group. 
+							h4 How are ads and reviews suggested to be included in a group?
+							p For a group of ads, Link HT suggests similar ads based on overall image similarity, background image similarity, metadata similarity, and text similarity.
+							h4 How does 'search' work in Link HT?
+							p After you enter a search term into Link HT, Link HT queries the database of ads and reviews and identifies all ads that contain your search term. In Link HT's search results, Link HT displays all groups of ads that contain ads that contain your search term. If you include a word that does not appear in the data, then you will see no results. 
+							h4 What search terms are good examples that showcase Link HT's features?
+							p You're free to search on anything, but here are 4 search terms that Qadium uses to demonstrate Link HT.
 							p 1. A search on  <strong> jocelyn  </strong>  returns 4 entities, which includes an entity based on (305) 924-3974. This entity has over 30 ads associated with it and over 100 similar ads related by image similarity. This entity also has detailed information and an associated Twitter account. 
 							p 2. A search on  <strong>  Brazilian Vixen  </strong>  returns 8 entities, which includes an entity based on (647) 495-5510. This entity has over 100 similar ads related by text similarity.
 							p 3. A search on <strong> marriemo </strong> returns 1 entity. This entity has (618) 623-3345. This entity has multiple face pictures
 							p 4. A search on <strong> 8325985016 </strong> returns 1 entity. This entity has a Youtube video associated with it.
-							h4 In general, why a graph database?
-							a(href='http://neo4j.com/developer/graph-db-vs-rdbms/') Here's how Neo4j explains the general reasons for a graph database
-							br
-							p In relational databases, references to other rows and tables are indicated by referring to their (primary-)key attributes via foreign-key columns. This is enforceable with constraints, but only when the reference is never optional. Joins are computed at query time by matching primary- and foreign-keys of the many (potentially indexed) rows of the to-be-joined tables. These operations are compute- and memory-intensive and have an exponential cost.
-							p Each node (entity or attribute) in the graph database model directly and physically contains a list of relationship-records that represent its relationships to other nodes. These relationship records are organized by type and direction and may hold additional attributes. Whenever you run the equivalent of a JOIN operation, the database just uses this list and has direct access to the connected nodes, eliminating the need for a expensive search / match computation.
-							p This ability of pre-materializing relationships into database structures allows Neo4j to provide performances of several orders of magnitude, especially for join heavy queries, the minutes to milliseconds advantage that many users leverage.
-							p The resulting data models are much simpler and at the same time more expressive than those produced using traditional relational or other NoSQL databases.
-							h4 Specifically, why a graph database for Link?
-							p The Link software stack is designed to connect disparate, unstructured data together to create entities and search over entities. A relational database model would be too slow to do the number of joins required to dynamically show entities as collections of ads where the collections are defined by edges specified by the user.
-							
-
-
-
-
-
-
-
-
-	//- 			.panel-body
-	//- 				.row
-	//- 					.col-md-3
-	//- 						.col-md-12
-	//- 							h4 Filter
-	//- 							.col-md-12.custom-search-input
-	//- 								input.search-query.form-control(ng-model="filterPhone" type='text', placeholder='Phone Number')
-	//- 							.col-md-12.custom-search-input
-	//- 								input.search-query.form-control(ng-model="filterText" type='text', placeholder='Ad Text')
-	//- 						.col-md-12
-	//- 							h4 Controls
-	//- 							label Blur Images:
-	//- 								input(type="checkbox" ng-model="blur")
-	//- 							br
-	//- 							br
-	//- 					.col-md-3
-	//- 						h4 Aggregate Statistics
-
-	//- 						table.table.table-hover
-	//- 							tbody
-	//- 								tr
-	//- 									td Entities
-	//- 									td {{aggregates.get('entityIds').length}}
-	//- 								tr
-	//- 									td Ads
-	//- 									td {{aggregates.get('nAds')}}
-	//- 								tr
-	//- 									td Pictures
-	//- 									td {{aggregates.get('nPictures')}}
-	//- 								tr
-	//- 									td Age Range
-	//- 									td {{aggregates.get('age_min')}} to {{aggregates.get('age_max')}}
-	//- 								tr
-	//- 									td Price Range
-	//- 									td {{aggregates.get('price_min')}} to {{aggregates.get('price_max')}}
-
-	//- 					.col-md-6
-	//- 						accordion(close-others='oneAtATime')
-	//- 							accordion-group(heading='Search Result Details (Click Me!)', is-disabled='status.isFirstDisabled')
-	//- 								h4
-	//- 								table.table.table-hover
-
-	//- 									tbody
-	//- 										tr
-	//- 											td Websites
-	//- 											td {{aggregates.get('websites').join(', ')}}
-	//- 										tr
-	//- 											td Twitter Accounts
-	//- 											td {{aggregates.get('twitters').join(', ')}}
-	//- 										tr
-	//- 											td Instagram Accounts
-	//- 											td {{aggregates.get('instagrams').join(', ')}}
-	//- 										tr
-	//- 											td Cities
-	//- 											td {{aggregates.get('cities').join(', ') | capitalize}}
-	//- 										tr
-	//- 											td Names
-	//- 											td {{aggregates.get('names').join(', ') | capitalize}}
-	//- 										tr
-	//- 											td Ethnicities
-	//- 											td {{aggregates.get('ethnicities').join(', ') | capitalize}}
-	//- .row
-	//- 	.col-md-12(ng-repeat="entity in entities1 | orderBy:'-nSuggested' | filter: { phone : filterPhone, text: filterText} ")
-	//- 		.panel.panel-default
-	//- 			.panel-heading
-	//- 				h3 {{entity.nPosts}} Ads from Base Entity {{entity.phone | tel}}
-	//- 			.panel-body
-	//- 				.col-md-4
-	//- 					p Active since: <strong> {{entity.firstPostTime.toDateString()}} </strong>
-	//- 					p(ng-if='entity.name && entity.name.length > 0') Listed names:  <strong>{{entity.name.join(', ') | capitalize}} </strong>
-	//- 					p(ng-if='entity.website && entity.website.length > 0') Websites:  <strong> {{entity.website.join(', ')}}</strong>
-	//- 					p(ng-if='entity.city && entity.city.length > 0') Cities:  <strong>{{entity.city.join(', ') | capitalize}}</strong>
-	//- 					p(ng-if='entity.age && entity.age.length > 0') Listed ages:  <strong>{{entity.age.join(', ')}}</strong>
-	//- 					p(ng-if='entity.priceRange && entity.priceRange.length > 0') Listed price range: <strong>{{entity.priceRange}} </strong>
-	//- 					p(ng-if='entity.imageUrls && entity.imageUrls.length > 0')  Pictures: <strong> {{entity.imageUrls.length}}</strong>
-	//- 					p Pictures with Face: <strong> {{entity.nFaces}}</strong>
-	//- 					p Ads related by image: <strong> {{entity.nSuggestedByImage}}</strong>
-	//- 					p  Ads related by text:<strong> {{entity.nSuggestedByText}}</strong>
-	//- 					p  Ads related by phone co-occurence:  <strong> {{entity.nSuggestedByPhone}}</strong>
-	//- 					a.button.btn-primary.btn-lg.pull-left(ui-sref="entitydetail({ id: entity.id })") Inspect
-
-	//- 				.col-md-8
-	//- 					.panel.panel-default
-	//- 						.panel-heading
-	//- 							.panel-title
-	//- 								h4 Most Recent Post at {{entity.website[0]}} on {{entity.lastPostTime.toDateString()}}
-
-	//- 						.panel-body.vertical-layout
-	//- 							.item
-	//- 								h4 {{entity.title[0]}}
-	//- 							.item
-	//- 								p
-	//- 									| {{entity.text[0]}}
-	//- 							.item
-	//- 								.row
-	//- 									.col-md-2(ng-repeat='img in entity.imageUrls | limitTo:50')
-	//- 										img.responsive(ng-src="{{img}}"
-	//- 											style="max-height:50px; margin:0 auto;"
-	//- 											ng-class="{blurry: blur == true, clear: blur != true}")
-
 	footer.footer
 		center Designed and Developed by Qadium 2015. All code is open source.
-		center About Help Terms Privacy
+		center <a href='posts'> About </a> <a href='posts'> Help </a> <a href='posts'> Terms </a> <a href='posts'> Privacy </a>
