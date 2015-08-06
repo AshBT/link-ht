@@ -27,5 +27,10 @@ module.exports = {
     password: 'password'
   },
 
+  imagesearch: {
+    user: env.required('ISI_USER'),
+    pass: env.required('ISI_PASS')
+  },
+
   seedDB: true
 };

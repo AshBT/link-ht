@@ -42,5 +42,10 @@ module.exports = {
     host: env.required('NEO_HOST'),
     user: env.required('NEO_USER'),
     password: env.required('NEO_PASS')
+  },
+
+  imagesearch: {
+    user: env.required('ISI_USER'),
+    pass: env.required('ISI_PASS')
   }
 };
