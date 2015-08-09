@@ -152,10 +152,10 @@ $scope.sizeLimit      = 15878640; // 10MB in Bytes
 
 	$scope.map = {
 		center: {
-			latitude: 33.5206608,
-			longitude: -86.80248999999998
+			latitude: 39.8282,
+			longitude: -98.5795
 		},
-		zoom: 4
+		zoom: 3
 	};
 
 	$scope.markers = [
