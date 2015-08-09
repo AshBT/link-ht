@@ -1,20 +1,23 @@
 div(ng-include='"components/navbar/navbar.html"')
 
-// ------------------------ Start Upload to S3 Code ---------------------------------------------- //
 
-.container
-	.row
-		.panel.panel-default
-			.panel-heading
-				h3.panel-title Upload Image
-			.panel-body
-				.col-md-12.form
-					input.bottom-marg-15(type='file', name='file', file='')
-					.progress
-						.progress-bar(role='progressbar', aria-valuenow='{{ uploadProgress }}', aria-valuemin='0', aria-valuemax='100', style='width: {{ uploadProgress }}%;')
-							| {{ uploadProgress == 0 ? '' : uploadProgress + '%' }}
-					a.btn.btn-primary.btn-block.btn-lg(ng-click='upload()') Upload
-// ------------------------ End Upload to S3 Code ---------------------------------------------- //
+
+// ------------------------ ISI ---------------------------------------------- //
+
+//- .container
+//- 	.row
+//- 		.panel.panel-default
+//- 			.panel-heading
+//- 				h3.panel-title Testing ISI Image Similarity
+//- 			.panel-body
+//- 				p Testing
+//- 				<iframe ng-src="{{imagecat}}" height=1000 width=1000></iframe>
+//- 				//- p Testing 2
+//- 				//- <iframe ng-src="https://isi.memexproxy.com/ColumbiaUimgSearch.php?url=https://pbs.twimg.com/profile_images/566092970898636801/ONSA8XoQ.jpeg&visualize=1"> </iframe>
+
+// ------------------------ ISI ---------------------------------------------- //
+
+
 
 .container
 	.row

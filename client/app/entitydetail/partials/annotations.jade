@@ -5,25 +5,27 @@
 		| {{annotation.text}}
 
 	//- .panel-footer.clearfix
-.col-md-12
-	form(ng-submit="submit()")
-		| Enter an annotation: 
-		input(type="text" ng-model="text" name="text")
-		input(type="submit" id="submit" value="Submit")
+.container
+	.row
+	.col-md-12
+		form(ng-submit="submit()")
+			| Enter an annotation: 
+			input(type="text" ng-model="text" name="text")
+			input(type="submit" id="submit" value="Submit")
 
-.col-md-12
-	.panel.panel-default
-		.panel-heading
-			select.fr(ng-model='sizeLimit')
-				option(value='5292880') 5MB Upload Limit
-				option(value='10585760') 10MB Upload Limit
-				option(value='15878640') 15MB Upload Limit
-			h3.panel-title Step 2: Upload The File
-		.panel-body
-			input.bottom-marg-15(type='file', name='file', file='')
-			// Progress Bar
-			.progress
-				.progress-bar(role='progressbar', aria-valuenow='{{ uploadProgress }}', aria-valuemin='0', aria-valuemax='100', style='width: {{ uploadProgress }}%;')
-					| {{ uploadProgress == 0 ? '' : uploadProgress + '%' }}
-			a.btn.btn-primary.btn-block.btn-lg(ng-click='upload()') Upload
+// ------------------------ Start Upload to S3 Code ---------------------------------------------- //
+
+.container
+	.row
+		.panel.panel-default
+			.panel-heading
+				h3.panel-title Upload Image
+			.panel-body
+				.col-md-12.form
+					input.bottom-marg-15(type='file', name='file', file='')
+					.progress
+						.progress-bar(role='progressbar', aria-valuenow='{{ uploadProgress }}', aria-valuemin='0', aria-valuemax='100', style='width: {{ uploadProgress }}%;')
+							| {{ uploadProgress == 0 ? '' : uploadProgress + '%' }}
+					a.btn.btn-primary.btn-block.btn-lg(ng-click='upload()') Upload
+// ------------------------ End Upload to S3 Code ---------------------------------------------- //
 

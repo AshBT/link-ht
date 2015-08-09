@@ -1,87 +1,10 @@
 'use strict';
 
 angular.module('memexLinkerApp')
-.controller('MainCtrl', function ($scope, $http, $q, socket, lodash) {
+.controller('MainCtrl', function ($scope, $http, $q, socket, lodash, $sce) {
 
 
-// ------------------------ Start Upload to S3 Code ---------------------------------------------- //
-
-$scope.sizeLimit      = 15878640; // 10MB in Bytes
-  $scope.uploadProgress = 0;
-  $scope.creds          = {};
-
-  var access=process.env['S3_ACCESS_KEY']
-  var secret=process.env['S3_SECRET_KEY']
-  var bucket=process.env['S3_BUCKET']
-  console.log(bucket)
-
-  $scope.upload = function() {
-    AWS.config.update({ accessKeyId: access, secretAccessKey: secret });
-    AWS.config.region = 'us-east-1';
-    var bucket = new AWS.S3({ params: { Bucket: 'generalmemex' } });
-    
-    if($scope.file) {
-        // Perform File Size Check First
-        var fileSize = Math.round(parseInt($scope.file.size));
-        if (fileSize > $scope.sizeLimit) {
-          toastr.error('Sorry, your attachment is too big. <br/> Maximum '  + $scope.fileSizeLabel() + ' file attachment allowed','File Too Large');
-          return false;
-        }
-        // Prepend Unique String To Prevent Overwrites
-        var uniqueFileName = 'Upload/' + $scope.uniqueString() + '-' + $scope.file.name;
-
-        var params = { Key: uniqueFileName, ContentType: $scope.file.type, Body: $scope.file, ServerSideEncryption: 'AES256' };
-
-        bucket.putObject(params, function(err, data) {
-          if(err) {
-            toastr.error(err.message,err.code);
-            return false;
-          }
-          else {
-            // Upload Successfully Finished
-            toastr.success('File Uploaded Successfully', 'Done');
-
-            // Reset The Progress Bar
-            setTimeout(function() {
-              $scope.uploadProgress = 0;
-              $scope.$digest();
-            }, 4000);
-          }
-        })
-        .on('httpUploadProgress',function(progress) {
-          $scope.uploadProgress = Math.round(progress.loaded / progress.total * 100);
-          $scope.$digest();
-        });
-      }
-      else {
-        // No File Selected
-        toastr.error('Please select a file to upload');
-      }
-    }
-
-    $scope.fileSizeLabel = function() {
-    // Convert Bytes To MB
-    return Math.round($scope.sizeLimit / 1024 / 1024) + 'MB';
-  };
-
-  $scope.uniqueString = function() {
-    var text     = "";
-    var possible = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
-
-    for( var i=0; i < 8; i++ ) {
-      text += possible.charAt(Math.floor(Math.random() * possible.length));
-    }
-    return text;
-  }
-
-// ------------------------ End Upload to S3 Code ---------------------------------------------- //
-
-
-
-
-
-
-
+  // $scope.imagecat = $sce.trustAsResourceUrl("https://isi.memexproxy.com/ColumbiaUimgSearch.php?url=https://s-media-cache-ak0.pinimg.com/236x/09/d9/64/09d964859baacb4a3eaf9fe3a9845416.jpg&visualize=1");
 
   var _ = lodash;
 //Accordion Code

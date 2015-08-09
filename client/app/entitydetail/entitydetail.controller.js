@@ -7,16 +7,19 @@ angular.module('memexLinkerApp')
 
 	// --- SCOPE VARIABLES --- //
 
-//From https://github.com/cheynewallace/angular-s3-upload ***waiting to test this code when API is running again
-controllers.controller('UploadController',['$scope', function($scope) {
-  $scope.sizeLimit      = 10585760; // 10MB in Bytes
+
+// ------------------------ Start Upload to S3 Code ---------------------------------------------- //
+
+$scope.sizeLimit      = 15878640; // 10MB in Bytes
   $scope.uploadProgress = 0;
   $scope.creds          = {};
 
+  var access=''
+  var secret=''
   $scope.upload = function() {
-    AWS.config.update({ accessKeyId: $scope.creds.access_key, secretAccessKey: $scope.creds.secret_key });
+    AWS.config.update({ accessKeyId: access, secretAccessKey: secret });
     AWS.config.region = 'us-east-1';
-    var bucket = new AWS.S3({ params: { Bucket: $scope.creds.bucket } });
+    var bucket = new AWS.S3({ params: { Bucket: '' } });
     
     if($scope.file) {
         // Perform File Size Check First
@@ -26,7 +29,7 @@ controllers.controller('UploadController',['$scope', function($scope) {
           return false;
         }
         // Prepend Unique String To Prevent Overwrites
-        var uniqueFileName = $scope.uniqueString() + '-' + $scope.file.name;
+        var uniqueFileName = 'Upload/' + $scope.uniqueString() + '-' + $scope.file.name;
 
         var params = { Key: uniqueFileName, ContentType: $scope.file.type, Body: $scope.file, ServerSideEncryption: 'AES256' };
 
@@ -72,7 +75,8 @@ controllers.controller('UploadController',['$scope', function($scope) {
     return text;
   }
 
-}]);
+// ------------------------ End Upload to S3 Code ---------------------------------------------- //
+
 
 
 	// Aggregate details about this entitiy.
@@ -102,6 +106,7 @@ controllers.controller('UploadController',['$scope', function($scope) {
 
     var boom = "ads_id%3A32711920%20OR%20ads_id%3A32711944"
     $scope.imagecat = $sce.trustAsResourceUrl("https://darpamemex:darpamemex@imagecat.memexproxy.com/imagespace/#search/" + boom);
+
 	// $scope.imagecat = []
 	$scope.blur = true;
 	$scope.ads = [];
