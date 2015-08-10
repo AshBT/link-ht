@@ -38,10 +38,13 @@
 			.panel-heading
 				h3.panel-title Similar Images
 			.panel-body
-				//- .col-md-12.form(ng-repeat='img in sim_image | limitTo:5')
-				//- 	img.responsive(ng-src="{{img}}"
-				//- 		style="max-height:200px; margin:0 auto;"
-				//- 		ng-class="{blurry: blur == true, clear: blur != true}")	
+				.col-md-12.form(ng-repeat='img in sim_image | limitTo:5')
+					p img
+					//- img.responsive(ng-src="{{img}}")
+						//- style="max-height:200px; margin:0 auto;"
+						//- ng-class="{blurry: blur == true, clear: blur != true}")	
+
+						
 
 // ------------------------ End Display Similar Images ---------------------------------------------- //
 
