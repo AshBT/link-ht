@@ -18,7 +18,7 @@ $scope.sizeLimit      = 15878640; // 10MB in Bytes
   var secret=''
   $scope.upload = function() {
     AWS.config.update({ accessKeyId: access, secretAccessKey: secret });
-    AWS.config.region = 'us-east-1';
+    AWS.config.region = 'us-west-1';
     var bucket = new AWS.S3({ params: { Bucket: '' } });
     
     if($scope.file) {
@@ -30,6 +30,8 @@ $scope.sizeLimit      = 15878640; // 10MB in Bytes
         }
         // Prepend Unique String To Prevent Overwrites
         var uniqueFileName = 'Upload/' + $scope.uniqueString() + '-' + $scope.file.name;
+
+        var s3_URL = 'https://s3-us-west-1.amazonaws.com/generalmemex/' + uniqueFileName;
 
         var params = { Key: uniqueFileName, ContentType: $scope.file.type, Body: $scope.file, ServerSideEncryption: 'AES256' };
 
@@ -296,6 +298,39 @@ $scope.sizeLimit      = 15878640; // 10MB in Bytes
 			return current;
 		}, {mode: null, greatestFreq: -Infinity, numMapping: {}}, arr).mode;
 	}
+
+
+	function similar_images_to_uploaded_image(s3_URL) {
+		$http.get('/api/v1/image/similar?url=' + s3_URL).success(function(res){
+			_.map(res, function(element){ 
+        		var sim_image = {
+          			'url':element.cached_image_urls,
+        		}
+       			$scope.sim_image.push(sim_image.url);
+      		});
+    	});
+  	}
+
+
+	$scope.sim_image = []
+	similar_images_to_uploaded_image(s3_URL)
+
+  function testing(filename) {
+
+    $http.get('/api/v1/image/similar?url=' + filename).success(function(res){
+      _.map(res, function(element){ 
+        var sim_image = {
+          'url':element.cached_image_urls,
+        }
+        $scope.sim_image.push(sim_image.url);
+      });
+    });
+  }
+
+
+  testing('https://s-media-cache-ak0.pinimg.com/236x/09/d9/64/09d964859baacb4a3eaf9fe3a9845416.jpg');
+
+	
 
 	function updateLinked() {
 		$http.get('api/entities/' + $scope.id + '/linked').success(function(res){

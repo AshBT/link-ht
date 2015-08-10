@@ -8,7 +8,6 @@ div(ng-include='"components/navbar/navbar.html"')
 					.col-md-3.form
 					.col-md-6.form
 						center
-							//- img(src='https://s3-us-west-1.amazonaws.com/generalmemex/Image/Link+HT.gif')
 							h1 <strong> Link HT </strong>
 							form(ng-submit='submitElasticSearch()' ng-click="counter = counter + 1" ng-init="counter=0")
 								input.search-query.form-control(type='text',ng-model='elasticSearchText', name='text', placeholder='Search...')
@@ -82,7 +81,9 @@ div(ng-include='"components/navbar/navbar.html"')
 							.panel.panel-default
 								.panel-heading
 									.panel-title
-										h4 Place holder for snippet of search result using Angular Filter + regex
+										h4 Result Snippet
+								.panel-body.vertical-layout
+									p Place holder for snippet of search result using Angular Filter + regex
 						.col-md-12
 							.panel.panel-default
 								.panel-heading
