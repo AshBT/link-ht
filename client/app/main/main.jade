@@ -8,7 +8,7 @@ div(ng-include='"components/navbar/navbar.html"')
 					.col-md-3.form
 					.col-md-6.form
 						center
-							h1 <strong> Link HT </strong>
+							h1 <strong> Link <span style="color:#ff5351;"> HT </span></strong>
 							form(ng-submit='submitElasticSearch()' ng-click="counter = counter + 1" ng-init="counter=0")
 								input.search-query.form-control(type='text',ng-model='elasticSearchText', name='text', placeholder='Search...')
 								input.btn.btn-primary#submit(type='submit', value='Submit')
@@ -16,61 +16,63 @@ div(ng-include='"components/navbar/navbar.html"')
 				.search-body.panel-body(ng-if="aggregates.get('entityIds').length > 0")
 					.row
 						.col-md-2
-							h3 Controls
-							label Blur Images: 
+							h3(style='color:blue') Controls
+							label(style='color:blue') Blur Images: 
 								input(type="checkbox", ng-model="blur", ng-init="checked=true")
-							label Has Face Picture: 
+							label(style='color:blue') Has Face Picture: 
 								input(type="checkbox", ng-model="hasFacePic")
-							label Has Similar Ads: 
+							label(style='color:blue') Has Similar Ads: 
 								input(type="checkbox", ng-model="hasSimilarAds")
-							label Has Social Media 
+							label(style='color:blue') Has Social Media 
 								input(type="checkbox", ng-model="hasSocialMedia")
 						.col-md-10
 							h3 Search Results Summary
-							h4 You found <strong> {{aggregates.get('entityIds').length}} entities </strong> , which are made up of <strong> {{aggregates.get('nAds')}} ads </strong> with <strong> {{aggregates.get('nPictures')}} </strong> pictures. 
-							h5(ng-if="aggregates.get('age_min').length > 0") The age range extracted from the returns ads is {{aggregates.get('age_min')}} to {{aggregates.get('age_max')}}.
-							h5(ng-if="aggregates.get('rate60').length > 0") The price range extracted from the returns ads is {{aggregates.get('price_min') | currency:"$"}} to {{aggregates.get('price_max') | currency:"$"}}. 
+							h4 <strong> {{aggregates.get('entityIds').length}} groups </strong>  -- <strong> {{aggregates.get('nAds')}} ads </strong> with <strong> {{aggregates.get('nPictures')}} </strong> pictures. 
+							h5(ng-if="aggregates.get('age_min').length > 0") Extracted age range: {{aggregates.get('age_min')}} to {{aggregates.get('age_max')}}.
+							h5(ng-if="aggregates.get('rate60').length > 0") Extracted price range: {{aggregates.get('price_min') | currency:"$"}} to {{aggregates.get('price_max') | currency:"$"}}. 
 						.col-md-2
 						.col-md-10
 							accordion(close-others='oneAtATime')
-								accordion-group(heading='Detailed Search Results Summary', is-disabled='status.isFirstDisabled')
+								accordion-group(heading='Click here for more summary details', is-disabled='status.isFirstDisabled')
 									table.table.table-hover(ng-if="aggregates.get('entityIds').length > 0")
 										tbody
 											tr(ng-if="aggregates.get('websites').length > 0")
 												td Websites hosting ads in search results
-												td {{aggregates.get('websites').join(', ')}}
+												td {{aggregates.get('websites').sort().join(', ')}}
 											tr(ng-if="aggregates.get('twitters').length > 0")
 												td Twitter Accounts extracted from search results
-												td {{aggregates.get('twitters').join(', ')}}
+												td {{aggregates.get('twitters').sort().join(', ')}}
 											tr(ng-if="aggregates.get('instagrams').length > 0")
 												td Instagram Accounts extracted from search results
-												td {{aggregates.get('instagrams').join(', ')}}
+												td {{aggregates.get('instagrams').sort().join(', ')}}
 											tr(ng-if="aggregates.get('cities').length > 0")
 												td Cities extracted from search results
-												td {{aggregates.get('cities').join(', ') | capitalize}}
+												td {{aggregates.get('cities').sort().join(', ') | capitalize}}
 											tr(ng-if="aggregates.get('names').length > 0")
 												td Names extracted from search results
-												td {{aggregates.get('names').join(', ') | capitalize}}
+												td {{aggregates.get('names').sort().join(', ') | capitalize}}
 											tr(ng-if="aggregates.get('ethnicities').length > 0")
 												td Ethnicities extracted from search results
-												td {{aggregates.get('ethnicities').join(', ') | capitalize}}				
+												td {{aggregates.get('ethnicities').sort().join(', ') | capitalize}}		
+								
 	.row
+		.col-md-12(ng-if='entities1 && entities1.length > 0')
+			center
+				h2 View Group Summaries in Search Results Below
 		.col-md-12(ng-repeat="entity in entities1 | orderBy:'-nSuggested'  | filter:facesFilter | filter:socialMediaFilter | filter: similarAdsFilter")
 			.panel.panel-default
 				.panel-heading
-					h3 <strong> Group --INSERT ID -- </strong>  ({{entity.nPosts}} Ads)
+					h3 Group {{entity.id}} -- <strong> Phone Number(s): <strong> {{entity.phone | tel}} </strong>   -- </strong>  ({{entity.nPosts}} Ads)
 				.panel-body
 					.col-md-4
-						h4 Phone Number(s): <strong> {{entity.phone | tel}} </strong> 
-						h4 Active since: <strong> {{entity.firstPostTime.toDateString()}} </strong>
-						h4 Ads containing search terms: **Add**
-						p(ng-if='entity.name && entity.name.length > 0') Listed names:  <strong>{{entity.name.join(', ') | capitalize}} </strong>
-						p(ng-if='entity.website && entity.website.length > 0') Websites:  <strong> {{entity.website.join(', ')}}</strong>
-						p(ng-if='entity.city && entity.city.length > 0') Cities:  <strong>{{entity.city.join(', ') | capitalize}}</strong>
-						p(ng-if='entity.age && entity.age.length > 0') Listed ages:  <strong>{{entity.age.join(', ')}}</strong>
-						p(ng-if='entity.priceRange && entity.priceRange.length > 0') Listed price range: <strong>{{entity.priceRange}} </strong>
+						h4 Active between <strong> {{entity.firstPostTime.toDateString()}} to {{entity.lastPostTime.toDateString()}} </strong>
+						h4(ng-if='entity.name && entity.name.length > 0') Listed names:  <strong>{{entity.name.join(', ') | capitalize}} </strong>
+						h4(ng-if='entity.age && entity.age.length > 0') Listed ages:  <strong>{{entity.age.join(', ')}}</strong>
+						h4(ng-if='entity.priceRange && entity.priceRange.length > 0') Listed price range: <strong>{{entity.priceRange}} </strong>
+						p(ng-if='entity.website && entity.website.length > 0') Websites:  <strong> {{entity.website.sort().join(', ')}}</strong>
+						p(ng-if='entity.city && entity.city.length > 0') Cities:  <strong>{{entity.city.sort().join(', ') | capitalize}}</strong>
 						p(ng-if='entity.imageUrls && entity.imageUrls.length > 0')  Pictures: <strong> {{entity.imageUrls.length}}</strong>
-						p Pictures with Face: <strong> {{entity.face.length}} </strong>
+						p(ng-if='entity.face && entity.face.length > 0') Pictures with Face: <strong> {{entity.face.length}} </strong>
 						p Ads related by image: <strong> {{entity.nSuggestedByImage}}</strong>
 						p Ads related by text:<strong> {{entity.nSuggestedByText}}</strong>
 						//- p Ads related by phone co-occurence:  <strong> {{entity.nSuggestedByPhone}}</strong>
@@ -81,14 +83,14 @@ div(ng-include='"components/navbar/navbar.html"')
 							.panel.panel-default
 								.panel-heading
 									.panel-title
-										h4 Result Snippet
+										h4 Ads Containing Search Terms (# of Ads)
 								.panel-body.vertical-layout
 									p Place holder for snippet of search result using Angular Filter + regex
 						.col-md-12
 							.panel.panel-default
 								.panel-heading
 									.panel-title
-										h4 Most Recent Post at {{entity.website[0]}} on {{entity.lastPostTime.toDateString()}}
+										h4 Most Recent Post at {{entity.website[0]}}
 								.panel-body.vertical-layout
 									.item
 										h4 {{entity.title[0]}}
@@ -102,5 +104,6 @@ div(ng-include='"components/navbar/navbar.html"')
 													style="max-height:50px; margin:0 auto;"
 													ng-class="{blurry: blur == true, clear: blur != true}")
 	footer.footer
-		center Designed and Developed by Qadium 2015. Check out the open source code for Link HT on <a href='https://github.com/qadium/link-ht'> Github</a>.
-		center <a href='posts'> About </a> <a href='posts'> Help </a> <a href='posts'> Terms </a> <a href='posts'> Privacy </a>
+		center Designed and Developed by Qadium 2015 for DARPA's Memex program. 
+		center Check out the open source code for Link HT on <a href='https://github.com/qadium/link-ht'> Github</a>.
+		center <a href='posts'> About </a> | <a href='posts'> Help </a> | <a href='posts'> Terms </a> | <a href='posts'> Privacy </a> | <a href="mailto:memex@qadium.com?Subject=Link%20HT%20Feedback" target="_top">Submit Feedback</a>

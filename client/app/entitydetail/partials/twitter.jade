@@ -4,38 +4,43 @@
 		.panel-heading 
 			accordion(close-others='oneAtATime')
 				accordion-group(heading='Twitter ({{entity.twitter.length}})', is-open='status.isFirstOpen', is-disabled='status.isFirstDisabled')
-					ul.nobullets
-						li Show Profile Pic {{entity.twitter_profile_pic.join(', ') }}
-						li Show Background Pic {{entity.twitter_background_pic.join(', ') }}
-						li User Name: {{entity.twitter_name.join(', ') }}
-						li User Description:{{entity.twitter_description.join(', ') }}
+					.col-md-12.form
+						.col-md-3(ng-repeat='img in entity.twitter_profile_pic')
+								p Profile Picture
+								img.responsive(ng-src="{{img}}" 
+									style="max-height:200px; margin:0 auto;"
+									ng-class="{blurry: blur == true, clear: blur != true}")
+						.col-md-3(ng-repeat='img in entity.twitter_background_pic')
+								p Background Picture
+								img.responsive(ng-src="{{img}}" 
+									style="max-height:200px; margin:0 auto;"
+									ng-class="{blurry: blur == true, clear: blur != true}")
+						li Username and Description: {{entity.twitter_name.join(', ') }} -- {{entity.twitter_description.join(', ') }}
 						li User Tweets {{entity.twitter_tweets.join(', ') }}
-						li Followers: {{entity.twitter_followers.join(', ') }}
-						li Following: {{entity.twitter_friends.join(', ') }}
+						li Followers ({{entity.twitter_followers.length }}): {{entity.twitter_followers.join(', ') }}
+						li Following ({{entity.twitter_friends.length }}): {{entity.twitter_friends.join(', ') }}
 				accordion-group(heading='Instagram ({{entity.instagram.length}})')
-					ul.nobullets
-						li Show profile pic {{entity.instagram_profile_picture.join(', ')}}
-						li User Name: {{entity.instagram.join(', ')}}
+					.col-md-12.form
+						.col-md-3(ng-repeat='img in entity.instagram_profile_picture')
+								p Profile Picture
+								img.responsive(ng-src="{{img}}" 
+									style="max-height:200px; margin:0 auto;"
+									ng-class="{blurry: blur == true, clear: blur != true}")
+						li Username: {{entity.instagram.join(', ')}}
 						li Tags: {{entity.instagram_tags.join(', ')}} 
-						li Followers: {{entity.instagram_followers.join(', ')}}
-						li Following: {{entity.instagram_follows.join(', ')}}
-						li Likers: {{entity.instagram_likers.join(', ')}}
+						li Followers ({{entity.instagram_followers.lenght}}): {{entity.instagram_followers.join(', ')}}
+						li Following ({{entity.instagram_follows.length}}): {{entity.instagram_follows.join(', ')}}
+						li Likers ({{entity.instagram_likers.length}}): {{entity.instagram_likers.join(', ')}}
 				accordion-group(heading='Youtube ({{entity.youtube.length}})')
 					h4 Videos Embedded in Ads
 						row
 						.col-md-12(ng-repeat = 'video1 in entity.youtube')
 							iframe(width='420', height='315', ng-src='{{video1}}')
-
-								
 						.col-md-12(ng-repeat = 'video2 in entity.youtubeSameuser')
 							h4 Other Videos Posted by the Same User: {{entity.youtubeUsername}}
-
-							<iframe width="420" height="315" src='{{video2}}'></iframe>
-
-
-
-				accordion-group(heading='Yelp ({{entity.yelp.length}})')
-					p No Yelp Listings
+							iframe(width="420" height="315" ng-src='{{video2}}')
+				//- accordion-group(heading='Yelp ({{entity.yelp.length}})')
+				//- 	p No Yelp Listings
 
 
 			
