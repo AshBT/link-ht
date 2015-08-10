@@ -9,81 +9,82 @@ div(ng-include='"components/navbar/navbar.html"')
 						center
 							//- img(src='https://s3-us-west-1.amazonaws.com/generalmemex/Image/Link+HT.gif')
 							h1 <strong> Link HT </strong>
-							form(ng-submit='submitElasticSearch()' ng-click="counter = counter + 1" ng-init="counter=0")
+							form(ng-submit='search()')
 								input.search-query.form-control(type='text',ng-model='elasticSearchText', name='text', placeholder='Search...')
 								input.btn.btn-primary#submit(type='submit', value='Submit')
-				.search-body.panel-body(ng-if="aggregates.get('entityIds').length > 0")
-					.row
-						.col-md-2
-							h4 Controls
-							label Blur Images: 
-								input(type="checkbox", ng-model="blur", ng-init="checked=true")
-							label Has Face Picture: 
-								input(type="checkbox", ng-model="hasFacePic")
-							label Has Similar Ads: 
-								input(type="checkbox", ng-model="hasSimilarAds")
-							label Has Social Media 
-								input(type="checkbox", ng-model="hasSocialMedia")
-						.col-md-10
-							h4 Search Results Summary
-							p You found <strong> {{aggregates.get('entityIds').length}} entities </strong> , which are made up of <strong> {{aggregates.get('nAds')}} ads </strong> with <strong> {{aggregates.get('nPictures')}} </strong>pictures. 
-							p(ng-if="aggregates.get('age_min').length > 0") The age range extracted from the returns ads is {{aggregates.get('age_min')}} to {{aggregates.get('age_max')}}.
-							p(ng-if="aggregates.get('rate60').length > 0") The price range extracted from the returns ads is {{aggregates.get('price_min') | currency:"$"}} to {{aggregates.get('price_max') | currency:"$"}}. 
-						.col-md-2
-						.col-md-10
-							accordion(close-others='oneAtATime')
-								accordion-group(heading='Detailed Search Results Summary', is-disabled='status.isFirstDisabled')
-									table.table.table-hover(ng-if="aggregates.get('entityIds').length > 0")
-										tbody
-											tr(ng-if="aggregates.get('websites').length > 0")
-												td Websites
-												td {{aggregates.get('websites').join(', ')}}
-											tr(ng-if="aggregates.get('twitters').length > 0")
-												td Twitter Accounts
-												td {{aggregates.get('twitters').join(', ')}}
-											tr(ng-if="aggregates.get('instagrams').length > 0")
-												td Instagram Accounts
-												td {{aggregates.get('instagrams').join(', ')}}
-											tr(ng-if="aggregates.get('cities').length > 0")
-												td Cities
-												td {{aggregates.get('cities').join(', ') | capitalize}}
-											tr(ng-if="aggregates.get('names').length > 0")
-												td Names
-												td {{aggregates.get('names').join(', ') | capitalize}}
-											tr(ng-if="aggregates.get('ethnicities').length > 0")
-												td Ethnicities
-												td {{aggregates.get('ethnicities').join(', ') | capitalize}}				
+				//- .search-body.panel-body(ng-if="aggregates.get('entityIds').length > 0")
+				//- 	.row
+				//- 		.col-md-2
+				//- 			h4 Controls
+				//- 			label Blur Images: 
+				//- 				input(type="checkbox", ng-model="blur", ng-init="checked=true")
+				//- 			label Has Face Picture: 
+				//- 				input(type="checkbox", ng-model="hasFacePic")
+				//- 			label Has Similar Ads: 
+				//- 				input(type="checkbox", ng-model="hasSimilarAds")
+				//- 			label Has Social Media 
+				//- 				input(type="checkbox", ng-model="hasSocialMedia")
+				//- 		.col-md-10
+				//- 			h4 Search Results Summary
+				//- 			p You found <strong> {{aggregates.get('entityIds').length}} entities </strong> , which are made up of <strong> {{aggregates.get('nAds')}} ads </strong> with <strong> {{aggregates.get('nPictures')}} </strong>pictures. 
+				//- 			p(ng-if="aggregates.get('age_min').length > 0") The age range extracted from the returns ads is {{aggregates.get('age_min')}} to {{aggregates.get('age_max')}}.
+				//- 			p(ng-if="aggregates.get('rate60').length > 0") The price range extracted from the returns ads is {{aggregates.get('price_min') | currency:"$"}} to {{aggregates.get('price_max') | currency:"$"}}. 
+				//- 		.col-md-2
+				//- 		.col-md-10
+				//- 			accordion(close-others='oneAtATime')
+				//- 				accordion-group(heading='Detailed Search Results Summary', is-disabled='status.isFirstDisabled')
+				//- 					table.table.table-hover(ng-if="aggregates.get('entityIds').length > 0")
+				//- 						tbody
+				//- 							tr(ng-if="aggregates.get('websites').length > 0")
+				//- 								td Websites
+				//- 								td {{aggregates.get('websites').join(', ')}}
+				//- 							tr(ng-if="aggregates.get('twitters').length > 0")
+				//- 								td Twitter Accounts
+				//- 								td {{aggregates.get('twitters').join(', ')}}
+				//- 							tr(ng-if="aggregates.get('instagrams').length > 0")
+				//- 								td Instagram Accounts
+				//- 								td {{aggregates.get('instagrams').join(', ')}}
+				//- 							tr(ng-if="aggregates.get('cities').length > 0")
+				//- 								td Cities
+				//- 								td {{aggregates.get('cities').join(', ') | capitalize}}
+				//- 							tr(ng-if="aggregates.get('names').length > 0")
+				//- 								td Names
+				//- 								td {{aggregates.get('names').join(', ') | capitalize}}
+				//- 							tr(ng-if="aggregates.get('ethnicities').length > 0")
+				//- 								td Ethnicities
+				//- 								td {{aggregates.get('ethnicities').join(', ') | capitalize}}				
 	.row
-		.col-md-12(ng-repeat="entity in entities1 | orderBy:'-nSuggested'  | filter:facesFilter | filter:socialMediaFilter | filter: similarAdsFilter")
+		//.col-md-12(ng-repeat="entity in entities | orderBy:'-nSuggested'  | filter:facesFilter | filter:socialMediaFilter | filter: similarAdsFilter")
+		.col-md-12(ng-repeat='entity in entities')
 			.panel.panel-default
 				.panel-heading
 					h3 <strong> Entity {{entity.phone | tel}} </strong>  ({{entity.nPosts}} Ads)
 				.panel-body
 					.col-md-4
 						p Active since: <strong> {{entity.firstPostTime.toDateString()}} </strong>
-						p(ng-if='entity.name && entity.name.length > 0') Listed names:  <strong>{{entity.name.join(', ') | capitalize}} </strong>
-						p(ng-if='entity.website && entity.website.length > 0') Websites:  <strong> {{entity.website.join(', ')}}</strong>
-						p(ng-if='entity.city && entity.city.length > 0') Cities:  <strong>{{entity.city.join(', ') | capitalize}}</strong>
-						p(ng-if='entity.age && entity.age.length > 0') Listed ages:  <strong>{{entity.age.join(', ')}}</strong>
-						p(ng-if='entity.priceRange && entity.priceRange.length > 0') Listed price range: <strong>{{entity.priceRange}} </strong>
+						p(ng-if='entity.names && entity.names.length > 0') Listed names:  <strong>{{entity.names.join(', ') | capitalize}} </strong>
+						p(ng-if='entity.websites && entity.websites.length > 0') Websites:  <strong> {{entity.websites.join(', ')}}</strong>
+						p(ng-if='entity.cities && entity.cities.length > 0') Cities:  <strong>{{entity.cities.join(', ') | capitalize}}</strong>
+						p(ng-if='entity.ages && entity.ages.length > 0') Listed ages:  <strong>{{entity.ages.join(', ')}}</strong>
+						p(ng-if='entity.prices && entity.prices.length > 0') Listed prices: <strong>{{entity.prices}} </strong>
 						p(ng-if='entity.imageUrls && entity.imageUrls.length > 0')  Pictures: <strong> {{entity.imageUrls.length}}</strong>
-						p Pictures with Face: <strong> {{entity.face.length}} </strong>
+						p Pictures with Face: <strong> {{entity.faceImageUrls.length}} </strong>
 						p Ads related by image: <strong> {{entity.nSuggestedByImage}}</strong>
 						p Ads related by text:<strong> {{entity.nSuggestedByText}}</strong>
 						//- p Ads related by phone co-occurence:  <strong> {{entity.nSuggestedByPhone}}</strong>
-						p Social Media Accounts: <strong> {{entity.socialmedia}}</strong>
+						p(ng-if='entity.socialAccounts && entity.socailAccounts.length > 0') Social Media Accounts: <strong> {{entity.socialmedia}}</strong>
 						a.button.btn-primary.btn-lg.pull-left(ui-sref="entitydetail({ id: entity.id })") Inspect
 					.col-md-8
 						.panel.panel-default
 							.panel-heading
 								.panel-title
-									h4 Most Recent Post at {{entity.website[0]}} on {{entity.lastPostTime.toDateString()}}
+									h4 Most Recent Post at {{entity.websites[0]}} on {{entity.lastPostTime.toDateString()}}
 							.panel-body.vertical-layout
 								.item
-									h4 {{entity.title[0]}}
+									h4 {{entity.titles[0]}}
 								.item
 									p
-										| {{entity.text[0]}}
+										| {{entity.texts[0]}}
 								.item
 									.row
 										.col-md-2(ng-repeat='img in entity.imageUrls | limitTo:50')	 
