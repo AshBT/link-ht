@@ -1,16 +1,16 @@
 'use strict';
 
-describe('Controller: PostsCtrl', function () {
+describe('Controller: FaqCtrl', function () {
 
   // load the controller's module
   beforeEach(module('memexLinkerApp'));
 
-  var PostsCtrl, scope;
+  var FaqCtrl, scope;
 
   // Initialize the controller and a mock scope
   beforeEach(inject(function ($controller, $rootScope) {
     scope = $rootScope.$new();
-    PostsCtrl = $controller('PostsCtrl', {
+    FaqCtrl = $controller('FaqCtrl', {
       $scope: scope
     });
   }));

@@ -21,7 +21,7 @@ function entityService($http, $q, $resource, linkUtils, lodash) {
 
 	var EntityResource = $resource('/api/v1/entity/:id', {}, {'query': {method: 'GET', isArray: false }});
 	var SuggestResource = $resource('/api/v1/entity/:id/suggest', {}, {'query': {method: 'GET', isArray: false }});
-
+	var SimilarImageResource = $resource('/api/v1/image/similar', {}, {'query': {method: 'GET', isArray: false }});
 
 	var sources = {
 		1 : 'Backpage',
@@ -58,6 +58,7 @@ function entityService($http, $q, $resource, linkUtils, lodash) {
 		search: search,
 		Entity: EntityResource,
 		Suggest: SuggestResource,
+		SimilarImage: SimilarImageResource,
 		sources: sources
 	};
 	return service;

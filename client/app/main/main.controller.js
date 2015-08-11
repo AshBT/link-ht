@@ -50,6 +50,13 @@ angular.module('memexLinkerApp')
 	$scope.search = function(){
 		entityService.search($scope.elasticSearchText, 10,10).then(function(entities){
 			$scope.entities = entities;
+			console.log('Found ' + entities.length + ' entites');
+			_.forEach($scope.entities, function(entity) {
+				console.log(entity);
+				updateAggregates(entity, $scope.aggregates);
+			});
+			console.log($scope.aggregates);
+			// TODO: summarize each entity
 		},function(reason){
 			console.log('Failed: ' + reason);
 		});
@@ -110,137 +117,124 @@ angular.module('memexLinkerApp')
 			};
 		}
 
-		function uniqueFlatAndDefined(items) {
-			return _.filter(_.uniq(_.flattenDeep(items)), function(item) {
-				return ! _.isUndefined(item);
-			});
-		}
+		var uniqueFlatAndDefined = linkUtils.uniqueFlatAndDefined;
+		var collectAdProperty = linkUtils.collectAdProperty;
+		var collectAdProperty2 = linkUtils.collectAdProperty2;
 
-		function collectAdProperty(ads, propertyName) {
-			return _.map(ads, function(ad) {
-				return ad.properties[propertyName];
-			});
-		}
+		// This summarizing is now provided bt entityService.
+// 		function summarizeEntity(entity) {
+// 			var deferred = $q.defer();
 
-		function collectAdProperty2(ads, propertyName) {
-			return _.map(ads, function(ad) {
-				return _.trunc(ad.properties[propertyName],15);
-			});
-		}
+// 			$http.get('api/entities/' + entity.id + '/byphone').success(function(res){
+// 				var ads = _.map(res, function(element){
+// 					var ad = {
+// 						'id':element.ad._id,
+// 						'labels':element.ad.labels,
+// 						'properties':element.ad.properties
+// 					};
+// 					return ad;
+// 				});
 
-		function summarizeEntity(entity) {
-			var deferred = $q.defer();
+// 				var postTimes = _.map(ads, function(ad){
+// 					return new Date(ad.properties.posttime);
+// 				});
+// 				var lastPostTime = _.max(postTimes);
+// 				var firstPostTime = _.min(postTimes);
 
-			$http.get('api/entities/' + entity.id + '/byphone').success(function(res){
-				var ads = _.map(res, function(element){
-					var ad = {
-						'id':element.ad._id,
-						'labels':element.ad.labels,
-						'properties':element.ad.properties
-					};
-					return ad;
-				});
-
-				var postTimes = _.map(ads, function(ad){
-					return new Date(ad.properties.posttime);
-				});
-				var lastPostTime = _.max(postTimes);
-				var firstPostTime = _.min(postTimes);
-
-				var age = uniqueFlatAndDefined(collectAdProperty(ads, 'age')).sort();
-				var minAges = _.min(age);
-				var maxAges = _.max(age);
+// 				var age = uniqueFlatAndDefined(collectAdProperty(ads, 'age')).sort();
+// 				var minAges = _.min(age);
+// 				var maxAges = _.max(age);
 
 
-				var rate60 = uniqueFlatAndDefined(collectAdProperty(ads, 'rate60'));
-				var minPrice = null;
-				var maxPrice = null;
-				if (rate60.length === 1 && rate60[0] != null) {
-					minPrice = maxPrice= rate60[0] ;
-				}
-				else if (rate60.length > 1) {
-					minPrice = _.min(rate60);
-					maxPrice = _.max(rate60);
-				}
+// 				var rate60 = uniqueFlatAndDefined(collectAdProperty(ads, 'rate60'));
+// 				var minPrice = null;
+// 				var maxPrice = null;
+// 				if (rate60.length === 1 && rate60[0] != null) {
+// 					minPrice = maxPrice= rate60[0] ;
+// 				}
+// 				else if (rate60.length > 1) {
+// 					minPrice = _.min(rate60);
+// 					maxPrice = _.max(rate60);
+// 				}
 
-				var website=[];
-				var sourcesid = uniqueFlatAndDefined(collectAdProperty(ads, 'sources_id'));
-				for (var i = 0; i < sourcesid.length; i++) {
-					website=website.concat(entityService.source[sourcesid[i]]);
-				}
-				website = _.filter(_.uniq(website), function(element){
-					return ! _.isUndefined(element);
-				});
+// 				var website=[];
+// 				var sourcesid = uniqueFlatAndDefined(collectAdProperty(ads, 'sources_id'));
+// 				for (var i = 0; i < sourcesid.length; i++) {
+// 					website=website.concat(entityService.source[sourcesid[i]]);
+// 				}
+// 				website = _.filter(_.uniq(website), function(element){
+// 					return ! _.isUndefined(element);
+// 				});
 
-				var title = collectAdProperty(ads, 'title');
-				var text = collectAdProperty(ads, 'text');
-				var name = uniqueFlatAndDefined(collectAdProperty(ads, 'name'));
-				var city = uniqueFlatAndDefined(collectAdProperty2(ads, 'city'));
-				var youtube = uniqueFlatAndDefined(collectAdProperty(ads, 'youtube'));
-				var instagram = uniqueFlatAndDefined(collectAdProperty(ads, 'instagram'));
-				var twitter = uniqueFlatAndDefined(collectAdProperty(ads, 'twitter'));
-				var ethnicity = uniqueFlatAndDefined(collectAdProperty(ads, 'ethnicity'));
-				var imageUrls = _.uniq(lodash.flatten(
-					_.map(ads, function(ad) {
-						return ad.properties.image_locations;
-					}),
-					true
-					));
+// 				var title = collectAdProperty(ads, 'title');
+// 				var text = collectAdProperty(ads, 'text');
+// 				var name = uniqueFlatAndDefined(collectAdProperty(ads, 'name'));
+// 				var city = uniqueFlatAndDefined(collectAdProperty2(ads, 'city'));
+// 				var youtube = uniqueFlatAndDefined(collectAdProperty(ads, 'youtube'));
+// 				var instagram = uniqueFlatAndDefined(collectAdProperty(ads, 'instagram'));
+// 				var twitter = uniqueFlatAndDefined(collectAdProperty(ads, 'twitter'));
+// 				var ethnicity = uniqueFlatAndDefined(collectAdProperty(ads, 'ethnicity'));
+// 				var imageUrls = _.uniq(lodash.flatten(
+// 					_.map(ads, function(ad) {
+// 						return ad.properties.image_locations;
+// 					}),
+// 					true
+// 					));
 
-				imageUrls = _.filter(imageUrls, function(element){
-					return ! _.isUndefined(element);
-				});
-				var face = _.uniq(lodash.flatten(
-					_.map(ads, function(ad) {
-						return ad.properties.face_image_url;
-					}),
-					true
-					));
-				face= _.filter(face, function(element){
-					return ! _.isUndefined(element);
-				});
+// 				imageUrls = _.filter(imageUrls, function(element){
+// 					return ! _.isUndefined(element);
+// 				});
+// 				var face = _.uniq(lodash.flatten(
+// 					_.map(ads, function(ad) {
+// 						return ad.properties.face_image_url;
+// 					}),
+// 					true
+// 					));
+// 				face= _.filter(face, function(element){
+// 					return ! _.isUndefined(element);
+// 				});
 
-				$http.get('api/entities/' + entity.id + '/byimage').success(function(res){
-					var nSuggestedByImage = res[0]["count(ad)"] || 0;
-					$scope.getNSuggestedByText(entity).then( function(nSuggestedByText){
-						var entitySummary = {
-							id: entity.id,
-							phone: entity.phone,
-							nPosts: ads.length,
-							nPics: imageUrls.length,
-							nSuggestedByImage: nSuggestedByImage,
-							nSuggestedByText: nSuggestedByText,
-							nSuggestedByPhone: 0,
-							postTimes : postTimes,
-							lastPostTime: lastPostTime,
-							firstPostTime: firstPostTime,
-							age: age,
-							minAges: minAges,
-							maxAges: maxAges,
-							imageUrls: imageUrls,
-							minPrice: minPrice,
-							maxPrice: maxPrice,
-							rate60: rate60,
-							sourcesid: sourcesid,
-							title: title,
-							text:text,
-							name: name,
-							city: city,
-							website: website,
-							twitter: twitter,
-							instagram: instagram,
-							ethnicity: ethnicity,
-							face: face, 
-							socialmedia: twitter.length + instagram.length + youtube.length,
-							similarads: nSuggestedByImage + nSuggestedByText,
-						};
-						deferred.resolve(entitySummary);
-					});
-				});
-});
+// 				$http.get('api/entities/' + entity.id + '/byimage').success(function(res){
+// 					var nSuggestedByImage = res[0]["count(ad)"] || 0;
+// 					$scope.getNSuggestedByText(entity).then( function(nSuggestedByText){
+// 						var entitySummary = {
+// 							id: entity.id,
+// 							phone: entity.phone,
+// 							nPosts: ads.length,
+// 							nPics: imageUrls.length,
+// 							nSuggestedByImage: nSuggestedByImage,
+// 							nSuggestedByText: nSuggestedByText,
+// 							nSuggestedByPhone: 0,
+// 							postTimes : postTimes,
+// 							lastPostTime: lastPostTime,
+// 							firstPostTime: firstPostTime,
+// 							age: age,
+// 							minAges: minAges,
+// 							maxAges: maxAges,
+// 							imageUrls: imageUrls,
+// 							minPrice: minPrice,
+// 							maxPrice: maxPrice,
+// 							rate60: rate60,
+// 							sourcesid: sourcesid,
+// 							title: title,
+// 							text:text,
+// 							name: name,
+// 							city: city,
+// 							website: website,
+// 							twitter: twitter,
+// 							instagram: instagram,
+// 							ethnicity: ethnicity,
+// 							face: face, 
+// 							socialmedia: twitter.length + instagram.length + youtube.length,
+// 							similarads: nSuggestedByImage + nSuggestedByText,
+// 						};
+// 						deferred.resolve(entitySummary);
+// 					});
+// 				});
+// });
 
-return deferred.promise;
-}
+// return deferred.promise;
+// }
 
 function updateAggregates(entitySummary, aggregates) {
 	// Entity IDs
@@ -283,8 +277,7 @@ function updateAggregates(entitySummary, aggregates) {
 	aggregates.set('phones', uniqueFlatAndDefined(phones));
 	// Ages
 	var ages = aggregates.get('ages');
-	ages.push(entitySummary.age);
-	var listages = uniqueFlatAndDefined(ages);
+	ages.push(entitySummary.ages);
 	aggregates.set('age_min', _.min(_.filter(uniqueFlatAndDefined(ages), function(n) {
 		return Number((n % 1 ) === 0);
 	})));
@@ -292,13 +285,13 @@ function updateAggregates(entitySummary, aggregates) {
 		return Number((n % 1 ) === 0);
 	})));
 
-
 	// Prices
 	var prices = aggregates.get('prices');
-	prices.push(_.map(entitySummary.rate60, Number));
+	prices.push(_.map(entitySummary.rates60, Number));	
 	aggregates.set('prices', uniqueFlatAndDefined(prices));
 	aggregates.set('price_max', _.max(aggregates.get('prices')));
 	aggregates.set('price_min', _.min(aggregates.get('prices')));
+
 	console.log(aggregates);
 }
 

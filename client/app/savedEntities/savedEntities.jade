@@ -1,9 +1,11 @@
 div(ng-include='"components/navbar/navbar.html"')
 .container
 	.row
-		h4(ng-if="entities.length==0") No saved Entities yet
-		h4(ng-if="entities.length==1") {{entities.length}} Saved Entity
-		h4(ng-if="entities.length>1") {{entities.length}} Saved Entities
+		center 
+			h4(ng-if="entities.length==0") You haven't saved any groups yet!
+		left
+			h4(ng-if="entities.length==1") {{entities.length}} Saved Group
+			h4(ng-if="entities.length>1") {{entities.length}} Saved Groups
 
 
 		//- .col-md-12(ng-repeat="entity in entities | orderBy:'-nSuggested' | filter: { phone : filterPhone, text: filterText, gt : filterMinAge } ")
@@ -46,6 +48,6 @@ div(ng-include='"components/navbar/navbar.html"')
 												style="max-height:50px; margin:0 auto;"
 												ng-class="{blurry: blur == true, clear: blur != true}")
 
-footer.footer
-		center Designed and Developed by Qadium 2015. Check out the open source code for Link HT on <a href='https://github.com/qadium/link-ht'> Github</a>.
-		center <a href='posts'> About </a> <a href='posts'> Help </a> <a href='posts'> Terms </a> <a href='posts'> Privacy </a>
+//- footer.footer
+//- 		center Designed and Developed by Qadium 2015. Check out the open source code for Link HT on <a href='https://github.com/qadium/link-ht'> Github</a>.
+//- 		center <a href='posts'> About </a> <a href='posts'> Help </a> <a href='posts'> Terms </a> <a href='posts'> Privacy </a>

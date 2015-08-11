@@ -19,7 +19,7 @@ angular.module('memexLinkerApp')
     },
     {
       'title': 'FAQ',
-      'link': '/posts'
+      'link': '/faq'
     }]
     ;
 
