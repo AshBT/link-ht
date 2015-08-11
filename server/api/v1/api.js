@@ -5,6 +5,8 @@ module.exports = (function() {
   var db = require('../../databases'),
       mysql = require('mysql'),
       config = require('../../config/environment'),
+      https = require('https'),
+      querystring = require('querystring'),
       _ = require('lodash');
 
   var _search = function(query, size, page) {
@@ -144,6 +146,27 @@ module.exports = (function() {
         "WHERE e.entity_id="+mysql.escape(entity_id)+")"
   }
 
+  var _get_json = function(ad_id) {
+    if (ad_id) {
+      return new Promise(function(resolve, reject) {
+        db.mysql.query("SELECT json FROM ads WHERE id=?", ad_id, function(err, rows) {
+          if (err) {
+            return reject(err)
+          }
+
+          // once we have the blob, we'll put it in the response
+          var blob = {}
+          if (rows.length > 0) {
+            blob = JSON.parse(rows[0].json);
+          }
+          return resolve(blob);
+        })
+      })
+    } else {
+      return {}
+    }
+  }
+
   var search = function(req, res) {
     var number_per_page = req.query.size || 10,
         page = req.query.page || 1,
@@ -241,16 +264,16 @@ module.exports = (function() {
       }
 
       // upon a successful delete, let's find the json for the matching ad
-      db.mysql.query("SELECT json FROM ads WHERE id=?", ad_id, function(err, rows) {
-        if (err) {
+      _get_json(ad_id).then(
+        function(blob) {
+          // once we have successfully deleted from the entities table, we
+          // also have to update elasticsearch (we need to json to delete
+          // the exact object)
+          _update(entity_id, user, blob, 'remove', res);
+        },
+        function(err) {
           return res.status(400).json({error: err});
-        }
-
-        // once we have successfully deleted from the entities table, we
-        // also have to update elasticsearch
-        var blob = JSON.parse(rows[0].json);
-        _update(entity_id, user, blob, 'remove', res);
-      });
+        });
     });
   }
 
@@ -289,11 +312,90 @@ module.exports = (function() {
     })
   }
 
+  var findSimilarImage = function(req, res) {
+    var url = req.query.url;
+    if (!url) {
+      return res.status(400).json({error: "must provide an image URL"})
+    }
+
+    var query = {
+      url: req.query.url,
+      nodup: req.query.nodup,
+      num: req.query.num,
+      neardup: req.query.neardup,
+      neardup_type: req.query.neardup_type,
+      visualize: 0
+    }
+
+    var s = querystring.stringify(query)
+
+/** !! IMPORTANT !!
+ *
+ * The isi memexproxy currently serves an invalid cert and thus should
+ * be rejected. But in order to actually access the service, we have to
+ * ignore the cert. While this offers a secure transport, it does not
+ * verify the identity of the server. This can be extremely dangerous!
+ *
+ * Once ISI fixes this (hopefully), we should set `rejectUnauthorized`
+ * to true. The cert is authorized for memexproxy.com and
+ * www.memexproxy.com, but not isi.memexproxy.com.
+ */
+    var options = {
+      hostname: 'isi.memexproxy.com',
+      path: '/ColumbiaUimgSearch.php?' + s,
+      auth: config.imagesearch.user + ":" + config.imagesearch.pass,
+      rejectUnauthorized: false
+    }
+
+    https.request(options, function(isi_res) {
+      var body = '';
+      isi_res.on('data', function(chunk) {
+        body += chunk;
+      });
+
+      isi_res.on('end', function() {
+        var result = {}
+        if (body) {
+          var similar_images = JSON.parse(body)
+            .images[0]
+            .similar_images;
+          Promise.all(_.map(similar_images.ht_ads_id, _get_json)).then(
+            function(blobs) {
+              // group together image_urls, cached image urls, page urls, and distance
+              result = _.map(
+                _.zip(
+                  similar_images.image_urls,
+                  similar_images.cached_image_urls,
+                  similar_images.page_urls,
+                  similar_images.distance,
+                  blobs),
+                function(elem) {
+                  return {
+                    image_urls: elem[0],
+                    cached_image_urls: elem[1],
+                    page_urls: elem[2],
+                    distance: elem[3],
+                    ad: elem[4]
+                  }
+                })
+              return res.json(result)
+            },
+            function(error) {
+              return res.status(400).json({error: error})
+            });
+        }
+      });
+    }).on('error', function(e) {
+      return res.status(400).json({error: e})
+    }).end()
+  }
+
   return {
     search: search,
     suggestAd: suggestAd,
     getEntity: getEntity,
     attachAd: attachAd,
-    detachAd: detachAd
+    detachAd: detachAd,
+    findSimilarImage: findSimilarImage
   }
 })();

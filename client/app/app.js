@@ -11,7 +11,8 @@ angular.module('memexLinkerApp', [
   'akoenig.deckgrid',
   'ngLodash',
   'ui-rangeSlider',
-  'ngCrossfilter'
+  'ngCrossfilter',
+  'directives'
 ])
   .config(function ($stateProvider, $urlRouterProvider, $locationProvider, $httpProvider) {
     $urlRouterProvider

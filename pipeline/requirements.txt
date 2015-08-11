@@ -2,7 +2,6 @@ sqlalchemy
 pymysql
 elasticsearch
 gevent
-gipc
 requests
 phonenumbers
 ftfy

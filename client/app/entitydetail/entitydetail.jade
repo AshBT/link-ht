@@ -4,7 +4,7 @@ div(ng-include='"components/navbar/navbar.html"')
 	.row 
 		.col-md-3
 			.panel.panel-default
-				.panel-heading Entity: {{entity.phone | tel}}
+				.panel-heading Phone(s): {{entity.phone | tel}}
 				.panel-body.vertical-layout
 					.item
 						col-md-3(ng-if="faceImageUrl.length==0")
@@ -14,33 +14,25 @@ div(ng-include='"components/navbar/navbar.html"')
 							img.responsive(ng-src="{{img}}"
 								style="max-height:80px; margin:0 auto;"
 								ng-class="{blurry: blur == true, clear: blur != true}")
-
-						
 					.item
-						p Names: {{entity.name.join(', ') | capitalize}}
+						p Names: <strong> {{entity.name.join(', ') | capitalize}} </strong>
 					.item 
 						label Blur Images:
 						input(type="checkbox" ng-model="blur")
 					.item 
 						button.btn-success(ng-click='saveEntity()') Save Entity 
-			
-			//- .panel.panel-default(style="height: 300px")
-			//- 	.panel-heading Map
-			//- 	ui-gmap-google-map(center='map.center', zoom='map.zoom')
-			//- 		ui-gmap-markers(models='markers', coords="'self'", icon="'icon'")
-
 			.panel.panel-default
-				.panel-heading Entity Identifiers
+				.panel-heading Identifiers
 				.panel-body.vertical-layout
 					ul.nobullets.item
+						li(ng-if="entity.phone.length > 0") e-mail: {{entity.phone.join(', ') }}
 						li(ng-if="entity.email.length > 0") e-mail: {{entity.email.join(', ') }}
 						li(ng-if="entity.twitter.length > 0") Twitter: {{entity.twitter.join(', ') }}
 						li(ng-if="entity.instagram.length > 0") Instagram: {{entity.instagram.join(', ') }}
 						li(ng-if="entity.youtube.length > 0") Youtube: {{entity.youtube.join(', ') }}
 						li(ng-if="entity.yelp.length > 0") Yelp: {{entity.yelp.join(', ') }}
-
 			.panel.panel-default
-				.panel-heading Entity Details
+				.panel-heading Details
 				.panel-body
 					ul.nobullets
 						li(ng-if="entity.age.length > 0") Ages: {{entity.age.join(', ')}}
@@ -56,21 +48,20 @@ div(ng-include='"components/navbar/navbar.html"')
 			map-box(data='ads' on-bounds-change='onBoundsChange' on-show-selector='onShowSelector' on-range-change='onRangeChange')
 			.panel.panel-default
 				tabset
-					tab(heading='{{$ngc.collection().length}} Ads and Reviews')
+					tab(heading='{{$ngc.collection().length}} Ads')
 						include ./partials/ads.jade
-					tab(heading='{{imageUrls.length}} Images')
-						include ./partials/images.jade
 					tab(heading='{{suggestedAds.length}} Similar Ads')
 						include ./partials/suggested.jade
+					tab(heading='{{annotations.length}} Notes')
+						include ./partials/annotations.jade
+					tab(heading='{{entity.twitter.length + entity.instagram.length + entity.youtube.length + entity.yelp.length}} Social Media Accounts')
+						include ./partials/twitter.jade
+					tab(heading='{{imageUrls.length}} Images')
+						include ./partials/images.jade
+					//- TODO: re-enable this
 					//- tab(heading='Image Space')
 					//- 	include ./partials/imagespace.jade
-					tab(heading='{{annotations.length}} Annotations')
-						include ./partials/annotations.jade
-					tab(heading='{{entity.twitter.length + entity.instagram.length + entity.youtube.length + entity.yelp.length}} Social Media Posts')
-						include ./partials/twitter.jade
-
 hr
 footer.footer
-	.container
-		center Designed and Developed by Qadium 2015. All code is open source.
-		center About Help Terms Privacy 
+	center Designed and Developed by Qadium 2015. Check out the open source code for Link HT on <a href='https://github.com/qadium/link-ht'> Github</a>.
+	center <a href='posts'> About </a> <a href='posts'> Help </a> <a href='posts'> Terms </a> <a href='posts'> Privacy </a>

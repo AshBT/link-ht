@@ -1,6 +1,7 @@
 'use strict';
 
 angular.module('memexLinkerApp')
+
 .controller('MainCtrl', function ($scope, $http, $q, socket, lodash, entityService, linkUtils) {
 
 	var _ = lodash;
@@ -78,8 +79,7 @@ angular.module('memexLinkerApp')
 	return 0;
 };
 
-
-	// non-scope functions
+	// Non-scope functions
 
 	function initAggregates() {
 			// Consider using HashMap instead.
@@ -166,7 +166,7 @@ angular.module('memexLinkerApp')
 				var website=[];
 				var sourcesid = uniqueFlatAndDefined(collectAdProperty(ads, 'sources_id'));
 				for (var i = 0; i < sourcesid.length; i++) {
-					website=website.concat(source_map[sourcesid[i]]);
+					website=website.concat(entityService.source[sourcesid[i]]);
 				}
 				website = _.filter(_.uniq(website), function(element){
 					return ! _.isUndefined(element);
@@ -286,10 +286,10 @@ function updateAggregates(entitySummary, aggregates) {
 	ages.push(entitySummary.age);
 	var listages = uniqueFlatAndDefined(ages);
 	aggregates.set('age_min', _.min(_.filter(uniqueFlatAndDefined(ages), function(n) {
-		return Number((n % 1 ) == 0);
+		return Number((n % 1 ) === 0);
 	})));
 	aggregates.set('age_max', _.max(_.filter(uniqueFlatAndDefined(ages), function(n) {
-		return Number((n % 1 ) == 0);
+		return Number((n % 1 ) === 0);
 	})));
 
 

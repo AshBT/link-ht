@@ -7,9 +7,82 @@ angular.module('memexLinkerApp')
 
 	// --- SCOPE VARIABLES --- //
 
+
+// ------------------------ Start Upload to S3 Code ---------------------------------------------- //
+
+$scope.sizeLimit      = 15878640; // 10MB in Bytes
+  $scope.uploadProgress = 0;
+  $scope.creds          = {};
+
+  var access=''
+  var secret=''
+  $scope.upload = function() {
+    AWS.config.update({ accessKeyId: access, secretAccessKey: secret });
+    AWS.config.region = 'us-east-1';
+    var bucket = new AWS.S3({ params: { Bucket: '' } });
+    
+    if($scope.file) {
+        // Perform File Size Check First
+        var fileSize = Math.round(parseInt($scope.file.size));
+        if (fileSize > $scope.sizeLimit) {
+          toastr.error('Sorry, your attachment is too big. <br/> Maximum '  + $scope.fileSizeLabel() + ' file attachment allowed','File Too Large');
+          return false;
+        }
+        // Prepend Unique String To Prevent Overwrites
+        var uniqueFileName = 'Upload/' + $scope.uniqueString() + '-' + $scope.file.name;
+
+        var params = { Key: uniqueFileName, ContentType: $scope.file.type, Body: $scope.file, ServerSideEncryption: 'AES256' };
+
+        bucket.putObject(params, function(err, data) {
+          if(err) {
+            toastr.error(err.message,err.code);
+            return false;
+          }
+          else {
+            // Upload Successfully Finished
+            toastr.success('File Uploaded Successfully', 'Done');
+
+            // Reset The Progress Bar
+            setTimeout(function() {
+              $scope.uploadProgress = 0;
+              $scope.$digest();
+            }, 4000);
+          }
+        })
+        .on('httpUploadProgress',function(progress) {
+          $scope.uploadProgress = Math.round(progress.loaded / progress.total * 100);
+          $scope.$digest();
+        });
+      }
+      else {
+        // No File Selected
+        toastr.error('Please select a file to upload');
+      }
+    }
+
+    $scope.fileSizeLabel = function() {
+    // Convert Bytes To MB
+    return Math.round($scope.sizeLimit / 1024 / 1024) + 'MB';
+  };
+
+  $scope.uniqueString = function() {
+    var text     = "";
+    var possible = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+
+    for( var i=0; i < 8; i++ ) {
+      text += possible.charAt(Math.floor(Math.random() * possible.length));
+    }
+    return text;
+  }
+
+// ------------------------ End Upload to S3 Code ---------------------------------------------- //
+
+
+
 	// Aggregate details about this entitiy.
 	$scope.entity = {
 		phone:'',
+		adsid:[],
 		email:[],
 		name:[],
 		city:[],
@@ -33,6 +106,7 @@ angular.module('memexLinkerApp')
     var boom = 'ads_id%3A32711920%20OR%20ads_id%3A32711944';
     $scope.imagecat = $sce.trustAsResourceUrl('https://darpamemex:darpamemex@imagecat.memexproxy.com/imagespace/#search/' + boom);
 
+	// $scope.imagecat = []
 	$scope.blur = true;
 	$scope.ads = [];
 	$scope.imageUrls = [];
@@ -47,10 +121,10 @@ angular.module('memexLinkerApp')
 
 	$scope.map = {
 		center: {
-			latitude: 33.5206608,
-			longitude: -86.80248999999998
+			latitude: 39.8282,
+			longitude: -98.5795
 		},
-		zoom: 4
+		zoom: 3
 	};
 
 	$scope.markers = [
@@ -274,6 +348,7 @@ angular.module('memexLinkerApp')
 	 * @return {[type]} [description]
 	 */
 	function updateEntity() {
+
 		console.log('updateEntity');
 		$scope.entity.cities = uniqueFlatAndDefined(_.pluck($scope.ads, 'city')).sort();
 		$scope.entity.postTime = uniqueFlatAndDefined(_.pluck($scope.ads, 'posttime')).sort();
@@ -295,18 +370,19 @@ angular.module('memexLinkerApp')
 
 		$scope.entity.youtube= uniqueFlatAndDefined(_.pluck($scope.ads, 'youtube')).sort();
 		$scope.entity.youtube_sameuser= uniqueFlatAndDefined(_.pluck($scope.ads, 'youtube_video_urls')).sort();
+
 		for (var i = 0; i < $scope.entity.youtube.length; i++) {
-			$scope.entity.youtube[i]=$sce.trustAsResourceUrl($scope.entity.youtube[i])
+			$scope.entity.youtube[i]=$sce.trustAsResourceUrl($scope.entity.youtube[i]);
 		}
 		for (var i = 0; i < $scope.entity.youtube_sameuser.length; i++) {
-			$scope.entity.youtube_sameuser[i]=$sce.trustAsResourceUrl($scope.entity.youtube_sameuser[i].replace("watch?v=", "embed/"))
+			$scope.entity.youtube_sameuser[i]=$sce.trustAsResourceUrl($scope.entity.youtube_sameuser[i].replace("watch?v=", "embed/"));
 		}
 		$scope.entity.youtube_username= uniqueFlatAndDefined(_.pluck($scope.ads, 'youtube_user')).sort();
 
 
 		$scope.entity.twitter= uniqueFlatAndDefined(_.pluck($scope.ads, 'twitter')).sort();
 		for (var i = 0; i < $scope.entity.twitter.length; i++) {
-			$scope.entity.twitter[i]=$scope.entity.twitter[i].replace("https://twitter.com/","@")
+			$scope.entity.twitter[i]=$scope.entity.twitter[i].replace("https://twitter.com/","@");
 		}
 		$scope.entity.tweets= uniqueFlatAndDefined(_.pluck($scope.ads, 'twitter')).sort();
 		$scope.entity.twitter_followers= uniqueFlatAndDefined(_.pluck($scope.ads, 'twitter_followers')).sort();
@@ -423,7 +499,10 @@ angular.module('memexLinkerApp')
 	updateLinked();
 	//updateSuggestedText();
 	//updateSuggestedImage();
+	// $scope.imagecat = $sce.trustAsResourceUrl("https://darpamemex:darpamemex@imagecat.memexproxy.com/imagespace/#search/" + "ads_id%3A" + entity.adsid.join("%20OR%20ads_id%3A"));
+
 });
+
 
 // TODO: put this under components
 angular.module('memexLinkerApp').

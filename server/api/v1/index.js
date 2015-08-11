@@ -83,4 +83,21 @@ router.post('/entity/:id/link/:ad_id', api.attachAd);
  */
 router.delete('/entity/:id/link/:ad_id', api.detachAd);
 
+/** findSimilarImage
+ *
+ * The findSimilarImage endpoint forwards the request to
+ *
+ * https://isi.memexproxy.com/ColumbiaUimgSearch.php
+ *
+ * This will return a list of ads that contain the similar images. It
+ * is not paginated.
+ *
+ * The query parameters are (copied from ISI):
+ *    nodup        -- 1, 0 [remove or display exact duplicate, default: 0]
+ *    num          -- maximum number of returned images [default: 30, 1000 if neardup activated]
+ *    neardup      -- 1, 0 [activate near duplicate search, default: 0]
+ *    neardup_type -- strict, loose, balanced [default: balanced]
+ */
+router.get('/image/similar', api.findSimilarImage);
+
 module.exports = router;

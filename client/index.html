@@ -14,6 +14,7 @@
     <!-- build:css(client) app/vendor.css -->
       <!-- bower:css -->
       <link rel="stylesheet" href="bower_components/angular-rangeslider/angular.rangeSlider.css" />
+      <link rel="stylesheet" href="bower_components/toastr/toastr.css" />
       <!-- endbower -->
     <!-- endbuild -->
     <!-- build:css({.tmp,client}) app/app.css -->
@@ -57,6 +58,8 @@
       <script src="bower_components/crossfilter/crossfilter.js"></script>
       <script src="bower_components/underscore/underscore.js"></script>
       <script src="bower_components/ng-crossfilter/dist/ng-crossfilter.js"></script>
+      <script src="bower_components/toastr/toastr.js"></script>
+      <script src="bower_components/aws-sdk-js/dist/aws-sdk.js"></script>
       <!-- endbower -->
       <script src="socket.io-client/socket.io.js"></script>
     <!-- endbuild -->
@@ -71,6 +74,7 @@
           <script src="app/admin/admin.controller.js"></script>
           <script src="app/admin/admin.js"></script>
           <script src="app/entityService/entityService.service.js"></script>
+          <script src="app/entitydetail/directives.js"></script>
           <script src="app/entitydetail/entitydetail.controller.js"></script>
           <script src="app/entitydetail/entitydetail.js"></script>
           <script src="app/imagestream/imagestream.controller.js"></script>

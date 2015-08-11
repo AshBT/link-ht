@@ -1,7 +1,8 @@
 'use strict';
 
 var mongoose = require('mongoose'),
-    Schema = mongoose.Schema;
+    Schema = mongoose.Schema,
+    db = require('../../databases').neo4j;
 
 var ElasticSchema = new Schema({
   name: String,
@@ -12,23 +13,9 @@ var ElasticSchema = new Schema({
 module.exports = mongoose.model('Elastic', ElasticSchema);
 
 
-var neo4j = require('neo4j');
-
-var NEO_HOST = process.env['NEO_HOST'] || 'http://localhost:7474';
-var NEO_USER = process.env['NEO_USER'] || 'neo4j';
-var NEO_PASS = process.env['NEO_PASS'] || 'password';
-
-var db = new neo4j.GraphDatabase({
-    url: NEO_HOST,
-    auth: {username: NEO_USER, password: NEO_PASS},     // optional; see below for more details
-    headers: {},    // optional defaults, e.g. User-Agent
-    proxy: null,    // optional URL
-    agent: null,    // optional http.Agent instance, for custom socket pooling
-});
-
 var Elastic = module.exports = function Elastic(_node) {
 	this._node = _node;
-} 
+}
 
 
 // public instance properties:
@@ -60,8 +47,8 @@ Elastic.getNeo4j = function (searchText, callback) {
     };
     db.cypher({query:query,params:params}, function(err, results) {
         if (err) {
-          console.log("BIG Error"); 
-          return callback(err); 
+          console.log("BIG Error");
+          return callback(err);
         }
         //console.log(results);
         //{entity: { _id: 28380, labels: [Object], properties: [Object] }}
