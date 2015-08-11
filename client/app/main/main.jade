@@ -56,6 +56,46 @@ div(ng-include='"components/navbar/navbar.html"')
 												td {{aggregates.get('ethnicities').sort().join(', ') | capitalize}}		
 								
 	.row
+		.col-md-12(ng-if='entities1 && entities1.length == 0')
+			accordion(close-others='oneAtATime')
+				accordion-group(heading='Example Search Result', is-disabled='status.isFirstDisabled')
+					.panel.panel-default
+						.panel-heading
+							h3 Group Identification Number -- Phone Number(s)  -- (# of Ads)
+						.panel-body
+							.col-md-4
+								h4 Dates Active
+								h4 Names Extracted
+								h4 E-mails Extracted
+								h4 Ages Extracted
+								h4 Price Range
+								p Websites
+								p Cities
+								p # of Pictures
+								p # of Face Pictures
+								p # of Ads with Similar Pictures
+								p # of Ads with Similar Text
+								//- p Ads related by phone co-occurence:  <strong> {{entity.nSuggestedByPhone}}</strong>
+								p # of Social Media Accounts Extracted
+							.col-md-8
+								.col-md-12
+									.panel.panel-default
+										.panel-heading
+											.panel-title
+												h4 Snippets of Ads Containing Search Terms (# of Ads)
+										.panel-body.vertical-layout
+											p Snippet of ad text with search terms <span style="background-color: #FFFF00">  highlighted </span> 
+								.col-md-12
+									.panel.panel-default
+										.panel-heading
+											.panel-title
+												h4 Most Recent Ad
+										.panel-body.vertical-layout
+											.item
+												h4 Title of Ad
+											.item
+												p Text of Ad
+												p Images from Ad
 		.col-md-12(ng-if='entities1 && entities1.length > 0')
 			center
 				h2 View Group Summaries in Search Results Below
@@ -65,8 +105,9 @@ div(ng-include='"components/navbar/navbar.html"')
 					h3 Group {{entity.id}} -- <strong> Phone Number(s): <strong> {{entity.phone | tel}} </strong>   -- </strong>  ({{entity.nPosts}} Ads)
 				.panel-body
 					.col-md-4
-						h4 Active between <strong> {{entity.firstPostTime.toDateString()}} to {{entity.lastPostTime.toDateString()}} </strong>
+						h4 Active between <strong> {{entity.firstPostTime.toDateString()}} </strong> to <strong> {{entity.lastPostTime.toDateString()}} </strong>
 						h4(ng-if='entity.name && entity.name.length > 0') Listed names:  <strong>{{entity.name.join(', ') | capitalize}} </strong>
+						h4(ng-if='entity.email && entity.email.length > 0') Listed e-mails:  <strong>{{entity.email.join(', ')}}</strong>
 						h4(ng-if='entity.age && entity.age.length > 0') Listed ages:  <strong>{{entity.age.join(', ')}}</strong>
 						h4(ng-if='entity.priceRange && entity.priceRange.length > 0') Listed price range: <strong>{{entity.priceRange}} </strong>
 						p(ng-if='entity.website && entity.website.length > 0') Websites:  <strong> {{entity.website.sort().join(', ')}}</strong>
@@ -77,7 +118,7 @@ div(ng-include='"components/navbar/navbar.html"')
 						p Ads related by text:<strong> {{entity.nSuggestedByText}}</strong>
 						//- p Ads related by phone co-occurence:  <strong> {{entity.nSuggestedByPhone}}</strong>
 						p Social Media Accounts: <strong> {{entity.socialmedia}}</strong>
-						a.button.btn-primary.btn-lg.pull-left(ui-sref="entitydetail({ id: entity.id })") Inspect
+						a.button.btn-primary.btn-lg.pull-left(ui-sref="entitydetail({ id: entity.id })") Investigate
 					.col-md-8
 						.col-md-12
 							.panel.panel-default
@@ -85,7 +126,7 @@ div(ng-include='"components/navbar/navbar.html"')
 									.panel-title
 										h4 Ads Containing Search Terms (# of Ads)
 								.panel-body.vertical-layout
-									p Place holder for snippet of search result using Angular Filter + regex
+									p Place holder for <span style="background-color: #FFFF00"> snippet </span> of search result using Angular Filter + regex
 						.col-md-12
 							.panel.panel-default
 								.panel-heading
