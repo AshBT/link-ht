@@ -174,7 +174,7 @@ angular.module('memexLinkerApp')
         var title = collectAdProperty(ads, 'title');
         var text = collectAdProperty(ads, 'text');
         var name = uniqueFlatAndDefined(collectAdProperty(ads, 'name'));
-        var city = uniqueFlatAndDefined(collectAdProperty2(ads, 'city'));
+        var city = uniqueFlatAndDefined(collectAdProperty2(ads, 'city')).sort();
         var youtube = uniqueFlatAndDefined(collectAdProperty(ads, 'youtube'));
         var instagram = uniqueFlatAndDefined(collectAdProperty(ads, 'instagram'));
         var twitter = uniqueFlatAndDefined(collectAdProperty(ads, 'twitter'));
@@ -333,8 +333,27 @@ $scope.submitSearch = function(){
 var adIds = []
 $scope.entities1 = [];
 
+
+
+
+
+
 $scope.submitElasticSearch = function(){
   console.log('submitElasticSearch...');
+
+if ($scope.elasticSearchText) {
+  client.create({
+    index: 'query_logging',
+    type: 'search',
+    body: {
+      username: "demo_user",
+      query: $scope.elasticSearchText,
+      published_at: Date.now(),
+    }
+  }, function (error, response) {
+    console.log(error)
+  });
+}
   if ($scope.elasticSearchText) {
     console.log($scope.elasticSearchText);
     $http.post('/api/elastics/search', {elasticSearchText : $scope.elasticSearchText}).success(function(res) {
