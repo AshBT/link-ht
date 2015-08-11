@@ -9,6 +9,35 @@ module.exports = (function() {
       querystring = require('querystring'),
       _ = require('lodash');
 
+
+
+
+//------------------------------LOGGING---------------------------------
+      var elasticsearch = require('elasticsearch');
+      var client = new elasticsearch.Client({
+        // host: ES_HOST + ':9200',
+        host: 'localhost:9200',
+        log: 'trace'
+      });
+
+  client.create({
+    index: 'query_logging',
+    type: 'search',
+    body: {
+      username: "demo_user",
+      query: 'req.body.elasticSearchText',
+      published_at: Date.now(),
+    }
+  });           
+
+//------------------------------LOGGING---------------------------------
+
+
+
+
+
+
+
   var _search = function(query, size, page) {
     var starting_from = (page - 1) * size;
 

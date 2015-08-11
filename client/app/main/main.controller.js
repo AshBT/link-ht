@@ -342,18 +342,11 @@ $scope.submitElasticSearch = function(){
   console.log('submitElasticSearch...');
 
 if ($scope.elasticSearchText) {
-  client.create({
-    index: 'query_logging',
-    type: 'search',
-    body: {
-      username: "demo_user",
-      query: $scope.elasticSearchText,
-      published_at: Date.now(),
-    }
-  }, function (error, response) {
-    console.log(error)
+    $http.post('/api/v1/search', {elasticSearchText : $scope.elasticSearchText}).success(function(res) {
   });
 }
+
+
   if ($scope.elasticSearchText) {
     console.log($scope.elasticSearchText);
     $http.post('/api/elastics/search', {elasticSearchText : $scope.elasticSearchText}).success(function(res) {
