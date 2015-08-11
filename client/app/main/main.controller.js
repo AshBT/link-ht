@@ -1,7 +1,6 @@
 'use strict';
 
 angular.module('memexLinkerApp')
-
 .controller('MainCtrl', function ($scope, $http, $q, socket, lodash, entityService, linkUtils) {
 
 	var _ = lodash;
@@ -236,6 +235,7 @@ angular.module('memexLinkerApp')
 // return deferred.promise;
 // }
 
+
 function updateAggregates(entitySummary, aggregates) {
 	// Entity IDs
 	var entityIds = aggregates.get('entityIds');
@@ -294,9 +294,6 @@ function updateAggregates(entitySummary, aggregates) {
 
 	console.log(aggregates);
 }
-
-
-
 
 });
 
