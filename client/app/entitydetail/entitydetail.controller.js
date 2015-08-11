@@ -2,7 +2,7 @@
 
 // TODO: inject an entity service, and use it to get the entity object
 angular.module('memexLinkerApp')
-.controller('EntitydetailCtrl', function ($scope, $http, $stateParams, $q, $modal, lodash, Auth, $sce, Crossfilter) {
+.controller('EntitydetailCtrl', function ($scope, $http, $stateParams, $q, $modal, lodash, Auth, $sce, Crossfilter, entityService, linkUtils) {
 	var _ = lodash;
 
 	// --- SCOPE VARIABLES --- //
@@ -105,9 +105,8 @@ $scope.sizeLimit      = 15878640; // 10MB in Bytes
 		yelp:[]
 	};
 
-
-    var boom = "ads_id%3A32711920%20OR%20ads_id%3A32711944"
-    $scope.imagecat = $sce.trustAsResourceUrl("https://darpamemex:darpamemex@imagecat.memexproxy.com/imagespace/#search/" + boom);
+    var boom = 'ads_id%3A32711920%20OR%20ads_id%3A32711944';
+    $scope.imagecat = $sce.trustAsResourceUrl('https://darpamemex:darpamemex@imagecat.memexproxy.com/imagespace/#search/' + boom);
 
 	// $scope.imagecat = []
 	$scope.blur = true;
@@ -116,37 +115,7 @@ $scope.sizeLimit      = 15878640; // 10MB in Bytes
 	$scope.faceImageUrl = [];
 	$scope.suggestedAds = [];
 	$scope.id = $stateParams.id;
-
-	$scope.sourceMap = {
-		1 : 'Backpage',
-		2 : 'Craigslist',
-		3 : 'Classivox',
-		4 : 'MyProviderGuide',
-		5 : 'NaughtyReviews',
-		6 : 'RedBook',
-		7 : 'CityVibe',
-		8 : 'MassageTroll',
-		9 : 'RedBookForum',
-		10 : 'CityXGuide',
-		11 : 'CityXGuideForum',
-		12 : 'RubAds',
-		13 : 'Anunico',
-		14 : 'SipSap',
-		15 : 'EscortsInCollege',
-		16 : 'EscortPhoneList',
-		17 : 'EroticMugshots',
-		18 : 'EscortsAdsXXX',
-		19 : 'EscortsinCA',
-		20 : 'EscortsintheUS',
-		21 : 'LiveEscortReviws',
-		22 : 'MyProviderGuideForum',
-		23 : 'USASexGuide',
-		24 : 'EroticReview',
-		25 : 'AdultSearch',
-		26 : 'HappyMassage',
-		27: 'UtopiaGuide',
-		28 : 'MissingKids'
-	};
+	$scope.sourceMap = entityService.sources;
 
 	// User-supplied annotations.
 	$scope.annotations = [];
@@ -172,9 +141,11 @@ $scope.sizeLimit      = 15878640; // 10MB in Bytes
 	// ng-crossfilter. collection | primary key | strategy | properties
 	$scope.$ngc = new Crossfilter($scope.ads, 'id', 'persistent', ['id','latitude', 'longitude', 'timestamp']);
 
+	$scope.showSelector = false;
 
-	// Callback for changes in showSelector.
+	// Callback for changes in showSelector, which indicates whether the goegraphic selection box is enabled.
 	$scope.onShowSelector = function(showSelector) {
+		$scope.showSelector = showSelector;
     	if(showSelector) {
 			// 
 		} else {
@@ -185,18 +156,24 @@ $scope.sizeLimit      = 15878640; // 10MB in Bytes
 
     // Callback for changes in geographic bounding box.
     $scope.onBoundsChange = function(bounds) {
+    	console.log('onBoundsChange');
     	console.log(bounds);
     	$scope.$ngc.unfilterBy('latitude');
 		$scope.$ngc.unfilterBy('longitude');
-		var sw = bounds.sw;
-		var ne = bounds.ne;
-		$scope.$ngc.filterBy('latitude', {minLatitude: sw.latitude, maxLatitude: ne.latitude}, function(range, latitude) {
-			return range.minLatitude <= latitude && latitude <= range.maxLatitude;
-		});
+		if($scope.showSelector) {
+			var sw = bounds.sw;
+			var ne = bounds.ne;
+			$scope.$ngc.filterBy('latitude', {minLatitude: sw.latitude, maxLatitude: ne.latitude}, function(range, latitude) {
+				return range.minLatitude <= latitude && latitude <= range.maxLatitude;
+			});
 
-		$scope.$ngc.filterBy('longitude', {minLon: sw.longitude, maxLon: ne.longitude}, function(range, lon) {
-			return range.minLon <= lon && lon <= range.maxLon;
-		});
+			$scope.$ngc.filterBy('longitude', {minLon: sw.longitude, maxLon: ne.longitude}, function(range, lon) {
+				return range.minLon <= lon && lon <= range.maxLon;
+			});	
+		} else {
+			//
+		}
+		
     };
 
     // Callback for changes in date slider range.
@@ -264,40 +241,7 @@ $scope.sizeLimit      = 15878640; // 10MB in Bytes
 
 	// --- NON-SCOPE FUNCTIONS --- //
 
-	function collectAdProperty(ads, propertyName) {
-		return _.map(ads, function(ad) {
-			return ad.properties[propertyName];
-		});
-	}
-	
-	function collectAdProperty2(ads, propertyName) {
-		return _.map(ads, function(ad) {
-			return _.trunc(ad.properties[propertyName],15);
-		});
-	}
-
-	function uniqueFlatAndDefined(items) {
-		return _.filter(_.uniq(_.flatten(items)), function(item) {
-			return ! _.isUndefined(item);
-		});
-	}
-
-	function uniqueAndDefined(items) {
-		return _.filter(_.uniq(items), function(item) {
-			return ! _.isUndefined(item);
-		});
-	}
-
-	function mode(arr) {
-		return arr.reduce(function(current, item) {
-			var val = current.numMapping[item] = (current.numMapping[item] || 0) + 1;
-			if (val > current.greatestFreq) {
-				current.greatestFreq = val;
-				current.mode = item;
-			}
-			return current;
-		}, {mode: null, greatestFreq: -Infinity, numMapping: {}}, arr).mode;
-	}
+	var uniqueFlatAndDefined = linkUtils.uniqueFlatAndDefined;
 
 
 	function similar_images_to_uploaded_image(s3_URL) {
@@ -333,42 +277,63 @@ $scope.sizeLimit      = 15878640; // 10MB in Bytes
 	
 
 	function updateLinked() {
-		$http.get('api/entities/' + $scope.id + '/linked').success(function(res){
-			_.map(res, function(element){ 
-				var ad = {
-					'id':element.ad._id,
-					'labels':element.ad.labels,
-					'properties':element.ad.properties,
-					'timestamp': Date.parse(element.ad.properties.posttime)
-				};
 
-				var promises = [];
+		entityService.Entity.query({id: $scope.id}, function(data) {
+			var _ads = data.ads;
 
-				promises.push($http.post('api/interactions/linkTypes', {entityId : $scope.id, adId : ad.id}));
-
-				// geocode ad
-				if(element.ad.properties.city !== undefined) {
-					promises.push(geocodeCity(element.ad.properties.city));
+			_.map(_ads, function(ad) {
+				console.log('Pushing ad');
+				console.log(ad);
+				ad.timestamp = Date.parse(ad.posttime);
+				$scope.ads.push(ad);
+				$scope.$ngc.addModel(ad);
+				// If ad has latitude and longitude values, convert them to numbers
+				if (_.has(ad, 'latitude') && _.has(ad, 'longitude')) {
+					console.log('converting lat lon values to numbers');
+					ad.latitude = Number(ad.latitude);
+					ad.longitude = Number(ad.longitude);
+				} else {
+					// TODO: geocode the city name.
 				}
-				$q.all(promises).then(function(data){
-
-					var res = data[0].data;
-					if (res.linkTypes.indexOf('BY_PHONE') > -1) { ad.linkedByPhone = true; }
-					if (res.linkTypes.indexOf('BY_TXT') > -1) { ad.linkedByText = true; }
-					if (res.linkTypes.indexOf('BY_IMG') > -1) { ad.linkedByImage = true; }
-
-					if(data.length == 2) {
-						// geocoded
-						var point = data[1];
-
-						ad.latitude = point.latitude;
-  						ad.longitude = point.longitude;
-					}
-					$scope.ads.push(ad);
-					$scope.$ngc.addModel(ad);
-				});
 			});
 		});
+
+		// $http.get('api/entities/' + $scope.id + '/linked').success(function(res){
+		// 	_.map(res, function(element){ 
+		// 		var ad = {
+		// 			'id':element.ad._id,
+		// 			'labels':element.ad.labels,
+		// 			'properties':element.ad.properties,
+		// 			'timestamp': Date.parse(element.ad.properties.posttime)
+		// 		};
+
+		// 		var promises = [];
+
+		// 		promises.push($http.post('api/interactions/linkTypes', {entityId : $scope.id, adId : ad.id}));
+
+		// 		// geocode ad
+		// 		if(element.ad.properties.city !== undefined) {
+		// 			promises.push(geocodeCity(element.ad.properties.city));
+		// 		}
+		// 		$q.all(promises).then(function(data){
+
+		// 			var res = data[0].data;
+		// 			if (res.linkTypes.indexOf('BY_PHONE') > -1) { ad.linkedByPhone = true; }
+		// 			if (res.linkTypes.indexOf('BY_TXT') > -1) { ad.linkedByText = true; }
+		// 			if (res.linkTypes.indexOf('BY_IMG') > -1) { ad.linkedByImage = true; }
+
+		// 			if(data.length === 2) {
+		// 				// geocoded
+		// 				var point = data[1];
+
+		// 				ad.latitude = point.latitude;
+  // 						ad.longitude = point.longitude;
+		// 			}
+		// 			$scope.ads.push(ad);
+		// 			$scope.$ngc.addModel(ad);
+		// 		});
+		// 	});
+		// });
 	}
 
 	function updateSuggestedText() {
@@ -409,53 +374,60 @@ $scope.sizeLimit      = 15878640; // 10MB in Bytes
 	// }, true);
 
 	$scope.$on('crossfilter/updated', function(event, collection, identifier) {
+		console.log('crossfilter/updated event.');
 		updateEntity();
 	});
 
+	/**
+	 * Update the aggregate statistics for this entity, based on the (possibly filtered) set of linked ads, suggested ads, etc.
+	 * @return {[type]} [description]
+	 */
 	function updateEntity() {
-		$scope.entity.cities = uniqueFlatAndDefined(collectAdProperty2($scope.ads, 'city')).sort();
-		$scope.entity.adsid = uniqueFlatAndDefined(collectAdProperty2($scope.ads, 'id')).sort().slice(0,10);
-		$scope.entity.postTime = uniqueFlatAndDefined(collectAdProperty($scope.ads, 'posttime')).sort();
-		$scope.entity.age = uniqueFlatAndDefined(collectAdProperty($scope.ads, 'age')).sort();
-		$scope.entity.ethnicities = uniqueFlatAndDefined(collectAdProperty($scope.ads, 'ethnicity')).sort();
-		$scope.entity.height = uniqueFlatAndDefined(collectAdProperty($scope.ads, 'height')).sort();
-		$scope.entity.weight = uniqueFlatAndDefined(collectAdProperty($scope.ads, 'weight')).sort();
-		$scope.entity.eyes = uniqueFlatAndDefined(collectAdProperty($scope.ads, 'eyes')).sort();
-		$scope.entity.hair = uniqueFlatAndDefined(collectAdProperty($scope.ads, 'hair')).sort();
-		$scope.entity.price = uniqueFlatAndDefined(collectAdProperty($scope.ads, 'rate60')).sort();
-		$scope.entity.email = uniqueFlatAndDefined(collectAdProperty($scope.ads, 'email')).sort();
-		$scope.entity.name = uniqueFlatAndDefined(collectAdProperty($scope.ads, 'name')).sort();
-		$scope.entity.instagram = uniqueFlatAndDefined(collectAdProperty($scope.ads, 'instagram')).sort();
-		$scope.entity.instagram_followers= uniqueFlatAndDefined(collectAdProperty($scope.ads, 'instagram_followers')).sort();
-		$scope.entity.instagram_follows= uniqueFlatAndDefined(collectAdProperty($scope.ads, 'instagram_follows')).sort();
-		$scope.entity.instagram_likers= uniqueFlatAndDefined(collectAdProperty($scope.ads, 'instagram_likers')).sort();
-		$scope.entity.instagram_profile_picture= uniqueFlatAndDefined(collectAdProperty($scope.ads, 'instagram_profile_picture')).sort();
-		$scope.entity.instagram_tags= uniqueFlatAndDefined(collectAdProperty($scope.ads, 'instagram_tags')).sort();
 
-		$scope.entity.youtube= uniqueFlatAndDefined(collectAdProperty($scope.ads, 'youtube')).sort();
-		$scope.entity.youtube_sameuser= uniqueFlatAndDefined(collectAdProperty($scope.ads, 'youtube_video_urls')).sort();
+		console.log('updateEntity');
+		$scope.entity.cities = uniqueFlatAndDefined(_.pluck($scope.ads, 'city')).sort();
+		$scope.entity.postTime = uniqueFlatAndDefined(_.pluck($scope.ads, 'posttime')).sort();
+		$scope.entity.age = uniqueFlatAndDefined(_.pluck($scope.ads, 'age')).sort();
+		$scope.entity.ethnicities = uniqueFlatAndDefined(_.pluck($scope.ads, 'ethnicity')).sort();
+		$scope.entity.height = uniqueFlatAndDefined(_.pluck($scope.ads, 'height')).sort();
+		$scope.entity.weight = uniqueFlatAndDefined(_.pluck($scope.ads, 'weight')).sort();
+		$scope.entity.eyes = uniqueFlatAndDefined(_.pluck($scope.ads, 'eyes')).sort();
+		$scope.entity.hair = uniqueFlatAndDefined(_.pluck($scope.ads, 'hair')).sort();
+		$scope.entity.price = uniqueFlatAndDefined(_.pluck($scope.ads, 'rate60')).sort();
+		$scope.entity.email = uniqueFlatAndDefined(_.pluck($scope.ads, 'email')).sort();
+		$scope.entity.name = uniqueFlatAndDefined(_.pluck($scope.ads, 'name')).sort();
+		$scope.entity.instagram = uniqueFlatAndDefined(_.pluck($scope.ads, 'instagram')).sort();
+		$scope.entity.instagram_followers= uniqueFlatAndDefined(_.pluck($scope.ads, 'instagram_followers')).sort();
+		$scope.entity.instagram_follows= uniqueFlatAndDefined(_.pluck($scope.ads, 'instagram_follows')).sort();
+		$scope.entity.instagram_likers= uniqueFlatAndDefined(_.pluck($scope.ads, 'instagram_likers')).sort();
+		$scope.entity.instagram_profile_picture= uniqueFlatAndDefined(_.pluck($scope.ads, 'instagram_profile_picture')).sort();
+		$scope.entity.instagram_tags= uniqueFlatAndDefined(_.pluck($scope.ads, 'instagram_tags')).sort();
+
+		$scope.entity.youtube= uniqueFlatAndDefined(_.pluck($scope.ads, 'youtube')).sort();
+		$scope.entity.youtube_sameuser= uniqueFlatAndDefined(_.pluck($scope.ads, 'youtube_video_urls')).sort();
+
 		for (var i = 0; i < $scope.entity.youtube.length; i++) {
-			$scope.entity.youtube[i]=$sce.trustAsResourceUrl($scope.entity.youtube[i])
+			$scope.entity.youtube[i]=$sce.trustAsResourceUrl($scope.entity.youtube[i]);
 		}
 		for (var i = 0; i < $scope.entity.youtube_sameuser.length; i++) {
-			$scope.entity.youtube_sameuser[i]=$sce.trustAsResourceUrl($scope.entity.youtube_sameuser[i].replace("watch?v=", "embed/"))
+			$scope.entity.youtube_sameuser[i]=$sce.trustAsResourceUrl($scope.entity.youtube_sameuser[i].replace("watch?v=", "embed/"));
 		}
-		$scope.entity.youtube_username= uniqueFlatAndDefined(collectAdProperty($scope.ads, 'youtube_user')).sort();
+		$scope.entity.youtube_username= uniqueFlatAndDefined(_.pluck($scope.ads, 'youtube_user')).sort();
 
 
-		$scope.entity.twitter= uniqueFlatAndDefined(collectAdProperty($scope.ads, 'twitter')).sort();
+		$scope.entity.twitter= uniqueFlatAndDefined(_.pluck($scope.ads, 'twitter')).sort();
 		for (var i = 0; i < $scope.entity.twitter.length; i++) {
-			$scope.entity.twitter[i]=$scope.entity.twitter[i].replace("https://twitter.com/","@")
+			$scope.entity.twitter[i]=$scope.entity.twitter[i].replace("https://twitter.com/","@");
 		}
-		$scope.entity.tweets= uniqueFlatAndDefined(collectAdProperty($scope.ads, 'twitter')).sort();
-		$scope.entity.twitter_followers= uniqueFlatAndDefined(collectAdProperty($scope.ads, 'twitter_followers')).sort();
-		$scope.entity.twitter_friends= uniqueFlatAndDefined(collectAdProperty($scope.ads, 'twitter_friends')).sort();
-		$scope.entity.twitter_name= uniqueFlatAndDefined(collectAdProperty($scope.ads, 'twitter_name')).sort();
-		$scope.entity.twitter_profile_pic= uniqueFlatAndDefined(collectAdProperty($scope.ads, 'twitter_profile_pic')).sort();
-		$scope.entity.twitter_profile_background_pic= uniqueFlatAndDefined(collectAdProperty($scope.ads, 'twitter_profile_background_pic')).sort();
-		$scope.entity.twitter_description= uniqueFlatAndDefined(collectAdProperty($scope.ads, 'twitter_description')).sort();
+		$scope.entity.tweets= uniqueFlatAndDefined(_.pluck($scope.ads, 'twitter')).sort();
+		$scope.entity.twitter_followers= uniqueFlatAndDefined(_.pluck($scope.ads, 'twitter_followers')).sort();
+		$scope.entity.twitter_friends= uniqueFlatAndDefined(_.pluck($scope.ads, 'twitter_friends')).sort();
+		$scope.entity.twitter_name= uniqueFlatAndDefined(_.pluck($scope.ads, 'twitter_name')).sort();
+		$scope.entity.twitter_profile_pic= uniqueFlatAndDefined(_.pluck($scope.ads, 'twitter_profile_pic')).sort();
+		$scope.entity.twitter_profile_background_pic= uniqueFlatAndDefined(_.pluck($scope.ads, 'twitter_profile_background_pic')).sort();
+		$scope.entity.twitter_description= uniqueFlatAndDefined(_.pluck($scope.ads, 'twitter_description')).sort();
 
-		$scope.entity.yelp= uniqueFlatAndDefined(collectAdProperty($scope.ads, 'yelp')).sort();
+		$scope.entity.yelp= uniqueFlatAndDefined(_.pluck($scope.ads, 'yelp')).sort();
 
 		//var priceRange = 'Missing' ;
 		if ($scope.entity.price[0] !== null) {
@@ -466,21 +438,21 @@ $scope.sizeLimit      = 15878640; // 10MB in Bytes
 			$scope.entity.minPrice = 'Missing';
 			$scope.entity.maxPrice = 'Missing';
 		}
-		$scope.entity.modePrice = mode($scope.entity.price);
+		$scope.entity.modePrice = linkUtils.mode($scope.entity.price);
 		
 		var rawImageUrls = _.flatten(
 			_.map($scope.ads, function(ad) {
-				return ad.properties.image_locations;
+				return ad.image_locations;
 			}),
 			true
 			);
-		$scope.imageUrls = uniqueFlatAndDefined(_.filter(rawImageUrls, function(element){
+		$scope.imageUrls = linkUtils.uniqueFlatAndDefined(_.filter(rawImageUrls, function(element){
 			return ! _.isUndefined(element);
 		}));
 
 		$scope.faceImageUrl = _.flatten(
 			_.map($scope.ads, function(ad) {
-				return ad.properties.faceImageUrl;
+				return ad.faceImageUrl;
 			}),
 			true
 			);
@@ -523,7 +495,8 @@ $scope.sizeLimit      = 15878640; // 10MB in Bytes
 				});
 			});
 		}
-	} 
+	}
+
 	// The following function requires access to the internet. We need to develop an offline version of this geocoder.
 	var geocoder = new google.maps.Geocoder();
 	function geocodeCity(cityName) {
@@ -546,19 +519,22 @@ $scope.sizeLimit      = 15878640; // 10MB in Bytes
 		return deferred.promise;
 	}
 
-	$http.get('/api/entities/' + $scope.id).success(function(res) {
-		$scope.entity.phone = res._node.properties.identifier;
-		$scope.entity.email = res._node.properties.email;
-		$scope.entity.name = res._node.properties.name;
-		$scope.entity.city = res._node.properties.city;
-		$scope.entity.nFaces = res._node.properties.nFaces;
+	entityService.Suggest.query({id: $scope.id}, function(data) {
+		console.log('Suggest:');
+		console.log(data.suggestions);
 	});
+
+	// $http.get('/api/entities/' + $scope.id).success(function(res) {
+	// 	$scope.entity.phone = res._node.properties.identifier;
+	// 	$scope.entity.email = res._node.properties.email;
+	// 	$scope.entity.name = res._node.properties.name;
+	// 	$scope.entity.nFaces = res._node.properties.nFaces;
+	// });
  
 	updateLinked();
-	updateSuggestedText();
-	updateSuggestedImage();
+	//updateSuggestedText();
+	//updateSuggestedImage();
 	// $scope.imagecat = $sce.trustAsResourceUrl("https://darpamemex:darpamemex@imagecat.memexproxy.com/imagespace/#search/" + "ads_id%3A" + entity.adsid.join("%20OR%20ads_id%3A"));
-
 
 });
 

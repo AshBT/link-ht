@@ -1,13 +1,13 @@
 .panel.panel-default(ng-repeat='ad in $ngc.collection()')
-	.panel-heading.h1  {{sourceMap[ad.properties.sources_id]}} at {{ad.properties.posttime | date}}
+	.panel-heading.h1  {{sourceMap[ad.sources_id]}} at {{ad.posttime | date}}
 	.panel-body.vertical-layout
 		.item
-			h4 {{ad.properties.title}}
-			p {{ad.properties.text}}
-			p: a(href='{{ad.properties.url}}') View original post
+			h4 {{ad.title}}
+			p {{ad.text}}
+			p: a(href='{{ad.url}}') View original post
 		.item
 			row
-				col-md-3(ng-repeat = 'img in ad.properties.image_locations track by $index')
+				col-md-3(ng-repeat = 'img in ad.image_locations track by $index')
 					img.responsive(ng-src = "{{img}}" 
 						style="max-height:100px; margin:0 auto;"
 						ng-class="{blurry: blur == true, clear: blur != true}")

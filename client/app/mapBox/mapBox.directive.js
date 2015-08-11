@@ -142,8 +142,6 @@ function MapBoxController($scope) {
 
 	$scope.$watch('mb.bounds', function() {
 		if(mb.bounds !== null) {
-			var sw = mb.bounds.sw;
-			var ne = mb.bounds.ne;
 			// onBoundsChange is a function reference. Evaluate it to get the callback function.
 			if(mb.onBoundsChange() !== undefined) {
 				mb.onBoundsChange()(mb.bounds);
