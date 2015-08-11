@@ -2,10 +2,10 @@ div(ng-include='"components/navbar/navbar.html"')
 .container
 	.row
 		center 
-			h4(ng-if="entities.length==0") No saved Entities yet
+			h4(ng-if="entities.length==0") You haven't saved any groups yet!
 		left
-			h4(ng-if="entities.length==1") {{entities.length}} Saved Entity
-			h4(ng-if="entities.length>1") {{entities.length}} Saved Entities
+			h4(ng-if="entities.length==1") {{entities.length}} Saved Group
+			h4(ng-if="entities.length>1") {{entities.length}} Saved Groups
 
 
 		//- .col-md-12(ng-repeat="entity in entities | orderBy:'-nSuggested' | filter: { phone : filterPhone, text: filterText, gt : filterMinAge } ")
