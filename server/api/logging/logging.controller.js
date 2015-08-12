@@ -17,7 +17,7 @@ exports.search = function(req) {
     index: 'query_logging',
     type: 'search',
     body: {
-      username: "demo_user",
+      username: "demo_user", // WE NEED TO SPECIFY THE USERNAME TOO!
       query: req.body.elasticSearchText,
       published_at: Date.now(),
     }
