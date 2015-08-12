@@ -56,17 +56,17 @@ function MapBoxController($scope) {
   	mb.sortReverse = false;
 
     // Map
-	mb.map = {center: {latitude: 37, longitude: -122}, zoom: 6, bounds: {}};
+	mb.map = {center: {latitude: 39.5, longitude: -98.4}, zoom: 3, bounds: {}};
 
 	// Rectangular selection
 	mb.bounds = {
 		northeast: {
-			latitude: 37.01,
-			longitude: -121.9
+			latitude: 39.5,
+			longitude: -98.4
 		},
 		southwest: {
-			latitude: 36.99,
-			longitude: -122.1
+			latitude: 39.5,
+			longitude: -98.4
 		}
 	};
 	mb.showSelector = false;
