@@ -139,13 +139,13 @@ div(ng-include='"components/navbar/navbar.html"')
 							.panel.panel-default
 								.panel-heading
 									.panel-title
-										h4 Most Recent Post at {{entity.website[0]}}
+										h4 Lastest Ad on {{entity.websites[0]}}
 								.panel-body.vertical-layout
 									.item
-										h4 {{entity.title[0]}}
+										h4 {{entity.titles[0]}}
 									.item
 										p
-											| {{entity.text[0]}}
+											| {{entity.texts[0]}}
 									.item
 										.row
 											.col-md-2(ng-repeat='img in entity.imageUrls | limitTo:50')	 

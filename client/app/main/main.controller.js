@@ -56,7 +56,7 @@ angular.module('memexLinkerApp')
 				console.log(entity);
 				updateAggregates(entity, $scope.aggregates);
 			});
-			// console.log($scope.aggregates);
+			console.log($scope.aggregates);
 			// TODO: summarize each entity
 		},function(reason){
 			console.log('Failed: ' + reason);
@@ -179,7 +179,9 @@ function updateAggregates(entitySummary, aggregates) {
 	aggregates.set('price_min', _.min(aggregates.get('prices')));
 
 	// console.log(entity);
-	console.log("prices")
+	console.log("a")
+	// console.log(aggregates)
+	console.log("b")
 }
 
 });
