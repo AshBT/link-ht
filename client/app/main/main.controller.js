@@ -18,7 +18,7 @@ angular.module('memexLinkerApp')
 	$scope.nSuggestedByText = 0;
 
 
-	//Accordion Code
+//------------------------ Start Accordion Code
 	$scope.oneAtATime = true;
 
 	$scope.groups = [
@@ -33,7 +33,7 @@ angular.module('memexLinkerApp')
 	];
 
 	$scope.items = ['Item 1', 'Item 2', 'Item 3'];
-
+//------------------------ End Accordion Code
 	// $scope functions
 
 	$scope.addItem = function() {
@@ -47,6 +47,8 @@ angular.module('memexLinkerApp')
 	};
 
 	$scope.search = function(){
+		console.log("You searched for " + $scope.elasticSearchText)
+		$http.post('/api/loggings/search', {elasticSearchText : $scope.elasticSearchText})
 		entityService.search($scope.elasticSearchText, 10,10).then(function(entities){
 			$scope.entities = entities;
 			console.log('Found ' + entities.length + ' entites');
@@ -245,6 +247,7 @@ angular.module('memexLinkerApp')
 // if ($scope.elasticSearchText) {
 //     $http.post('/api/v1/search', {elasticSearchText : $scope.elasticSearchText}).success(function(res) {
 //   });
+// }
 // }
 
 

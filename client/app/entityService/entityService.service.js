@@ -16,6 +16,7 @@ entityService.$inject = ['$http', '$q', '$resource', 'linkUtils', 'lodash'];
 var _SEARCH_URL = '/api/v1/search'; 
 
 
+
 function entityService($http, $q, $resource, linkUtils, lodash) {
 	var _ = lodash;
 
@@ -63,6 +64,10 @@ function entityService($http, $q, $resource, linkUtils, lodash) {
 	};
 	return service;
 
+	// $http.post(_SEARCH_URL, {query : $scope.elasticSearchText})
+ //    	   	console.log("bonjour")
+
+	// 		console.log($scope.elasticSearchText)
 
 	/**
 	 * [search description]
@@ -79,6 +84,7 @@ function entityService($http, $q, $resource, linkUtils, lodash) {
 	 		page: page,
 	 		count: 'yes'
 	 	};
+    	
 	 	$http.post(_SEARCH_URL, {query:query}, {params:params}).then(function(response){
 			// Callback when response is available.
 			var entities = _.map(response.data.entities, function(e) {
