@@ -20,16 +20,17 @@ module.exports = (function() {
         log: 'trace'
       });
 
-  client.create({
-    index: 'query_logging',
-    type: 'search',
-    body: {
-      username: "demo_user",
-      query: 'req.body.elasticSearchText',
-      published_at: Date.now(),
-    }
-  });           
-
+// exports.search = function(query) {
+  // client.create({
+  //   index: 'query_logging',
+  //   type: 'search',
+  //   body: {
+  //     username: "demo_user",
+  //     query: req.body.elasticSearchText,
+  //     published_at: Date.now(),
+  //   }
+  // });           
+// }
 //------------------------------LOGGING---------------------------------
 
 
@@ -39,6 +40,8 @@ module.exports = (function() {
 
 
   var _search = function(query, size, page) {
+
+    
     var starting_from = (page - 1) * size;
 
     return db.elasticsearch.search({

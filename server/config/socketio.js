@@ -18,6 +18,7 @@ function onConnect(socket) {
   });
 
   // Insert sockets below
+  require('../api/logging/logging.socket').register(socket);
   // require('../api/elastic/elastic.socket').register(socket);
   //require('../api/relationship/relationship.socket').register(socket);
   //require('../api/ad/ad.socket').register(socket);
