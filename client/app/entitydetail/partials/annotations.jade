@@ -1,32 +1,30 @@
+.panel.panel-default
+	.panel-heading
+		h1.panel-title  Notes
+	.panel-body
+		form(ng-submit="submit()")
+				| Add a note: 
+				input(type="text" ng-model="text" name="text" placeholder='...')
+				input(type="submit" id="submit" value="Submit")
 
 .panel.panel-default(ng-repeat='annotation in annotations')
 	.panel-heading.h1  {{annotation.username}} -- {{annotation.date | date}}
 	.panel-body
 		| {{annotation.text}}
 
-	//- .panel-footer.clearfix
-.container
-	.row
-	.col-md-12
-		form(ng-submit="submit()")
-			| Enter an annotation: 
-			input(type="text" ng-model="text" name="text")
-			input(type="submit" id="submit" value="Submit")
-
 // ------------------------ Start Upload to S3 Code ---------------------------------------------- //
 
-.container
-	.row
-		.panel.panel-default
-			.panel-heading
-				h3.panel-title Upload Image
-			.panel-body
-				.col-md-12.form
-					input.bottom-marg-15(type='file', name='file', file='')
-					.progress
-						.progress-bar(role='progressbar', aria-valuenow='{{ uploadProgress }}', aria-valuemin='0', aria-valuemax='100', style='width: {{ uploadProgress }}%;')
-							| {{ uploadProgress == 0 ? '' : uploadProgress + '%' }}
-					a.btn.btn-primary.btn-block.btn-lg(ng-click='upload()') Upload
+
+.panel.panel-default
+	.panel-heading
+		h1.panel-title Upload Image
+	.panel-body
+		.col-md-12.form
+			input.bottom-marg-15(type='file', name='file', file='')
+			.progress
+				.progress-bar(role='progressbar', aria-valuenow='{{ uploadProgress }}', aria-valuemin='0', aria-valuemax='100', style='width: {{ uploadProgress }}%;')
+					| {{ uploadProgress == 0 ? '' : uploadProgress + '%' }}
+			a.btn.btn-primary.btn-block.btn-lg(ng-click='upload()') Upload
 // ------------------------ End Upload to S3 Code ---------------------------------------------- //
 
 
@@ -34,11 +32,12 @@
 
 .container
 	.row
-		.panel.panel-default(ng-if="{{sim_image.length}} >0")
+		.panel.panel-default
+			//- (ng-if="{{sim_image.length}} >0")
 			.panel-heading
 				h3.panel-title Similar Images
 			.panel-body
-				.col-md-12.form(ng-repeat='image in sim_image | limitTo:5')
+				.col-md-9.form(ng-repeat='image in sim_image | limitTo:5')
 					img.responsive(ng-src="{{image}}"
 						style="max-height:200px; margin:0 auto;"
 						ng-class="{blurry: blur == true, clear: blur != true}")

@@ -43,7 +43,7 @@ div(ng-include='"components/navbar/navbar.html"')
 						li(ng-if="entity.weight.length > 0") Weight: {{entity.weight.join(', ')}}
 						li(ng-if="entity.eyes.length > 0") Eyes: {{entity.eyes.join(', ')}}
 						li(ng-if="entity.hair.length > 0") Hair: {{entity.hair.join(', ')}}
-						li(ng-if="entity.cities.length > 0") Cities: {{entity.cities.join(', ') | capitalize}}
+						//- li(ng-if="entity.cities.length > 0") Cities: {{entity.cities.join(', ') | capitalize}}
 		.col-md-9
 			map-box(data='ads' on-bounds-change='onBoundsChange' on-show-selector='onShowSelector' on-range-change='onRangeChange')
 			.panel.panel-default
