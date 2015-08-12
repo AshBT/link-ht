@@ -5,35 +5,36 @@ div(ng-include='"components/navbar/navbar.html"')
 		.col-md-12
 			.panel.panel-default
 				.panel-body
-					.col-md-3.form
+					.col-md-2.form
+					.col-md-1.form
 					.col-md-6.form
 						center
-
 							h1 <strong> Link <span style="color:#ff5351;"> HT </span></strong>
 							form(ng-submit='search()' ng-click="counter = counter + 1" ng-init="counter=0")
 								input.search-query.form-control(type='text',ng-model='elasticSearchText', name='text', placeholder='Search...')
 								input.btn.btn-primary#submit(type='submit', value='Submit')
 
-					.col-md-3.form
-				.search-body.panel-body(ng-if="aggregates.get('entityIds').length > 0")
-					.row
-						.col-md-2
-							h3(style='color:blue') Controls
-							label(style='color:blue') Blur Images: 
+					.col-md-1.form
+					.col-md-2.form(ng-if="aggregates.get('entityIds').length == 0")
+					.col-md-2.form(ng-if="aggregates.get('entityIds').length > 0", style="background-color:black")
+						left
+							h3(style='color:#ff5351') Controls
+							label(style='color:white') Blur Images: 
 								input(type="checkbox", ng-model="blur", ng-init="checked=true")
-							label(style='color:blue') Has Face Picture: 
+							label(style='color:white') Has Face Picture: 
 								input(type="checkbox", ng-model="hasFacePic")
-							label(style='color:blue') Has Similar Ads: 
+							label(style='color:white') Has Similar Ads: 
 								input(type="checkbox", ng-model="hasSimilarAds")
-							label(style='color:blue') Has Social Media 
+							label(style='color:white') Has Social Media 
 								input(type="checkbox", ng-model="hasSocialMedia")
-						.col-md-10
+				.search-body.panel-body(ng-if="aggregates.get('entityIds').length > 0")
+					.col-md-12
+						center
 							h3 Search Results Summary
 							h4 <strong> {{aggregates.get('entityIds').length}} groups </strong>  -- <strong> {{aggregates.get('nAds')}} ads </strong> with <strong> {{aggregates.get('nPictures')}} </strong> pictures. 
 							h5(ng-if="aggregates.get('ages').length > 0") Extracted age range: {{aggregates.get('age_min')}} to {{aggregates.get('age_max')}}.
-							h5(ng-if="aggregates.get('prices').length > 0") Extracted price range: {{aggregates.get('price_min') | currency:"$"}} to {{aggregates.get('price_max') | currency:"$"}}. 
-						.col-md-2
-						.col-md-10
+							h5(ng-if="aggregates.get('prices').length > 0") Extracted price range: {{aggregates.get('price_min') | currency:"$"}} to {{aggregates.get('price_max') | currency:"$"}} 
+						center
 							accordion(close-others='oneAtATime')
 								accordion-group(heading='Click here for more summary details', is-disabled='status.isFirstDisabled')
 									table.table.table-hover(ng-if="aggregates.get('entityIds').length > 0")
@@ -56,9 +57,8 @@ div(ng-include='"components/navbar/navbar.html"')
 											tr(ng-if="aggregates.get('ethnicities').length > 0")
 												td Ethnicities extracted from search results
 												td {{aggregates.get('ethnicities').sort().join(', ') | capitalize}}		
-								
-	.row
 
+	.row
 		.col-md-12(ng-if='entities && entities.length == 0')
 			accordion(close-others='oneAtATime')
 				accordion-group(heading='Example Search Result', is-disabled='status.isFirstDisabled')
@@ -101,12 +101,13 @@ div(ng-include='"components/navbar/navbar.html"')
 												p Images from Ad
 		.col-md-12(ng-if='entities && entities.length > 0')
 			center
-				h2 View Group Summaries in Search Results Below
+				h2(style='black') View Search Results Below
+				br
 		//- .col-md-12(ng-repeat="entity in entities | orderBy:'-nSuggested'  | filter:facesFilter | filter:socialMediaFilter | filter: similarAdsFilter")
 		.col-md-12(ng-repeat="entity in entities")
 			.panel.panel-default
 				.panel-heading
-					h3 Group {{entity.id}} -- <strong> Phone Number(s): <strong> {{entity.phone | tel}} </strong>   -- </strong>  ({{entity.nPosts}} Ads)
+					h3 Group ID: {{entity.id}} -- <strong> Phone Number(s): <strong> {{entity.phone | tel}} </strong>   -- </strong>  ({{entity.nPosts}} Ads)
 				.panel-body
 
 					.col-md-4
