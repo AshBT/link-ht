@@ -64,10 +64,7 @@ function entityService($http, $q, $resource, linkUtils, lodash) {
 	};
 	return service;
 
-	// $http.post(_SEARCH_URL, {query : $scope.elasticSearchText})
- //    	   	console.log("bonjour")
 
-	// 		console.log($scope.elasticSearchText)
 
 	/**
 	 * [search description]
@@ -135,6 +132,9 @@ function entityService($http, $q, $resource, linkUtils, lodash) {
 
 		// TODO: the city field can contain garbage, like html tags. 
 		var cities = linkUtils.uniqueFlatAndDefined(linkUtils.collectAdProperty(ads, 'city'));
+		for (var i = 0; i < cities.length; i++) {
+          cities[i]=cities[i].substring(0,20);
+        };
 		//var youtube = uniqueFlatAndDefined(collectAdProperty(ads, 'youtube'));
 		//var instagram = uniqueFlatAndDefined(collectAdProperty(ads, 'instagram'));
 		//var twitter = uniqueFlatAndDefined(collectAdProperty(ads, 'twitter'));
