@@ -1,17 +1,17 @@
 'use strict';
 
 angular.module('memexLinkerApp')
-.controller('MainCtrl', function ($scope, $http, $q, socket, lodash, entityService, linkUtils) {
+.controller('MainCtrl', function ($scope, $http, $q, socket, lodash, entityService, linkUtils, Crossfilter) {
 
 	var _ = lodash;
 
-	// $scope variables
-
 	$scope.entities = [];
+	// ng-crossfilter. collection | primary key | strategy | properties
+	$scope.entityCrossfilter = new Crossfilter([], 'id', 'persistent', ['id', 'faceImageUrls']);
+
 	$scope.aggregates = initAggregates();
 	$scope.logo = 'http://icons.iconarchive.com/icons/icons8/ios7/256/Very-Basic-Paper-Clip-icon.png';
 	$scope.blur = true;
-	$scope.hasFacePic = false;
 	$scope.hasSimilarAds = false;
 	$scope.hasSocialMedia = false;
 	$scope.xx = {};
@@ -36,6 +36,19 @@ angular.module('memexLinkerApp')
 //------------------------ End Accordion Code
 	// $scope functions
 
+	// Watch for changes in the face filter checkbox.
+	$scope.onFaceChange = function(enableFaceFilter) {
+		if(enableFaceFilter) {
+			console.log('applying face filter...');
+			$scope.entityCrossfilter.filterBy('faceImageUrls', function(urlArray) {
+				return urlArray.length > 0;
+			});
+		} else {
+			console.log('unapplying face filter...');
+			$scope.entityCrossfilter.unfilterBy('faceImageUrls');
+		}
+	};
+
 	$scope.addItem = function() {
 		var newItemNo = $scope.items.length + 1;
 		$scope.items.push('Item ' + newItemNo);
@@ -47,36 +60,44 @@ angular.module('memexLinkerApp')
 	};
 
 	$scope.search = function(){
-		console.log("You searched for " + $scope.elasticSearchText)
-		$http.post('/api/loggings/search', {elasticSearchText : $scope.elasticSearchText})
+		console.log('You searched for ' + $scope.elasticSearchText);
+		$http.post('/api/loggings/search', {elasticSearchText : $scope.elasticSearchText});
 		entityService.search($scope.elasticSearchText, 10,1).then(function(entities){
-			$scope.entities = entities;
+			
 			console.log('Found ' + entities.length + ' entites');
-			_.forEach($scope.entities, function(entity) {
-				console.log(entity);
+			$scope.entites = entities;
+			_.forEach(entities, function(entity) {
 				updateAggregates(entity, $scope.aggregates);
-				entities.push(entity)
 			});
+			var _models = $scope.entityCrossfilter.collection();
+			$scope.entityCrossfilter.deleteModels(_models);
+			$scope.entityCrossfilter.addModels(entities);
 			console.log($scope.aggregates);
-			// TODO: summarize each entity
+
 		},function(reason){
 			console.log('Failed: ' + reason);
 		});
 	};
 
-	$scope.facesFilter = function(e,hasFacePic){
-		//return e.face.length >=1 || !$scope.hasFacePic;
-		return 0;
+	// $scope.facesFilter = function(e){
+	// 	console.log('facesFilter');
+	// 	console.log(e);
+	// 	console.log(e.faceImageUrls);
+	// 	console.log($scope.hasFacePic);
+	// 	var val = e.faceImageUrls.length > 0 || !$scope.hasFacePic;
+	// 	if(val) {
+	// 		console.log('returning e');
+	// 		return e;
+	// 	}
+	// };
+
+
+	$scope.socialMediaFilter = function(e){
+		return e.socialmedia.length >=0 || !$scope.hasSocialMedia;
 	};
 
-
-	$scope.socialMediaFilter = function(e,hasSocialMedia){
-		// return e.socialmedia.length >=0 || !$scope.hasSocialMedia;
-	};
-
-	$scope.similarAdsFilter = function(e,hasFacePic){
-		//return e.similarads >=1 || !$scope.hasSimilarAds;
-		return 0;
+	$scope.similarAdsFilter = function(e){
+		return e.similarads >=1 || !$scope.hasSimilarAds;
 	};
 
 	$scope.getNSuggestedByText = function(entity) {
@@ -180,15 +201,26 @@ function updateAggregates(entitySummary, aggregates) {
 	aggregates.set('prices', uniqueFlatAndDefined(prices));
 	aggregates.set('price_max', _.max(aggregates.get('prices')));
 	aggregates.set('price_min', _.min(aggregates.get('prices')));
-
-	// console.log(entity);
-	// console.log("a")
-	// console.log(aggregates)
-	// console.log("b")
 }
 
 });
 
+// --> Not sure why the enabled parameter hasn't been working...
+// angular.module('memexLinkerApp')
+// .filter('hasFacePics', function() {
+//   return function(input, enabled) {
+//   	//console.log(input);
+//   	console.log('hasFacePics:enabled: ' + enabled);
+//     if (!input) {return input;}
+//     var result = [];
+//     angular.forEach(input, function(entity) {
+//       if (entity.faceImageUrls.length > 0 || !enabled) {
+//         result.push(entity);
+//       }
+//     });
+//     return result;
+//   };
+// });
 
 
 

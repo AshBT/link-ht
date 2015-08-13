@@ -22,7 +22,7 @@ div(ng-include='"components/navbar/navbar.html"')
 							label(style='color:white') Blur Images: 
 								input(type="checkbox", ng-model="blur", ng-init="checked=true")
 							label(style='color:white') Has Face Picture: 
-								input(type="checkbox", ng-model="hasFacePic")
+								input(type="checkbox", ng-model="hasFacePic" ng-change="onFaceChange(hasFacePic)")
 							label(style='color:white') Has Similar Ads: 
 								input(type="checkbox", ng-model="hasSimilarAds")
 							label(style='color:white') Has Social Media 
@@ -106,7 +106,7 @@ div(ng-include='"components/navbar/navbar.html"')
 				h2(style='black') View Search Results Below
 				br
 		//- .col-md-12(ng-repeat="entity in entities | filter:facesFilter | filter:socialMediaFilter | filter: similarAdsFilter")
-		.col-md-12(ng-repeat="entity in entities")
+		.col-md-12(ng-repeat="entity in entityCrossfilter.collection()")
 			.panel.panel-default
 				.panel-heading
 					//- TODO: Bold the 'main' phone number and italicize the non-main phone numbers
