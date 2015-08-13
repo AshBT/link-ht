@@ -48,8 +48,10 @@ angular.module('memexLinkerApp')
 	
 	$scope.search = function(){
 		console.log("You searched for " + $scope.elasticSearchText)
-		var re1 = new RegExp(".{20}" + $scope.elasticSearchText + '.{10}',"gi");
+		var re1 = new RegExp(".{0,50}" + $scope.elasticSearchText + '.{0,50}',"gi");
 		var re2 = new RegExp($scope.elasticSearchText,"gi");
+		var re3 = new RegExp(".{0,50}" + $scope.elasticSearchText,"gi");
+		var re4 = new RegExp($scope.elasticSearchText + '.{0,50}',"gi");
 
 
 		$http.post('/api/loggings/search', {elasticSearchText : $scope.elasticSearchText})
@@ -59,14 +61,18 @@ angular.module('memexLinkerApp')
 			_.forEach($scope.entities, function(entity) {
 				
 				var regex=entity.all_text.match(re1,"");
-				var start_regex = regex[0].substring(0,20)
-				var mid_regex = regex[0].substring(20,20+$scope.elasticSearchText.length)
-				var end_regex = regex[0].substring(20+$scope.elasticSearchText.length,30+$scope.elasticSearchText.length)
+				if (regex!=null) {
+				var start_regex = regex[0].match(re3,"")[0].replace(re2,"")
+				var mid_regex = regex[0].match(re2,"")[0]
+				var end_regex = regex[0].match(re4,"")[0].replace(re2,"")
 				console.log(start_regex + mid_regex + end_regex);
 				entity.snippet1 = start_regex
 				entity.snippet2 = mid_regex
 				entity.snippet3 = end_regex
-
+				}
+				else {
+					console.log("ummm")
+				}
 				updateAggregates(entity, $scope.aggregates);
 				entities.push(entity)
 			});
