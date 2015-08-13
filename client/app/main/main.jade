@@ -106,7 +106,9 @@ div(ng-include='"components/navbar/navbar.html"')
 				h2(style='black') View Search Results Below
 				br
 		//- .col-md-12(ng-repeat="entity in entities | filter:facesFilter | filter:socialMediaFilter | filter: similarAdsFilter")
+
 		.col-md-12(ng-repeat="entity in entityCrossfilter.collection()")
+
 			.panel.panel-default
 				.panel-heading
 					//- TODO: Bold the 'main' phone number and italicize the non-main phone numbers
@@ -137,7 +139,7 @@ div(ng-include='"components/navbar/navbar.html"')
 									.panel-title
 										h4 Ads Containing Search Terms (# of Ads)
 								.panel-body.vertical-layout
-									p Place holder for <span style="background-color: #FFFF00"> snippet </span> of search result using Angular Filter + regex
+									p {{entity.snippet1}} <span style="background-color: #FFFF00"> {{entity.snippet2}}  </span>  {{entity.snippet3}}
 						.col-md-12
 							.panel.panel-default
 								.panel-heading
@@ -151,10 +153,10 @@ div(ng-include='"components/navbar/navbar.html"')
 											| {{entity.texts[0]}}
 									.item
 										.row
-											.col-md-2(ng-repeat='img in entity.imageUrls | limitTo:50')	 
-												img.responsive(ng-src="{{img}}"
-													style="max-height:50px; margin:0 auto;"
-													ng-class="{blurry: blur == true, clear: blur != true}")
+											//- .col-md-2(ng-repeat='img in entity.imageUrls | limitTo:50')	 
+											//- 	img.responsive(ng-src="{{img}}"
+											//- 		style="max-height:50px; margin:0 auto;"
+											//- 		ng-class="{blurry: blur == true, clear: blur != true}")
 	footer.footer
 		center Designed and Developed by Qadium 2015 for DARPA's Memex program. 
 		center Check out the open source code for Link HT on <a href='https://github.com/qadium/link-ht'> Github</a>.

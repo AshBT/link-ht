@@ -19,20 +19,20 @@ angular.module('memexLinkerApp')
 
 
 //------------------------ Start Accordion Code
-	$scope.oneAtATime = true;
+$scope.oneAtATime = true;
 
-	$scope.groups = [
-	{
-		title: 'Dynamic Group Header - 1',
-		content: 'Dynamic Group Body - 1'
-	},
-	{
-		title: 'Dynamic Group Header - 2',
-		content: 'Dynamic Group Body - 2'
-	}
-	];
+$scope.groups = [
+{
+	title: 'Dynamic Group Header - 1',
+	content: 'Dynamic Group Body - 1'
+},
+{
+	title: 'Dynamic Group Header - 2',
+	content: 'Dynamic Group Body - 2'
+}
+];
 
-	$scope.items = ['Item 1', 'Item 2', 'Item 3'];
+$scope.items = ['Item 1', 'Item 2', 'Item 3'];
 //------------------------ End Accordion Code
 	// $scope functions
 
@@ -58,15 +58,37 @@ angular.module('memexLinkerApp')
 		isFirstOpen: true,
 		isFirstDisabled: false
 	};
-
+	
 	$scope.search = function(){
+
 		console.log('You searched for ' + $scope.elasticSearchText);
+
+		var re1 = new RegExp(".{0,50}" + $scope.elasticSearchText + '.{0,50}',"gi");
+		var re2 = new RegExp($scope.elasticSearchText,"gi");
+		var re3 = new RegExp(".{0,50}" + $scope.elasticSearchText,"gi");
+		var re4 = new RegExp($scope.elasticSearchText + '.{0,50}',"gi");
+
 		$http.post('/api/loggings/search', {elasticSearchText : $scope.elasticSearchText});
-		entityService.search($scope.elasticSearchText, 10,1).then(function(entities){
-			
+
+		entityService.search($scope.elasticSearchText, 10,1).then(function(entities){			
 			console.log('Found ' + entities.length + ' entites');
-			$scope.entites = entities;
-			_.forEach(entities, function(entity) {
+			$scope.entities = entities;
+			_.forEach($scope.entities, function(entity) {
+				
+				var regex=entity.all_text.match(re1,"");
+				if (regex!=null) {
+					var start_regex = regex[0].match(re3,"")[0].replace(re2,"");
+					var mid_regex = regex[0].match(re2,"")[0]
+					var end_regex = regex[0].match(re4,"")[0].replace(re2,"");
+					console.log(start_regex + mid_regex + end_regex);
+					entity.snippet1 = start_regex;
+					entity.snippet2 = mid_regex;
+					entity.snippet3 = end_regex;
+				}
+				else {
+					console.log("ummm");
+				}
+
 				updateAggregates(entity, $scope.aggregates);
 			});
 			var _models = $scope.entityCrossfilter.collection();
@@ -90,7 +112,6 @@ angular.module('memexLinkerApp')
 	// 		return e;
 	// 	}
 	// };
-
 
 	$scope.socialMediaFilter = function(e){
 		return e.socialmedia.length >=0 || !$scope.hasSocialMedia;
@@ -146,7 +167,8 @@ angular.module('memexLinkerApp')
 		var collectAdProperty = linkUtils.collectAdProperty;
 		var collectAdProperty2 = linkUtils.collectAdProperty2;
 
-function updateAggregates(entitySummary, aggregates) {
+		function updateAggregates(entitySummary, aggregates) {
+			console.log('updateAggregates');
 	// Entity IDs
 	var entityIds = aggregates.get('entityIds');
 	entityIds.push(entitySummary.id);
