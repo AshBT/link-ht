@@ -124,7 +124,7 @@ function entityService($http, $q, $resource, linkUtils, lodash) {
 		websites = _.filter(_.uniq(websites), function(element){
 			return ! _.isUndefined(element);
 		});
-		var phones = linkUtils.collectAdProperty(ads, 'phone');
+		var phones = linkUtils.uniqueFlatAndDefined(linkUtils.collectAdProperty(ads, 'phone'));
 
 		var titles = linkUtils.collectAdProperty(ads, 'title');
 		var texts = linkUtils.collectAdProperty(ads, 'text');
@@ -133,9 +133,10 @@ function entityService($http, $q, $resource, linkUtils, lodash) {
 		for (var i = 0; i < cities.length; i++) {
           cities[i]=cities[i].substring(0,20);
         };
-		//var youtube = uniqueFlatAndDefined(collectAdProperty(ads, 'youtube'));
-		//var instagram = uniqueFlatAndDefined(collectAdProperty(ads, 'instagram'));
-		//var twitter = uniqueFlatAndDefined(collectAdProperty(ads, 'twitter'));
+		var youtube = linkUtils.uniqueFlatAndDefined(linkUtils.collectAdProperty(ads, 'youtube'));
+		var instagram = linkUtils.uniqueFlatAndDefined(linkUtils.collectAdProperty(ads, 'instagram'));
+		var twitter = linkUtils.uniqueFlatAndDefined(linkUtils.collectAdProperty(ads, 'twitter'));
+		var socialmedia = twitter + instagram + youtube
 		//var ethnicity = uniqueFlatAndDefined(collectAdProperty(ads, 'ethnicity'));
 		var imageUrls = _.uniq(lodash.flatten(
 			_.map(ads, function(ad) {
@@ -173,7 +174,7 @@ function entityService($http, $q, $resource, linkUtils, lodash) {
 			nSuggestedByImage: 0,
 			nSuggestedByPhone: 0,
 			nSuggestedByText: 0,
-			socialAccounts: [],
+			socialmedia: socialmedia,
 			titles: titles,
 			texts: texts
 		};

@@ -3,7 +3,7 @@
 		.panel.panel-default
 		.panel-heading 
 			accordion(close-others='oneAtATime')
-				accordion-group(ng-if="{{entity.twitter.length}} > 0", heading='Twitter ({{entity.twitter.length}})', is-open='status.isFirstOpen', is-disabled='status.isFirstDisabled')
+				accordion-group(heading='Twitter ({{entity.twitter.length}})', is-open='status.isFirstOpen', is-disabled='status.isFirstDisabled')
 					.col-md-12.form
 						.col-md-3(ng-repeat='img in entity.twitter_profile_pic')
 								p Profile Picture
@@ -19,7 +19,7 @@
 						li User Tweets {{entity.twitter_tweets.join(', ') }}
 						li Followers ({{entity.twitter_followers.length }}): {{entity.twitter_followers.join(', ') }}
 						li Following ({{entity.twitter_friends.length }}): {{entity.twitter_friends.join(', ') }}
-				accordion-group(ng-if="{{entity.instagram.length}} > 0", heading='Instagram ({{entity.instagram.length}})')
+				accordion-group(heading='Instagram ({{entity.instagram.length}})')
 					.col-md-12.form
 						.col-md-3(ng-repeat='img in entity.instagram_profile_picture')
 								p Profile Picture
@@ -28,10 +28,10 @@
 									ng-class="{blurry: blur == true, clear: blur != true}")
 						li Username: {{entity.instagram.join(', ')}}
 						li Tags: {{entity.instagram_tags.join(', ')}} 
-						li Followers ({{entity.instagram_followers.lenght}}): {{entity.instagram_followers.join(', ')}}
+						li Followers ({{entity.instagram_followers.length}}): {{entity.instagram_followers.join(', ')}}
 						li Following ({{entity.instagram_follows.length}}): {{entity.instagram_follows.join(', ')}}
 						li Likers ({{entity.instagram_likers.length}}): {{entity.instagram_likers.join(', ')}}
-				accordion-group(ng-if="{{entity.youtube.length}} > 0", heading='Youtube ({{entity.youtube.length}})')
+				accordion-group(heading='Youtube ({{entity.youtube.length}})')
 					h4 Videos Embedded in Ads
 						row
 						.col-md-12(ng-repeat = 'video1 in entity.youtube')

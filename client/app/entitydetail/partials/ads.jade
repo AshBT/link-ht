@@ -1,3 +1,4 @@
+//- TODO: | orderBy:"-ad.posttime"
 .panel.panel-default(ng-repeat='ad in $ngc.collection()')
 	.panel-heading.h1  {{sourceMap[ad.sources_id]}} at {{ad.posttime | date}}
 	.panel-body.vertical-layout

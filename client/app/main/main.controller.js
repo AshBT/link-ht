@@ -49,12 +49,13 @@ angular.module('memexLinkerApp')
 	$scope.search = function(){
 		console.log("You searched for " + $scope.elasticSearchText)
 		$http.post('/api/loggings/search', {elasticSearchText : $scope.elasticSearchText})
-		entityService.search($scope.elasticSearchText, 10,10).then(function(entities){
+		entityService.search($scope.elasticSearchText, 10,1).then(function(entities){
 			$scope.entities = entities;
 			console.log('Found ' + entities.length + ' entites');
 			_.forEach($scope.entities, function(entity) {
 				console.log(entity);
 				updateAggregates(entity, $scope.aggregates);
+				entities.push(entity)
 			});
 			console.log($scope.aggregates);
 			// TODO: summarize each entity
@@ -68,9 +69,9 @@ angular.module('memexLinkerApp')
 		return 0;
 	};
 
+
 	$scope.socialMediaFilter = function(e,hasSocialMedia){
-		//return e.socialmedia >=1 || !$scope.hasSocialMedia;
-		return 0;
+		// return e.socialmedia.length >=0 || !$scope.hasSocialMedia;
 	};
 
 	$scope.similarAdsFilter = function(e,hasFacePic){
@@ -86,6 +87,8 @@ angular.module('memexLinkerApp')
 	// return deferred.promise;
 	return 0;
 };
+
+
 
 	// Non-scope functions
 
@@ -159,7 +162,7 @@ function updateAggregates(entitySummary, aggregates) {
 	aggregates.set('cities', uniqueFlatAndDefined(cities));
 	// Phones
 	var phones = aggregates.get('phones');
-	phones.push(entitySummary.phone);
+	phones.push(uniqueFlatAndDefined(entitySummary.phone));
 	aggregates.set('phones', uniqueFlatAndDefined(phones));
 	// Ages
 	var ages = aggregates.get('ages');
@@ -179,9 +182,9 @@ function updateAggregates(entitySummary, aggregates) {
 	aggregates.set('price_min', _.min(aggregates.get('prices')));
 
 	// console.log(entity);
-	console.log("a")
+	// console.log("a")
 	// console.log(aggregates)
-	console.log("b")
+	// console.log("b")
 }
 
 });
