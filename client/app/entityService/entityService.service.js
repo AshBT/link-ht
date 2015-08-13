@@ -104,7 +104,6 @@ function entityService($http, $q, $resource, linkUtils, lodash) {
 	 function _formatEntity(rawEntity) {
 	 	
 	 	var ads = rawEntity._source.base;
-
 		// Aggregate ad details
 		var postTimes = _.map(ads, function(ad){
 			//console.log(ad);
@@ -125,12 +124,11 @@ function entityService($http, $q, $resource, linkUtils, lodash) {
 		websites = _.filter(_.uniq(websites), function(element){
 			return ! _.isUndefined(element);
 		});
+		var phones = linkUtils.collectAdProperty(ads, 'phone');
 
 		var titles = linkUtils.collectAdProperty(ads, 'title');
 		var texts = linkUtils.collectAdProperty(ads, 'text');
 		var names = linkUtils.uniqueFlatAndDefined(linkUtils.collectAdProperty(ads, 'name'));
-
-		// TODO: the city field can contain garbage, like html tags. 
 		var cities = linkUtils.uniqueFlatAndDefined(linkUtils.collectAdProperty(ads, 'city'));
 		for (var i = 0; i < cities.length; i++) {
           cities[i]=cities[i].substring(0,20);
@@ -160,7 +158,7 @@ function entityService($http, $q, $resource, linkUtils, lodash) {
 	
 		var entity = {
 			id: rawEntity._id,
-			phones: [],
+			phones: phones,
 			names: names,
 			nPosts: ads.length,
 			firstPostTime: firstPostTime,
@@ -169,7 +167,8 @@ function entityService($http, $q, $resource, linkUtils, lodash) {
 			cities: cities,
 			ages: ages,
 			rates60: rates60,
-			imageUrls: [],
+			imageUrls: imageUrls,
+			nPics: imageUrls.length,
 			faceImageUrls: faceImageUrls,
 			nSuggestedByImage: 0,
 			nSuggestedByPhone: 0,

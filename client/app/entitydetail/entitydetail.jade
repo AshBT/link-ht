@@ -4,7 +4,7 @@ div(ng-include='"components/navbar/navbar.html"')
 	.row 
 		.col-md-3
 			.panel.panel-default
-				.panel-heading Phone(s): {{entity.phone | tel}}
+				.panel-heading Names: <strong> {{entity.name.join(', ') | capitalize}} </strong>
 				.panel-body.vertical-layout
 					.item
 						col-md-3(ng-if="faceImageUrl.length==0")
@@ -14,8 +14,6 @@ div(ng-include='"components/navbar/navbar.html"')
 							img.responsive(ng-src="{{img}}"
 								style="max-height:80px; margin:0 auto;"
 								ng-class="{blurry: blur == true, clear: blur != true}")
-					.item
-						p Names: <strong> {{entity.name.join(', ') | capitalize}} </strong>
 					.item 
 						label Blur Images:
 						input(type="checkbox" ng-model="blur")
@@ -24,26 +22,23 @@ div(ng-include='"components/navbar/navbar.html"')
 			.panel.panel-default
 				.panel-heading Identifiers
 				.panel-body.vertical-layout
-					ul.nobullets.item
-						li(ng-if="entity.phone.length > 0") phone(s): {{entity.phone.join(', ') }}
-						li(ng-if="entity.email.length > 0") e-mail: {{entity.email.join(', ') }}
-						li(ng-if="entity.twitter.length > 0") Twitter: {{entity.twitter.join(', ') }}
-						li(ng-if="entity.instagram.length > 0") Instagram: {{entity.instagram.join(', ') }}
-						li(ng-if="entity.youtube.length > 0") Youtube: {{entity.youtube.join(', ') }}
-						li(ng-if="entity.yelp.length > 0") Yelp: {{entity.yelp.join(', ') }}
+					p(ng-if="entity.phone.length > 0") &#x2022 Phone(s): {{entity.phone.join(', ') | tel}}
+					p(ng-if="entity.email.length > 0") &#x2022 Email(s): {{entity.email.join(', ') }}
+					p(ng-if="entity.twitter.length > 0") &#x2022 Twitter: {{entity.twitter.join(', ') }}
+					p(ng-if="entity.instagram.length > 0") &#x2022 Instagram: {{entity.instagram.join(', ') }}
+					p(ng-if="entity.youtube.length > 0") &#x2022 Youtube: {{entity.youtube.join(', ') }}
 			.panel.panel-default
 				.panel-heading Details
-				.panel-body
-					ul.nobullets
-						li(ng-if="entity.age.length > 0") Ages: {{entity.age.join(', ')}}
-						li(ng-if="entity.ethnicities.length > 0") Ethnicities: {{entity.ethnicities.join(', ') | capitalize}}
-						li(ng-if="entity.minPrice.length > 0") Hourly Price Range: {{entity.minPrice}} to {{entity.maxPrice}}
-						li(ng-if="entity.modePrice.length > 0") Mode Price: {{entity.modePrice}}
-						li(ng-if="entity.height.length > 0") Height: {{entity.height.join(', ')}}
-						li(ng-if="entity.weight.length > 0") Weight: {{entity.weight.join(', ')}}
-						li(ng-if="entity.eyes.length > 0") Eyes: {{entity.eyes.join(', ')}}
-						li(ng-if="entity.hair.length > 0") Hair: {{entity.hair.join(', ')}}
-						li(ng-if="entity.city.length > 0") Cities: {{entity.cities.join(', ') | capitalize}}
+				.panel-body.vertical-layout
+					p(ng-if="entity.age.length > 0") &#x2022 Ages: {{entity.age.join(', ')}}
+					p(ng-if="entity.ethnicities.length > 0") &#x2022 Ethnicities: {{entity.ethnicities.join(', ') | capitalize}}
+					p(ng-if="entity.minPrice.length > 0") &#x2022 Hourly Price Range: {{entity.minPrice}} to {{entity.maxPrice}}
+					p(ng-if="entity.modePrice.length > 0") &#x2022 Mode Price: {{entity.modePrice}}
+					p(ng-if="entity.height.length > 0") &#x2022 Height: {{entity.height.join(', ')}}
+					p(ng-if="entity.weight.length > 0") &#x2022 Weight: {{entity.weight.join(', ')}}
+					p(ng-if="entity.eyes.length > 0") &#x2022 Eyes: {{entity.eyes.join(', ')}}
+					p(ng-if="entity.hair.length > 0") &#x2022 Hair: {{entity.hair.join(', ')}}
+					p(ng-if="entity.cities.length > 0") &#x2022 Cities: {{entity.cities.join(', ') | capitalize}}
 		.col-md-9
 			map-box(data='ads' on-bounds-change='onBoundsChange' on-show-selector='onShowSelector' on-range-change='onRangeChange')
 			.panel.panel-default
@@ -54,7 +49,7 @@ div(ng-include='"components/navbar/navbar.html"')
 						include ./partials/suggested.jade
 					tab(heading='{{annotations.length}} Notes')
 						include ./partials/annotations.jade
-					tab(heading='{{entity.twitter.length + entity.instagram.length + entity.youtube.length + entity.yelp.length}} Social Media Accounts')
+					tab(ng-if="{{entity.twitter.length + entity.instagram.length + entity.youtube.length}} > 0", heading='{{entity.twitter.length + entity.instagram.length + entity.youtube.length + entity.yelp.length}} Social Media Accounts')
 						include ./partials/twitter.jade
 					tab(heading='{{imageUrls.length}} Images')
 						include ./partials/images.jade

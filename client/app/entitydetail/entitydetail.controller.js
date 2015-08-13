@@ -175,8 +175,8 @@ angular.module('memexLinkerApp')
 
     // Callback for changes in geographic bounding box.
     $scope.onBoundsChange = function(bounds) {
-    	console.log('onBoundsChange');
-    	console.log(bounds);
+    	// console.log('onBoundsChange');
+    	// console.log(bounds);
     	$scope.$ngc.unfilterBy('latitude');
 		$scope.$ngc.unfilterBy('longitude');
 		if($scope.showSelector) {
@@ -205,7 +205,7 @@ angular.module('memexLinkerApp')
 	// --- SCOPE FUNCTIONS --- //
 
 	$scope.submit = function() {
-		console.log('submit ' + this.text);
+		// console.log('submit ' + this.text);
 		var username = 'Anonymous';
 		if(Auth.isLoggedIn()) {
 			username = Auth.getCurrentUser().name;
@@ -243,7 +243,7 @@ angular.module('memexLinkerApp')
 			updateSuggestedImage();
 		}).
 		error(function(data, status, headers, config) {
-			console.log(data);
+			// console.log(data);
 		});
 	};
 
@@ -254,7 +254,7 @@ angular.module('memexLinkerApp')
 			userName: userName
 		};
 		$http.post('api/entities/' + $scope.id + '/save', data).success(function(res){
-			console.log(res);
+			// console.log(res);
 		});
 	};
 
@@ -288,19 +288,21 @@ angular.module('memexLinkerApp')
 			var _ads = data.ads;
 
 			_.map(_ads, function(ad) {
-				console.log('Pushing ad');
-				console.log(ad);
-				ad.timestamp = Date.parse(ad.posttime);
-				$scope.ads.push(ad);
-				$scope.$ngc.addModel(ad);
+				// console.log('Pushing ad');
+				// console.log(ad);
+				
 				// If ad has latitude and longitude values, convert them to numbers
 				if (_.has(ad, 'latitude') && _.has(ad, 'longitude')) {
-					console.log('converting lat lon values to numbers');
+					// console.log('converting lat lon values to numbers');
 					ad.latitude = Number(ad.latitude);
 					ad.longitude = Number(ad.longitude);
 				} else {
 					// TODO: geocode the city name.
 				}
+				ad.timestamp = Date.parse(ad.posttime);
+				ad.city = ad.city.substring(0,20);
+				$scope.ads.push(ad);
+				$scope.$ngc.addModel(ad);
 			});
 		});
 
@@ -380,7 +382,7 @@ angular.module('memexLinkerApp')
 	// }, true);
 
 	$scope.$on('crossfilter/updated', function(event, collection, identifier) {
-		console.log('crossfilter/updated event.');
+		// console.log('crossfilter/updated event.');
 		updateEntity();
 	});
 
@@ -390,7 +392,9 @@ angular.module('memexLinkerApp')
 	 */
 	function updateEntity() {
 
-		console.log('updateEntity');
+		// console.log('updateEntity');
+		console.log($scope.ads)
+		$scope.entity.phone = uniqueFlatAndDefined(_.pluck($scope.ads, 'phone')).sort();
 		$scope.entity.cities = uniqueFlatAndDefined(_.pluck($scope.ads, 'city')).sort();
 		$scope.entity.postTime = uniqueFlatAndDefined(_.pluck($scope.ads, 'posttime')).sort();
 		$scope.entity.age = uniqueFlatAndDefined(_.pluck($scope.ads, 'age')).sort();
@@ -411,7 +415,6 @@ angular.module('memexLinkerApp')
 
 		$scope.entity.youtube= uniqueFlatAndDefined(_.pluck($scope.ads, 'youtube')).sort();
 		$scope.entity.youtube_sameuser= uniqueFlatAndDefined(_.pluck($scope.ads, 'youtube_video_urls')).sort();
-
 		for (var i = 0; i < $scope.entity.youtube.length; i++) {
 			$scope.entity.youtube[i]=$sce.trustAsResourceUrl($scope.entity.youtube[i]);
 		}
@@ -419,8 +422,6 @@ angular.module('memexLinkerApp')
 			$scope.entity.youtube_sameuser[i]=$sce.trustAsResourceUrl($scope.entity.youtube_sameuser[i].replace("watch?v=", "embed/"));
 		}
 		$scope.entity.youtube_username= uniqueFlatAndDefined(_.pluck($scope.ads, 'youtube_user')).sort();
-
-
 		$scope.entity.twitter= uniqueFlatAndDefined(_.pluck($scope.ads, 'twitter')).sort();
 		for (var i = 0; i < $scope.entity.twitter.length; i++) {
 			$scope.entity.twitter[i]=$scope.entity.twitter[i].replace("https://twitter.com/","@");
@@ -432,9 +433,7 @@ angular.module('memexLinkerApp')
 		$scope.entity.twitter_profile_pic= uniqueFlatAndDefined(_.pluck($scope.ads, 'twitter_profile_pic')).sort();
 		$scope.entity.twitter_profile_background_pic= uniqueFlatAndDefined(_.pluck($scope.ads, 'twitter_profile_background_pic')).sort();
 		$scope.entity.twitter_description= uniqueFlatAndDefined(_.pluck($scope.ads, 'twitter_description')).sort();
-
 		$scope.entity.yelp= uniqueFlatAndDefined(_.pluck($scope.ads, 'yelp')).sort();
-
 		//var priceRange = 'Missing' ;
 		if ($scope.entity.price[0] !== null) {
 			$scope.entity.minPrice = _.min($scope.entity.price);
@@ -526,8 +525,8 @@ angular.module('memexLinkerApp')
 	}
 
 	entityService.Suggest.query({id: $scope.id}, function(data) {
-		console.log('Suggest:');
-		console.log(data.suggestions);
+		// console.log('Suggest:');
+		// console.log(data.suggestions);
 	});
 
 	// $http.get('/api/entities/' + $scope.id).success(function(res) {
@@ -538,6 +537,7 @@ angular.module('memexLinkerApp')
 	// });
  
 	updateLinked();
+	console.log($scope.entity)
 	//updateSuggestedText();
 	//updateSuggestedImage();
 	// $scope.imagecat = $sce.trustAsResourceUrl("https://darpamemex:darpamemex@imagecat.memexproxy.com/imagespace/#search/" + "ads_id%3A" + entity.adsid.join("%20OR%20ads_id%3A"));
