@@ -39,36 +39,30 @@ $scope.items = ['Item 1', 'Item 2', 'Item 3'];
 	// Watch for changes in the face filter checkbox.
 	$scope.onFaceChange = function(enableFaceFilter) {
 		if(enableFaceFilter) {
-			console.log('applying face filter...');
 			$scope.entityCrossfilter.filterBy('faceImageUrls', function(urlArray) {
 				return urlArray.length > 0;
 			});
 		} else {
-			console.log('unapplying face filter...');
 			$scope.entityCrossfilter.unfilterBy('faceImageUrls');
 		}
 	};
 
 	$scope.onSimilarChange = function(enableSimilarFilter) {
 		if(enableSimilarFilter) {
-			console.log('applying filter for entities with similar images');
 			$scope.entityCrossfilter.filterBy('similarads', function(nSimilarAds) {
 				return nSimilarAds > 0;
 			});
 		} else {
-			console.log('unapplying similar imagesfilter...');
 			$scope.entityCrossfilter.unfilterBy('similarads');
 		}
 	};
 
 	$scope.onSocialChange = function(enableSocialFilter) {
 		if(enableSocialFilter) {
-			console.log('applying filter for entities with social media accounts');
 			$scope.entityCrossfilter.filterBy('socialmedia', function(values) {
 				return values.length > 0;
 			});
 		} else {
-			console.log('unapplying social media filter...');
 			$scope.entityCrossfilter.unfilterBy('socialmedia');
 		}
 	};
@@ -125,14 +119,7 @@ $scope.items = ['Item 1', 'Item 2', 'Item 3'];
 		});
 	};
 
-	$scope.socialMediaFilter = function(e){
-		return e.socialmedia.length >=0 || !$scope.hasSocialMedia;
-	};
-
-	$scope.similarAdsFilter = function(e){
-		return e.similarads >=1 || !$scope.hasSimilarAds;
-	};
-
+	
 	$scope.getNSuggestedByText = function(entity) {
 	// var deferred = $q.defer();
 	// $http.get('api/entities/' + entity.id + '/byText').success(function(res){
@@ -180,7 +167,6 @@ $scope.items = ['Item 1', 'Item 2', 'Item 3'];
 		var collectAdProperty2 = linkUtils.collectAdProperty2;
 
 		function updateAggregates(entitySummary, aggregates) {
-			console.log('updateAggregates');
 	// Entity IDs
 	var entityIds = aggregates.get('entityIds');
 	entityIds.push(entitySummary.id);
