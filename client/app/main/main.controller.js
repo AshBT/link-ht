@@ -45,15 +45,28 @@ angular.module('memexLinkerApp')
 		isFirstOpen: true,
 		isFirstDisabled: false
 	};
-
+	
 	$scope.search = function(){
 		console.log("You searched for " + $scope.elasticSearchText)
+		var re1 = new RegExp(".{20}" + $scope.elasticSearchText + '.{10}',"gi");
+		var re2 = new RegExp($scope.elasticSearchText,"gi");
+
+
 		$http.post('/api/loggings/search', {elasticSearchText : $scope.elasticSearchText})
 		entityService.search($scope.elasticSearchText, 10,1).then(function(entities){
 			$scope.entities = entities;
 			console.log('Found ' + entities.length + ' entites');
 			_.forEach($scope.entities, function(entity) {
-				console.log(entity);
+				
+				var regex=entity.all_text.match(re1,"");
+				var start_regex = regex[0].substring(0,20)
+				var mid_regex = regex[0].substring(20,20+$scope.elasticSearchText.length)
+				var end_regex = regex[0].substring(20+$scope.elasticSearchText.length,30+$scope.elasticSearchText.length)
+				console.log(start_regex + mid_regex + end_regex);
+				entity.snippet1 = start_regex
+				entity.snippet2 = mid_regex
+				entity.snippet3 = end_regex
+
 				updateAggregates(entity, $scope.aggregates);
 				entities.push(entity)
 			});

@@ -45,7 +45,7 @@ function entityService($http, $q, $resource, linkUtils, lodash) {
 		18 : 'EscortsAdsXXX',
 		19 : 'EscortsinCA',
 		20 : 'EscortsintheUS',
-		21 : 'LiveEscortReviws',
+		21 : 'LiveEscortReviews',
 		22 : 'MyProviderGuideForum',
 		23 : 'USASexGuide',
 		24 : 'EroticReview',
@@ -160,6 +160,10 @@ function entityService($http, $q, $resource, linkUtils, lodash) {
 
 		var titles = linkUtils.collectAdProperty(ads, 'title');
 		var texts = linkUtils.collectAdProperty(ads, 'text');
+		var snippet1= ""
+		var snippet2= ""
+		var snippet3= ""
+		var all_text = titles + texts
 		var names = linkUtils.uniqueFlatAndDefined(linkUtils.collectAdProperty(ads, 'name'));
 		var cities = linkUtils.uniqueFlatAndDefined(linkUtils.collectAdProperty(ads, 'city'));
 		for (var i = 0; i < cities.length; i++) {
@@ -208,7 +212,8 @@ function entityService($http, $q, $resource, linkUtils, lodash) {
 			nSuggestedByText: 0,
 			socialmedia: socialmedia,
 			titles: titles,
-			texts: texts
+			texts: texts,
+			all_text: all_text
 		};
 		return entity;
 	}

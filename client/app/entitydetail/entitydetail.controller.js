@@ -323,7 +323,6 @@ angular.module('memexLinkerApp')
 				}
 				ad.timestamp = Date.parse(ad.posttime);
 				ad.city = ad.city.substring(0,20);
-				console.log("Hello my furry friend")
 				console.log(ad)
 				$scope.ads.push(ad);
 				$scope.$ngc.addModel(ad);
