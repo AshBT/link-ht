@@ -9,6 +9,7 @@ function mapBox() {
 		templateUrl: 'app/mapBox/mapBox.html',
 		scope: {
 			data: '=',
+			iconMap: '=',
 			showSelector: '=',
 			onShowSelector: '&',
 			onBoundsChange: '&',
@@ -57,6 +58,7 @@ function MapBoxController($scope) {
 
     // Map
 	mb.map = {center: {latitude: 39.5, longitude: -98.4}, zoom: 3, bounds: {}};
+	
 
 	// Rectangular selection
 	mb.bounds = {

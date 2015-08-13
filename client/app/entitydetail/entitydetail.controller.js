@@ -9,17 +9,18 @@ angular.module('memexLinkerApp')
 
 
 // ------------------------ Start Upload to S3 Code ---------------------------------------------- //
+// TODO: this logic should be moved to a service.
 	$scope.sizeLimit      = 15878640; // 10MB in Bytes
 	$scope.uploadProgress = 0;
 	$scope.creds          = {};
 
-	var access=''
-	var secret=''
-	var s3_URL = []
+	var access='';
+	var secret='';
+	var s3_URL = [];
 
   $scope.upload = function() {
-  	console.log("uploading...")
-    console.log($scope.file)
+  	console.log('uploading...');
+    console.log($scope.file);
     AWS.config.update({ accessKeyId: access, secretAccessKey: secret });
     AWS.config.region = 'us-west-1';
     var bucket = new AWS.S3({ params: { Bucket: 'generalmemex' } });
@@ -63,7 +64,7 @@ angular.module('memexLinkerApp')
         // No File Selected
         toastr.error('Please select a file to upload');
       }
-    }
+    };
 
     $scope.fileSizeLabel = function() {
     // Convert Bytes To MB
@@ -71,14 +72,14 @@ angular.module('memexLinkerApp')
   };
 
   $scope.uniqueString = function() {
-    var text     = "";
-    var possible = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+    var text     = '';
+    var possible = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
 
     for( var i=0; i < 8; i++ ) {
       text += possible.charAt(Math.floor(Math.random() * possible.length));
     }
     return text;
-  }
+  };
 
 // ------------------------ End Upload to S3 Code ---------------------------------------------- //
 
@@ -87,7 +88,7 @@ angular.module('memexLinkerApp')
 			_.map(res, function(element){ 
         		var sim_image = {
           			'url':element.cached_image_urls,
-        		}
+        		};
        			$scope.sim_image.push(sim_image.url);
       		});
     	});
@@ -96,8 +97,8 @@ angular.module('memexLinkerApp')
 // ------------------------ End Similar to Uploaded Code ---------------------------------------------- //
 
 
-	$scope.sim_image = []
-	similar_images_to_uploaded_image(s3_URL)
+	$scope.sim_image = [];
+	similar_images_to_uploaded_image(s3_URL);
 
 
 	// Aggregate details about this entitiy.
@@ -279,7 +280,6 @@ angular.module('memexLinkerApp')
 
 
   // testing('https://s-media-cache-ak0.pinimg.com/236x/09/d9/64/09d964859baacb4a3eaf9fe3a9845416.jpg');
-
 	
 
 	function updateLinked() {
@@ -288,8 +288,22 @@ angular.module('memexLinkerApp')
 			var _ads = data.ads;
 
 			_.map(_ads, function(ad) {
-				// console.log('Pushing ad');
-				// console.log(ad);
+				if(_.has(ad, 'sources_id') && _.has(entityService.icons, ad.sources_id)) {
+					
+					//ad.icon = entityService.icons[ad.sources_id];
+
+					ad.options = {
+						icon: {
+							url: entityService.icons[ad.sources_id],
+							scaledSize: new google.maps.Size(34, 44)
+						}
+    				};
+
+				} else {
+					console.log('No icon found.');
+					console.log(ad);
+					ad.icon = '/assets/images/yeoman.png';
+				}
 				
 				// If ad has latitude and longitude values, convert them to numbers
 				if (_.has(ad, 'latitude') && _.has(ad, 'longitude')) {
@@ -297,7 +311,15 @@ angular.module('memexLinkerApp')
 					ad.latitude = Number(ad.latitude);
 					ad.longitude = Number(ad.longitude);
 				} else {
-					// TODO: geocode the city name.
+					// If latitude and longitude are not present, try to geocode the city name.
+					if(_.has(ad, 'city')) {
+						geocodeCity(ad.city).then(function(point) {
+	  							ad.latitude = point.latitude;
+	  							ad.longitude = point.longitude;
+							}, function(reason) {
+	  							alert('Failed: ' + reason);
+							}); 
+						}
 				}
 				ad.timestamp = Date.parse(ad.posttime);
 				ad.city = ad.city.substring(0,20);
@@ -539,7 +561,6 @@ angular.module('memexLinkerApp')
 	// });
  
 	updateLinked();
-	console.log($scope.entity)
 	//updateSuggestedText();
 	//updateSuggestedImage();
 	// $scope.imagecat = $sce.trustAsResourceUrl("https://darpamemex:darpamemex@imagecat.memexproxy.com/imagespace/#search/" + "ads_id%3A" + entity.adsid.join("%20OR%20ads_id%3A"));

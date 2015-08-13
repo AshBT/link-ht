@@ -55,12 +55,44 @@ function entityService($http, $q, $resource, linkUtils, lodash) {
 		28 : 'MissingKids'
 	};
 
+	var icons = {
+		1 : '/assets/images/backpage.png',
+		2 : '/assets/images/craigslist.png',
+		3 : '/assets/images/classivox.png',
+		4 : '/assets/images/myproviderguide.jpeg',
+		5 : '/assets/images/naughtreviews.jpg',
+		6 : '/assets/images/myredbook.jpg',
+		7 : '/assets/images/cityvibe.jpg',
+		8 : '/assets/images/massagetroll.jpg',
+		9 : '/assets/images/myredbook.jpg',
+		10 : '/assets/images/cityguide.jpg',
+		11 : '/assets/images/cityguide.jpg',
+		12 : '/assets/images/rubads.png',
+		// 13:
+		14 : '/assets/images/sipsap.jpg',
+		15 : '/assets/images/escortsincollege.jpg',
+		16 : '/assets/images/escortphonelist.jpg',
+		17 : '/assets/images/eroticmugshots.jpg',
+		18 : '/assets/images/escortads.png',
+		19 : '/assets/images/escortsinca.jpg',
+		20 : '/assets/images/escortsintheus.png',
+		21 : '/assets/images/liveescortreviews.jpg',
+		22 : '/assets/images/myproviderguide.jpeg',
+		//'USASexGuide' : ,
+		// 'EroticReview' : ,
+		25 : '/assets/images/adultsearch.jpg'
+		// 'HappyMassage' : ,
+		// 'UtopiaGuide' : ,
+		// 'MissingKids' : 
+	};
+
 	var service = {
 		search: search,
 		Entity: EntityResource,
 		Suggest: SuggestResource,
 		SimilarImage: SimilarImageResource,
-		sources: sources
+		sources: sources,
+		icons: icons
 	};
 	return service;
 
