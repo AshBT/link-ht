@@ -24,9 +24,9 @@ div(ng-include='"components/navbar/navbar.html"')
 							label(style='color:white') Has Face Picture: 
 								input(type="checkbox", ng-model="hasFacePic" ng-change="onFaceChange(hasFacePic)")
 							label(style='color:white') Has Similar Ads: 
-								input(type="checkbox", ng-model="hasSimilarAds")
+								input(type="checkbox", ng-model="hasSimilarAds" ng-change="onSimilarChange(hasSimilarAds)")
 							label(style='color:white') Has Social Media 
-								input(type="checkbox", ng-model="hasSocialMedia")
+								input(type="checkbox", ng-model="hasSocialMedia" ng-change="onSocialChange(hasSocialMedia)")
 				.search-body.panel-body(ng-if="aggregates.get('entityIds').length > 0")
 					.col-md-12
 						center

@@ -7,7 +7,7 @@ angular.module('memexLinkerApp')
 
 	$scope.entities = [];
 	// ng-crossfilter. collection | primary key | strategy | properties
-	$scope.entityCrossfilter = new Crossfilter([], 'id', 'persistent', ['id', 'faceImageUrls']);
+	$scope.entityCrossfilter = new Crossfilter([], 'id', 'persistent', ['id', 'faceImageUrls', 'socialmedia', 'similarads']);
 
 	$scope.aggregates = initAggregates();
 	$scope.logo = 'http://icons.iconarchive.com/icons/icons8/ios7/256/Very-Basic-Paper-Clip-icon.png';
@@ -46,6 +46,30 @@ $scope.items = ['Item 1', 'Item 2', 'Item 3'];
 		} else {
 			console.log('unapplying face filter...');
 			$scope.entityCrossfilter.unfilterBy('faceImageUrls');
+		}
+	};
+
+	$scope.onSimilarChange = function(enableSimilarFilter) {
+		if(enableSimilarFilter) {
+			console.log('applying filter for entities with similar images');
+			$scope.entityCrossfilter.filterBy('similarads', function(nSimilarAds) {
+				return nSimilarAds > 0;
+			});
+		} else {
+			console.log('unapplying similar imagesfilter...');
+			$scope.entityCrossfilter.unfilterBy('similarads');
+		}
+	};
+
+	$scope.onSocialChange = function(enableSocialFilter) {
+		if(enableSocialFilter) {
+			console.log('applying filter for entities with social media accounts');
+			$scope.entityCrossfilter.filterBy('socialmedia', function(values) {
+				return values.length > 0;
+			});
+		} else {
+			console.log('unapplying social media filter...');
+			$scope.entityCrossfilter.unfilterBy('socialmedia');
 		}
 	};
 
@@ -100,18 +124,6 @@ $scope.items = ['Item 1', 'Item 2', 'Item 3'];
 			console.log('Failed: ' + reason);
 		});
 	};
-
-	// $scope.facesFilter = function(e){
-	// 	console.log('facesFilter');
-	// 	console.log(e);
-	// 	console.log(e.faceImageUrls);
-	// 	console.log($scope.hasFacePic);
-	// 	var val = e.faceImageUrls.length > 0 || !$scope.hasFacePic;
-	// 	if(val) {
-	// 		console.log('returning e');
-	// 		return e;
-	// 	}
-	// };
 
 	$scope.socialMediaFilter = function(e){
 		return e.socialmedia.length >=0 || !$scope.hasSocialMedia;
@@ -227,22 +239,6 @@ $scope.items = ['Item 1', 'Item 2', 'Item 3'];
 
 });
 
-// --> Not sure why the enabled parameter hasn't been working...
-// angular.module('memexLinkerApp')
-// .filter('hasFacePics', function() {
-//   return function(input, enabled) {
-//   	//console.log(input);
-//   	console.log('hasFacePics:enabled: ' + enabled);
-//     if (!input) {return input;}
-//     var result = [];
-//     angular.forEach(input, function(entity) {
-//       if (entity.faceImageUrls.length > 0 || !enabled) {
-//         result.push(entity);
-//       }
-//     });
-//     return result;
-//   };
-// });
 
 
 
