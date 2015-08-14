@@ -1,7 +1,7 @@
 //- div(ngif='suggestedAds.length===0')
 //- 	p No suggested ads.
 
-.panel.panel-default(ng-repeat='ad in suggestedAds')
+.panel.panel-default(ng-repeat='ad in suggestedAds track by $index')
 
 	#head2.panel-heading.h1 {{sourceMap[ad.sources_id]}} at {{ad.posttime | date}}
 	.panel-body.vertical-layout
@@ -11,7 +11,7 @@
 			p: a(href='{{ad.url}}') View original post
 		.item
 			row
-			col-md-3(ng-repeat='img in ad.image_locations')
+			col-md-3(ng-repeat='img in ad.image_locations track by $index')
 				img.responsive(ng-src="{{img}}" 
 					style="max-height:100px; margin:0 auto;"
 					ng-class="{blurry: blur == true, clear: blur != true}")

@@ -323,7 +323,7 @@ angular.module('memexLinkerApp')
 				}
 				ad.timestamp = Date.parse(ad.posttime);
 				ad.city = ad.city.substring(0,20);
-				console.log(ad)
+				//console.log(ad);
 				$scope.ads.push(ad);
 				$scope.$ngc.addModel(ad);
 			});
@@ -416,7 +416,7 @@ angular.module('memexLinkerApp')
 	function updateEntity() {
 
 		// console.log('updateEntity');
-		console.log($scope.ads)
+		//console.log($scope.ads);
 		$scope.entity.phone = uniqueFlatAndDefined(_.pluck($scope.ads, 'phone')).sort();
 		$scope.entity.cities = uniqueFlatAndDefined(_.pluck($scope.ads, 'city')).sort();
 		$scope.entity.postTime = uniqueFlatAndDefined(_.pluck($scope.ads, 'posttime')).sort();
@@ -547,9 +547,15 @@ angular.module('memexLinkerApp')
 		return deferred.promise;
 	}
 
-	entityService.Suggest.query({id: $scope.id}, function(data) {
-		// console.log('Suggest:');
-		// console.log(data.suggestions);
+	var _suggestionsPromise = entityService.Suggest.query({id: $scope.id}, function() {
+		console.log('Suggest:');
+		console.log(_suggestionsPromise.suggestions);
+		$scope.suggestedAds = [];
+		_.forEach(_suggestionsPromise.suggestions, function(e) {
+			console.log(e);
+			$scope.suggestedAds.push(e.json);
+		});
+		console.log($scope.suggestedAds);
 	});
 
 	// $http.get('/api/entities/' + $scope.id).success(function(res) {
