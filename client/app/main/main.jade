@@ -72,6 +72,7 @@ div(ng-include='"components/navbar/navbar.html"')
 								h4 Dates Active
 								h4 Names Extracted
 								h4 E-mails Extracted
+								h4 Social Media Usernames Extracted
 								h4 Ages Extracted
 								h4 Price Range
 								p Websites
@@ -81,7 +82,6 @@ div(ng-include='"components/navbar/navbar.html"')
 								p # of Ads with Similar Pictures
 								p # of Ads with Similar Text
 								//- p Ads related by phone co-occurence:  <strong> {{entity.nSuggestedByPhone}}</strong>
-								p # of Social Media Accounts Extracted
 							.col-md-8
 								.col-md-12
 									.panel.panel-default
@@ -119,6 +119,7 @@ div(ng-include='"components/navbar/navbar.html"')
 						h4 Active between <strong> {{entity.firstPostTime.toDateString()}} </strong> to <strong> {{entity.lastPostTime.toDateString()}} </strong>
 						h4(ng-if='entity.names && entity.names.length > 0') Listed names:  <strong>{{entity.names.join(', ') | capitalize}} </strong>
 						h4(ng-if='entity.emails && entity.emails.length > 0') Listed e-mails:  <strong>{{entity.emails.join(', ')}}</strong>
+						h4(ng-if='entity.socialmedia && entity.socialmedia.length > 0') Social Media Usernames: <strong> {{entity.socialmedia}}</strong>
 						h4(ng-if='entity.ages && entity.ages.length > 0') Listed ages:  <strong>{{entity.ages.join(', ')}}</strong>
 						h4(ng-if='entity.priceRange && entity.priceRange.length > 0') Listed price range: <strong>{{entity.priceRange}} </strong>
 						p(ng-if='entity.websites && entity.websites.length > 0') Websites:  <strong> {{entity.websites.sort().join(', ')}}</strong>
@@ -128,7 +129,6 @@ div(ng-include='"components/navbar/navbar.html"')
 						p Ads related by image: <strong> {{entity.nSuggestedByImage}}</strong>
 						p Ads related by text:<strong> {{entity.nSuggestedByText}}</strong>
 						p Ads related by phone co-occurence:  <strong> {{entity.nSuggestedByPhone}}</strong>
-						p(ng-if='entity.socialmedia && entity.socialmedia.length > 0') Social Media Usernames: <strong> {{entity.socialmedia}}</strong>
 						a.button.btn-primary.btn-lg.pull-left(ui-sref="entitydetail({ id: entity.id })") Investigate
 
 					.col-md-8
