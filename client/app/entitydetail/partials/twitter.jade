@@ -16,7 +16,7 @@
 									style="max-height:200px; margin:0 auto;"
 									ng-class="{blurry: blur == true, clear: blur != true}")
 						li Username and Description: {{entity.twitter_name.join(', ') }} -- {{entity.twitter_description.join(', ') }}
-						li User Tweets {{entity.twitter_tweets.join(', ') }}
+						li User Tweets ({{entity.twitter_tweets.length }}) : {{entity.twitter_tweets.join(', ') }}
 						li Followers ({{entity.twitter_followers.length }}): {{entity.twitter_followers.join(', ') }}
 						li Following ({{entity.twitter_friends.length }}): {{entity.twitter_friends.join(', ') }}
 				accordion-group(heading='Instagram ({{entity.instagram.length}})')
@@ -27,7 +27,7 @@
 									style="max-height:200px; margin:0 auto;"
 									ng-class="{blurry: blur == true, clear: blur != true}")
 						li Username: {{entity.instagram.join(', ')}}
-						li Tags: {{entity.instagram_tags.join(', ')}} 
+						li Tags ({{entity.instagram_tags.length}}): {{entity.instagram_tags.join(', ')}} 
 						li Followers ({{entity.instagram_followers.length}}): {{entity.instagram_followers.join(', ')}}
 						li Following ({{entity.instagram_follows.length}}): {{entity.instagram_follows.join(', ')}}
 						li Likers ({{entity.instagram_likers.length}}): {{entity.instagram_likers.join(', ')}}
@@ -40,7 +40,6 @@
 							h4 Other Videos Posted by the Same User: {{entity.youtubeUsername}}
 							iframe(width="420" height="315" ng-src='{{video2}}')
 				//- accordion-group(heading='Yelp ({{entity.yelp.length}})')
-				//- 	p No Yelp Listings
 
 
 			
