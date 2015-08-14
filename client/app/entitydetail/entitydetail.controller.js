@@ -125,8 +125,6 @@ angular.module('memexLinkerApp')
 		yelp:[]
 	};
 
-    var boom = 'ads_id%3A32711920%20OR%20ads_id%3A32711944';
-    $scope.imagecat = $sce.trustAsResourceUrl('https://darpamemex:darpamemex@imagecat.memexproxy.com/imagespace/#search/' + boom);
 
 	// $scope.imagecat = []
 	$scope.blur = true;
@@ -323,7 +321,10 @@ angular.module('memexLinkerApp')
 				}
 				ad.timestamp = Date.parse(ad.posttime);
 				ad.city = ad.city.substring(0,20);
-				//console.log(ad);
+
+				console.log('Bonjour');
+				console.log(ad);
+
 				$scope.ads.push(ad);
 				$scope.$ngc.addModel(ad);
 			});
@@ -413,10 +414,16 @@ angular.module('memexLinkerApp')
 	 * Update the aggregate statistics for this entity, based on the (possibly filtered) set of linked ads, suggested ads, etc.
 	 * @return {[type]} [description]
 	 */
-	function updateEntity() {
+	
+	var boom = 'ads_id%3A32711920%20OR%20ads_id%3A32711944';
 
-		// console.log('updateEntity');
-		//console.log($scope.ads);
+
+	function updateEntity() {
+		$scope.entity.adId = uniqueFlatAndDefined(_.pluck($scope.ads, 'id')).sort();
+		var boom = 'ads_id%3A' + $scope.entity.adId.join('%20OR%20ads_id%3A');
+		// var boom = 'ads_id%3A32711920%20OR%20ads_id%3A32711944';
+    	$scope.imagecat = $sce.trustAsResourceUrl('https://darpamemex:darpamemex@imagecat.memexproxy.com/imagespace/#search/' + boom);
+
 		$scope.entity.phone = uniqueFlatAndDefined(_.pluck($scope.ads, 'phone')).sort();
 		$scope.entity.cities = uniqueFlatAndDefined(_.pluck($scope.ads, 'city')).sort();
 		$scope.entity.postTime = uniqueFlatAndDefined(_.pluck($scope.ads, 'posttime')).sort();

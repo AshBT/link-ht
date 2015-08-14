@@ -13,10 +13,10 @@ angular.module('memexLinkerApp')
       'title': 'Saved Entities',
       'link': '/savedEntities'
     },
-    {
-      'title': 'Image Stream',
-      'link': '/imagestream'
-    },
+    // {
+    //   'title': 'Image Stream',
+    //   'link': '/imagestream'
+    // },
     {
       'title': 'FAQ',
       'link': '/faq'

@@ -166,7 +166,7 @@ function entityService($http, $q, $resource, linkUtils, lodash) {
 		var instagram = linkUtils.uniqueFlatAndDefined(linkUtils.collectAdProperty(ads, 'instagram'));
 		var twitter = linkUtils.uniqueFlatAndDefined(linkUtils.collectAdProperty(ads, 'twitter'));
 		var socialmedia = twitter + instagram + youtube;
-		//var ethnicity = uniqueFlatAndDefined(collectAdProperty(ads, 'ethnicity'));
+		var ethnicity = linkUtils.uniqueFlatAndDefined(linkUtils.collectAdProperty(ads, 'ethnicity'));
 		var imageUrls = _.uniq(lodash.flatten(
 			_.map(ads, function(ad) {
 				return ad.image_locations;
