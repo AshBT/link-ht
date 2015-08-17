@@ -18,6 +18,9 @@ angular.module('memexLinkerApp')
 	var secret='';
 	var s3_URL = [];
 
+
+	console.log($scope.note)
+
   $scope.upload = function() {
   	console.log('uploading...');
     console.log($scope.file);
@@ -187,11 +190,10 @@ angular.module('memexLinkerApp')
 
 			$scope.$ngc.filterBy('longitude', {minLon: sw.longitude, maxLon: ne.longitude}, function(range, lon) {
 				return range.minLon <= lon && lon <= range.maxLon;
-			});	
+			});
 		} else {
 			//
 		}
-		
     };
 
     // Callback for changes in date slider range.
@@ -211,12 +213,16 @@ angular.module('memexLinkerApp')
 		}
 		if (this.text) {
 			$scope.annotations.push({
+				entityid: "xx",
 				text: this.text,
 				username: username,
 				date: Date.now()
 			});
 			$scope.text = '';
 		}
+		console.log($scope.annotations)
+
+		$http.post('/api/annotations/persist', {annotation : $scope.annotations});
 	};
 
 	$scope.getHost = function (url) {
@@ -264,22 +270,6 @@ angular.module('memexLinkerApp')
 
 
 
-  // function testing(filename) {
-
-  //   $http.get('/api/v1/image/similar?url=' + filename).success(function(res){
-  //     _.map(res, function(element){ 
-  //       var sim_image = {
-  //         'url':element.cached_image_urls,
-  //       }
-  //       $scope.sim_image.push(sim_image.url);
-  //     });
-  //   });
-  // }
-
-
-  // testing('https://s-media-cache-ak0.pinimg.com/236x/09/d9/64/09d964859baacb4a3eaf9fe3a9845416.jpg');
-	
-
 	function updateLinked() {
 
 		entityService.Entity.query({id: $scope.id}, function(data) {
@@ -287,7 +277,6 @@ angular.module('memexLinkerApp')
 
 			_.map(_ads, function(ad) {
 				if(_.has(ad, 'sources_id') && _.has(entityService.icons, ad.sources_id)) {
-					
 					//ad.icon = entityService.icons[ad.sources_id];
 
 					ad.options = {
@@ -302,7 +291,7 @@ angular.module('memexLinkerApp')
 					console.log(ad);
 					ad.icon = '/assets/images/yeoman.png';
 				}
-				
+
 				// If ad has latitude and longitude values, convert them to numbers
 				if (_.has(ad, 'latitude') && _.has(ad, 'longitude')) {
 					// console.log('converting lat lon values to numbers');
@@ -316,7 +305,7 @@ angular.module('memexLinkerApp')
 	  							ad.longitude = point.longitude;
 							}, function(reason) {
 	  							alert('Failed: ' + reason);
-							}); 
+							});
 						}
 				}
 				ad.timestamp = Date.parse(ad.posttime);
@@ -329,7 +318,7 @@ angular.module('memexLinkerApp')
 		});
 
 		// $http.get('api/entities/' + $scope.id + '/linked').success(function(res){
-		// 	_.map(res, function(element){ 
+		// 	_.map(res, function(element){
 		// 		var ad = {
 		// 			'id':element.ad._id,
 		// 			'labels':element.ad.labels,
@@ -368,7 +357,7 @@ angular.module('memexLinkerApp')
 
 	function updateSuggestedText() {
 		$http.get('api/entities/' + $scope.id + '/byText').success(function(res){
-			$scope.suggestedAds = _.map(res, function(element){ 
+			$scope.suggestedAds = _.map(res, function(element){
 				if(element.ad !== undefined && element.ad._id !== undefined) {
 					var ad = {
 					'id':element.ad._id,
@@ -376,7 +365,7 @@ angular.module('memexLinkerApp')
 					'properties':element.ad.properties,
 					'suggestedByText':true
 				};
-				return ad;	
+				return ad;
 				}
 			});
 		});
@@ -384,7 +373,7 @@ angular.module('memexLinkerApp')
 
 	function updateSuggestedImage() {
 		$http.get('api/entities/' + $scope.id + '/byImage').success(function(res){
-			$scope.suggestedAds = _.map(res, function(element){ 
+			$scope.suggestedAds = _.map(res, function(element){
 				if(element.ad !== undefined && element.ad._id !== undefined) {
 					var ad = {
 						'id':element.ad._id,
@@ -412,16 +401,12 @@ angular.module('memexLinkerApp')
 	 * Update the aggregate statistics for this entity, based on the (possibly filtered) set of linked ads, suggested ads, etc.
 	 * @return {[type]} [description]
 	 */
-	
-	var boom = 'ads_id%3A32711920%20OR%20ads_id%3A32711944';
-
 
 	function updateEntity() {
 
 		// console.log('updateEntity');
 		$scope.entity.adId = uniqueFlatAndDefined(_.pluck($scope.ads, 'id')).sort();
 		var boom = 'ads_id%3A' + $scope.entity.adId.join('%20OR%20ads_id%3A');
-		// var boom = 'ads_id%3A32711920%20OR%20ads_id%3A32711944';
     	$scope.imagecat = $sce.trustAsResourceUrl('https://darpamemex:darpamemex@imagecat.memexproxy.com/imagespace/#search/' + boom);
 
 		$scope.entity.phone = uniqueFlatAndDefined(_.pluck($scope.ads, 'phone')).sort();
@@ -469,12 +454,12 @@ angular.module('memexLinkerApp')
 			$scope.entity.minPrice = _.min($scope.entity.price);
 			$scope.entity.maxPrice = _.max($scope.entity.price);
 		}
-		else { 
+		else {
 			$scope.entity.minPrice = 'Missing';
 			$scope.entity.maxPrice = 'Missing';
 		}
 		$scope.entity.modePrice = linkUtils.mode($scope.entity.price);
-		
+
 		var rawImageUrls = _.flatten(
 			_.map($scope.ads, function(ad) {
 				return ad.image_locations;
@@ -536,7 +521,7 @@ angular.module('memexLinkerApp')
 	var geocoder = new google.maps.Geocoder();
 	function geocodeCity(cityName) {
 		var deferred = $q.defer();
-		
+
 		geocoder.geocode( { 'address': cityName }, function(results, status) {
 			if (status === google.maps.GeocoderStatus.OK && results.length > 0) {
 				var location = results[0].geometry.location;
@@ -565,7 +550,7 @@ angular.module('memexLinkerApp')
 	// 	$scope.entity.name = res._node.properties.name;
 	// 	$scope.entity.nFaces = res._node.properties.nFaces;
 	// });
- 
+
 	updateLinked();
 	//updateSuggestedText();
 	//updateSuggestedImage();

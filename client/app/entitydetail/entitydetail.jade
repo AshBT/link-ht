@@ -1,7 +1,7 @@
 div(ng-include='"components/navbar/navbar.html"')
 
 .container
-	.row 
+	.row
 		.col-md-3
 			.panel.panel-default
 				.panel-heading Names: <strong> {{entity.name.join(', ') | capitalize}} </strong>
@@ -14,11 +14,11 @@ div(ng-include='"components/navbar/navbar.html"')
 							img.responsive(ng-src="{{img}}"
 								style="max-height:80px; margin:0 auto;"
 								ng-class="{blurry: blur == true, clear: blur != true}")
-					.item 
+					.item
 						label Blur Images:
 						input(type="checkbox" ng-model="blur")
-					.item 
-						button.btn-success(ng-click='saveEntity()') Save Entity 
+					.item
+						button.btn-success(ng-click='saveEntity()') Save Entity
 			.panel.panel-default
 				.panel-heading Identifiers
 				.panel-body.vertical-layout
@@ -49,7 +49,7 @@ div(ng-include='"components/navbar/navbar.html"')
 						include ./partials/suggested.jade
 					tab(heading='{{annotations.length}} Notes')
 						include ./partials/annotations.jade
-						//- ng-if="{{entity.twitter.length + entity.instagram.length + entity.youtube.length}} > 0", 
+						//- ng-if="{{entity.twitter.length + entity.instagram.length + entity.youtube.length}} > 0",
 					tab(heading='{{entity.twitter.length + entity.instagram.length + entity.youtube.length + entity.yelp.length}} Social Media Accounts')
 						include ./partials/twitter.jade
 					tab(heading='{{imageUrls.length}} Images')
