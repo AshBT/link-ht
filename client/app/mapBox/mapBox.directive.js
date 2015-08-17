@@ -9,7 +9,6 @@ function mapBox() {
 		templateUrl: 'app/mapBox/mapBox.html',
 		scope: {
 			data: '=',
-			iconMap: '=',
 			showSelector: '=',
 			onShowSelector: '&',
 			onBoundsChange: '&',

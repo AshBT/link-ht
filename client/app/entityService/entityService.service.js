@@ -16,6 +16,7 @@ function entityService($http, $q, $resource, linkUtils, lodash) {
 	var EntityResource = $resource('/api/v1/entity/:id', {}, {'query': {method: 'GET', isArray: false }});
 	var SuggestResource = $resource('/api/v1/entity/:id/suggest', {}, {'query': {method: 'GET', isArray: false }});
 	var SimilarImageResource = $resource('/api/v1/image/similar', {}, {'query': {method: 'GET', isArray: false }});
+	var AttachResource = $resource('/api/v1/entity/18004441234/link');
 
 	var sources = {
 		1 : 'Backpage',
@@ -113,7 +114,14 @@ function entityService($http, $q, $resource, linkUtils, lodash) {
 				var entity = _formatEntity(e);
 				return entity;
 			});
-			deferred.resolve(entities);
+
+			var paginatedResults = {
+				entities: entities,
+				page: response.data._page,
+				perPage: response.data._max_num,
+				total: response.data.total
+			};
+			deferred.resolve(paginatedResults);
 		}, function(response){
 			// Callback when an error occurs or server returns response with an error status.
 			deferred.reject(response);

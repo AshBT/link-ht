@@ -157,7 +157,7 @@ angular.module('memexLinkerApp')
 				 ];
 
 	// ng-crossfilter. collection | primary key | strategy | properties
-	$scope.$ngc = new Crossfilter($scope.ads, 'id', 'persistent', ['id','latitude', 'longitude', 'timestamp']);
+	$scope.$ngc = new Crossfilter([], 'id', 'persistent', ['id','latitude', 'longitude', 'timestamp']);
 
 	$scope.showSelector = false;
 
@@ -174,14 +174,20 @@ angular.module('memexLinkerApp')
 
     // Callback for changes in geographic bounding box.
     $scope.onBoundsChange = function(bounds) {
-    	// console.log('onBoundsChange');
-    	// console.log(bounds);
+    	console.log('onBoundsChange');
+    	console.log(bounds);
     	$scope.$ngc.unfilterBy('latitude');
 		$scope.$ngc.unfilterBy('longitude');
 		if($scope.showSelector) {
 			var sw = bounds.sw;
 			var ne = bounds.ne;
+			console.log('crossfilter collection:');
+			console.log($scope.$ngc.collection());
 			$scope.$ngc.filterBy('latitude', {minLatitude: sw.latitude, maxLatitude: ne.latitude}, function(range, latitude) {
+				console.log('range:');
+				console.log(range);
+				console.log('latitude:');
+				console.log(latitude);
 				return range.minLatitude <= latitude && latitude <= range.maxLatitude;
 			});
 
@@ -279,7 +285,9 @@ angular.module('memexLinkerApp')
 
   // testing('https://s-media-cache-ak0.pinimg.com/236x/09/d9/64/09d964859baacb4a3eaf9fe3a9845416.jpg');
 	
-
+  /**
+   * Process ads linked to this entity.
+   */
 	function updateLinked() {
 
 		entityService.Entity.query({id: $scope.id}, function(data) {
@@ -329,95 +337,20 @@ angular.module('memexLinkerApp')
 				$scope.$ngc.addModel(ad);
 			});
 		});
-
-		// $http.get('api/entities/' + $scope.id + '/linked').success(function(res){
-		// 	_.map(res, function(element){ 
-		// 		var ad = {
-		// 			'id':element.ad._id,
-		// 			'labels':element.ad.labels,
-		// 			'properties':element.ad.properties,
-		// 			'timestamp': Date.parse(element.ad.properties.posttime)
-		// 		};
-
-		// 		var promises = [];
-
-		// 		promises.push($http.post('api/interactions/linkTypes', {entityId : $scope.id, adId : ad.id}));
-
-		// 		// geocode ad
-		// 		if(element.ad.properties.city !== undefined) {
-		// 			promises.push(geocodeCity(element.ad.properties.city));
-		// 		}
-		// 		$q.all(promises).then(function(data){
-
-		// 			var res = data[0].data;
-		// 			if (res.linkTypes.indexOf('BY_PHONE') > -1) { ad.linkedByPhone = true; }
-		// 			if (res.linkTypes.indexOf('BY_TXT') > -1) { ad.linkedByText = true; }
-		// 			if (res.linkTypes.indexOf('BY_IMG') > -1) { ad.linkedByImage = true; }
-
-		// 			if(data.length === 2) {
-		// 				// geocoded
-		// 				var point = data[1];
-
-		// 				ad.latitude = point.latitude;
-  // 						ad.longitude = point.longitude;
-		// 			}
-		// 			$scope.ads.push(ad);
-		// 			$scope.$ngc.addModel(ad);
-		// 		});
-		// 	});
-		// });
 	}
-
-	function updateSuggestedText() {
-		$http.get('api/entities/' + $scope.id + '/byText').success(function(res){
-			$scope.suggestedAds = _.map(res, function(element){ 
-				if(element.ad !== undefined && element.ad._id !== undefined) {
-					var ad = {
-					'id':element.ad._id,
-					'labels':element.ad.labels,
-					'properties':element.ad.properties,
-					'suggestedByText':true
-				};
-				return ad;	
-				}
-			});
-		});
-	}
-
-	function updateSuggestedImage() {
-		$http.get('api/entities/' + $scope.id + '/byImage').success(function(res){
-			$scope.suggestedAds = _.map(res, function(element){ 
-				if(element.ad !== undefined && element.ad._id !== undefined) {
-					var ad = {
-						'id':element.ad._id,
-						'labels':element.ad.labels,
-						'properties':element.ad.properties,
-						'suggestedByImage':true
-					};
-					return ad;
-				}
-			});
-		});
-	}
-
-	// $scope.$watch('$scope.$ngc', function(){
-	// 	console.log('ads changed');
-	// 	updateEntity();
-	// }, true);
 
 	$scope.$on('crossfilter/updated', function(event, collection, identifier) {
 		// console.log('crossfilter/updated event.');
 		updateEntity();
 	});
 
-	/**
-	 * Update the aggregate statistics for this entity, based on the (possibly filtered) set of linked ads, suggested ads, etc.
-	 * @return {[type]} [description]
-	 */
-	
+
 	var boom = 'ads_id%3A32711920%20OR%20ads_id%3A32711944';
 
 
+	/**
+	 * Update the aggregate statistics for this entity, based on the (possibly filtered) set of linked ads, suggested ads, etc.
+	 */
 	function updateEntity() {
 		$scope.entity.adId = uniqueFlatAndDefined(_.pluck($scope.ads, 'id')).sort();
 		var boom = 'ads_id%3A' + $scope.entity.adId.join('%20OR%20ads_id%3A');
@@ -451,7 +384,7 @@ angular.module('memexLinkerApp')
 		for (var i = 0; i < $scope.entity.youtube_sameuser.length; i++) {
 			$scope.entity.youtube_sameuser[i]=$sce.trustAsResourceUrl($scope.entity.youtube_sameuser[i].replace("watch?v=", "embed/"));
 		}
-		$scope.entity.youtube_username= uniqueFlatAndDefined(_.pluck($scope.ads, 'youtube_user')).sort();
+		$scope.entity.youtube_username= uniqueFlatAndDefined(_.pluck($scope.ads, 'youtube')).sort();
 		$scope.entity.twitter= uniqueFlatAndDefined(_.pluck($scope.ads, 'twitter')).sort();
 		for (var i = 0; i < $scope.entity.twitter.length; i++) {
 			$scope.entity.twitter[i]=$scope.entity.twitter[i].replace("https://twitter.com/","@");
@@ -564,17 +497,8 @@ angular.module('memexLinkerApp')
 		});
 		console.log($scope.suggestedAds);
 	});
-
-	// $http.get('/api/entities/' + $scope.id).success(function(res) {
-	// 	$scope.entity.phone = res._node.properties.identifier;
-	// 	$scope.entity.email = res._node.properties.email;
-	// 	$scope.entity.name = res._node.properties.name;
-	// 	$scope.entity.nFaces = res._node.properties.nFaces;
-	// });
  
 	updateLinked();
-	//updateSuggestedText();
-	//updateSuggestedImage();
 	// $scope.imagecat = $sce.trustAsResourceUrl("https://darpamemex:darpamemex@imagecat.memexproxy.com/imagespace/#search/" + "ads_id%3A" + entity.adsid.join("%20OR%20ads_id%3A"));
 
 });
