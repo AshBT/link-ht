@@ -21,6 +21,6 @@ exports.search = function(req) {
       query: req.body.elasticSearchText,
       published_at: Date.now(),
     }
-  });           
+  });
 }
 //------------------------------LOGGING---------------------------------
