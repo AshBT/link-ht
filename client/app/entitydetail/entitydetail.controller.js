@@ -210,8 +210,6 @@ angular.module('memexLinkerApp')
 	// --- SCOPE FUNCTIONS --- //
 
 	$scope.submit = function() {
-		console.log('Submitting note: ' + this.text);
-
 		var username = 'Anonymous';
 		if(Auth.isLoggedIn()) {
 			username = Auth.getCurrentUser().name;
@@ -223,9 +221,7 @@ angular.module('memexLinkerApp')
 			username: username
 		};
 
-		// 
 		var _noteResource = noteService.NoteResource.save(_note, function(){
-			console.log(_noteResource);
 			$scope.annotations.push({
 				_id: _noteResource._id,
 				note: _noteResource.comment,
@@ -233,8 +229,6 @@ angular.module('memexLinkerApp')
 				date: _noteResource.date
 			});
 		});
-
-
 	};
 
 	$scope.getHost = function (url) {
@@ -278,8 +272,6 @@ angular.module('memexLinkerApp')
 	// --- NON-SCOPE FUNCTIONS --- //
 
 	var uniqueFlatAndDefined = linkUtils.uniqueFlatAndDefined;
-
-
 
 
   // function testing(filename) {
