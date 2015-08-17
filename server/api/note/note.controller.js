@@ -5,14 +5,17 @@ var Note = require('./note.model');
 
 // Get list of notes
 exports.index = function(req, res) {
-  console.log('index params:');
-  console.log(req.params);
-  console.log('index query:');
-  console.log(req.query);
-  Note.find(function (err, notes) {
-    if(err) { return handleError(res, err); }
-    return res.json(200, notes);
-  });
+  // console.log('index params:');
+  // console.log(req.params);
+  // console.log('index query:');
+  // console.log(req.query);
+
+  Note.find({entityId:req.query.entityId}, function (err, notes) {
+      if(err) { return handleError(res, err); }
+      console.log(notes);
+      return res.json(200, notes);  
+    });
+  
 };
 
 // Get a single note

@@ -223,13 +223,9 @@ angular.module('memexLinkerApp')
 			username: username
 		};
 
-		// var notes = noteService.NoteResource.query({entityId:$scope.id},function() {
-		// 	//operate on notes.
-		// 	console.log('Notes...');
-		// 	console.log(notes);
-		// });
 		// 
 		var _noteResource = noteService.NoteResource.save(_note, function(){
+			console.log(_noteResource);
 			$scope.annotations.push({
 				_id: _noteResource._id,
 				note: _noteResource.comment,
@@ -238,14 +234,7 @@ angular.module('memexLinkerApp')
 			});
 		});
 
-		// if (this.text) {
-		// 	$scope.annotations.push({
-		// 		text: this.text,
-		// 		username: username,
-		// 		date: Date.now()
-		// 	});
-		// 	$scope.text = '';
-		// }
+
 	};
 
 	$scope.getHost = function (url) {
@@ -523,10 +512,10 @@ angular.module('memexLinkerApp')
 	updateLinked();
 	// $scope.imagecat = $sce.trustAsResourceUrl("https://darpamemex:darpamemex@imagecat.memexproxy.com/imagespace/#search/" + "ads_id%3A" + entity.adsid.join("%20OR%20ads_id%3A"));
 
-	var _notes = noteService.NoteResource.query({entityId:$scope.id}, function(){
+	var _notes = noteService.NoteResource.query({entityId:$scope.id, now:Date.now()}, function(){
 		console.log('Notes for entity[' + $scope.id +']:');
+		console.log(_notes);
 		// TODO: populate $scope.annotations
-		$scope.annotations = _notes;
 		_.forEach(_notes, function(_noteResource) {
 			$scope.annotations.push({
 				_id: _noteResource._id,
