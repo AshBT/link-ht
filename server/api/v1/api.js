@@ -10,8 +10,6 @@ module.exports = (function() {
       _ = require('lodash');
 
 
-
-
 //------------------------------LOGGING---------------------------------
       var elasticsearch = require('elasticsearch');
       var client = new elasticsearch.Client({
@@ -32,10 +30,6 @@ module.exports = (function() {
   // });           
 // }
 //------------------------------LOGGING---------------------------------
-
-
-
-
 
 
 
@@ -332,7 +326,12 @@ module.exports = (function() {
       if (err) {
         return res.status(400).json({error: err});
       }
+
+      for(var i = 0; i < rows.length; i++) {
+        rows[i].json = JSON.parse(rows[i].json);
+      }
       var payload = {suggestions: rows}
+
       if (count === "yes") {
         db.mysql.query(count_query, function(err, rows) {
           payload.total = rows[0].total;

@@ -33,7 +33,7 @@ logging.getLogger('elasticsearch').setLevel(logging.INFO)
 
 # env variables
 SQL_USER=os.getenv('SQL_USER', 'root')
-SQL_HOST=os.getenv('SQL_HOST', 'localhost')
+SQL_HOST=os.getenv('SQL_HOST', '127.0.0.1')
 SQL_PASS=os.getenv('SQL_PASS', '')
 SQL_DB=os.getenv('SQL_DB', 'link_ht')
 
@@ -46,11 +46,11 @@ LINK_HT_PIPELINE=os.getenv('LINK_HT_PIPELINE', 'localhost')
 
 ELS_QAD_HOSTS=os.getenv('ELS_QAD_HOSTS', 'localhost')
 
-NUM_GREENLETS=128
+NUM_GREENLETS=32
 QUEUE_SIZE=4*NUM_GREENLETS
 MIN_BULK_SIZE=1
 MAX_BULK_SIZE=10
-LIMIT = 1003
+LIMIT = 20003
 
 # populate phone list
 def get_phone_list(data):
@@ -179,7 +179,7 @@ def es_phone_blob_iter(blob_and_phone_list):
     for number in phone_list:
       yield {
         u'_op_type': 'update',
-        u'_index': 'entities-prod',
+        u'_index': 'entities',
         u'_type': 'entity',
         u'_id': number,
         u'_retry_on_conflict': 32,
@@ -352,7 +352,7 @@ if __name__ == "__main__":
   try:
     with warnings.catch_warnings():
       warnings.simplefilter("ignore")
-      for elem in all_ads:
+      for elem in limited_ads:
         log.debug("{}/{} queue size".format(q.qsize(), QUEUE_SIZE))
         q.put(elem['_source'])
         gevent.sleep(0)

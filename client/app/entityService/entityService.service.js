@@ -1,10 +1,5 @@
 'use strict';
 
-// angular.module('memexLinkerApp')
-//   .service('entityService', function () {
-//     // AngularJS will instantiate a singleton by calling "new" on this function
-//   });
-
 angular
 .module('memexLinkerApp')
 .factory('entityService', entityService);
@@ -15,14 +10,13 @@ entityService.$inject = ['$http', '$q', '$resource', 'linkUtils', 'lodash'];
 // /api/v1/search?size=10&page=1&count=yes -d query=fun -XPOST
 var _SEARCH_URL = '/api/v1/search'; 
 
-
-
 function entityService($http, $q, $resource, linkUtils, lodash) {
 	var _ = lodash;
 
 	var EntityResource = $resource('/api/v1/entity/:id', {}, {'query': {method: 'GET', isArray: false }});
 	var SuggestResource = $resource('/api/v1/entity/:id/suggest', {}, {'query': {method: 'GET', isArray: false }});
 	var SimilarImageResource = $resource('/api/v1/image/similar', {}, {'query': {method: 'GET', isArray: false }});
+	var AttachResource = $resource('/api/v1/entity/18004441234/link');
 
 	var sources = {
 		1 : 'Backpage',
@@ -120,7 +114,14 @@ function entityService($http, $q, $resource, linkUtils, lodash) {
 				var entity = _formatEntity(e);
 				return entity;
 			});
-			deferred.resolve(entities);
+
+			var paginatedResults = {
+				entities: entities,
+				page: response.data._page,
+				perPage: response.data._max_num,
+				total: response.data.total
+			};
+			deferred.resolve(paginatedResults);
 		}, function(response){
 			// Callback when an error occurs or server returns response with an error status.
 			deferred.reject(response);
@@ -160,19 +161,19 @@ function entityService($http, $q, $resource, linkUtils, lodash) {
 
 		var titles = linkUtils.collectAdProperty(ads, 'title');
 		var texts = linkUtils.collectAdProperty(ads, 'text');
-		var snippet1= ""
-		var snippet2= ""
-		var snippet3= ""
-		var all_text = titles + texts
+		var snippet1= "";
+		var snippet2= "";
+		var snippet3= "";
+		var all_text = titles + texts;
 		var names = linkUtils.uniqueFlatAndDefined(linkUtils.collectAdProperty(ads, 'name'));
 		var cities = linkUtils.uniqueFlatAndDefined(linkUtils.collectAdProperty(ads, 'city'));
 		for (var i = 0; i < cities.length; i++) {
           cities[i]=cities[i].substring(0,20);
-        };
+        }
 		var youtube = linkUtils.uniqueFlatAndDefined(linkUtils.collectAdProperty(ads, 'youtube'));
 		var instagram = linkUtils.uniqueFlatAndDefined(linkUtils.collectAdProperty(ads, 'instagram'));
 		var twitter = linkUtils.uniqueFlatAndDefined(linkUtils.collectAdProperty(ads, 'twitter'));
-		var socialmedia = twitter + instagram + youtube
+		var socialmedia = twitter + instagram + youtube;
 		var ethnicity = linkUtils.uniqueFlatAndDefined(linkUtils.collectAdProperty(ads, 'ethnicity'));
 		var imageUrls = _.uniq(lodash.flatten(
 			_.map(ads, function(ad) {

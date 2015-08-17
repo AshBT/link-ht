@@ -6,6 +6,13 @@ angular.module('memexLinkerApp')
 	var _ = lodash;
 
 	$scope.entities = [];
+
+	$scope.paginatedEntites = {
+		entities: [],
+		total: 0,
+		page: 1,
+		perPage: 50,
+	};
 	// ng-crossfilter. collection | primary key | strategy | properties
 	$scope.entityCrossfilter = new Crossfilter([], 'id', 'persistent', ['id', 'faceImageUrls', 'socialmedia', 'similarads']);
 
@@ -88,8 +95,10 @@ $scope.items = ['Item 1', 'Item 2', 'Item 3'];
 
 		$http.post('/api/loggings/search', {elasticSearchText : $scope.elasticSearchText});
 
-		entityService.search($scope.elasticSearchText, 10,1).then(function(entities){			
-			console.log('Found ' + entities.length + ' entites');
+		entityService.search($scope.elasticSearchText, 50,1).then(function(paginatedResults){
+			$scope.paginatedEntites = paginatedResults;
+			var entities = paginatedResults.entities;			
+			console.log('Found ' + paginatedResults.total + ' entites');
 			$scope.entities = entities;
 			_.forEach($scope.entities, function(entity) {
 				
