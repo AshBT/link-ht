@@ -12,7 +12,7 @@ var ES_HOST = 'http://localhost';
         log: 'trace'
       });
 
-exports.search = function(req) {
+exports.search = function(req, res) {
   client.create({
     index: 'query_logging',
     type: 'search',
@@ -21,6 +21,9 @@ exports.search = function(req) {
       query: req.body.elasticSearchText,
       published_at: Date.now(),
     }
+  },
+  function(error,response,status) {
+    res.sendStatus(status);
   });
 }
 //------------------------------LOGGING---------------------------------

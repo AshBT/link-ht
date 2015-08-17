@@ -86,6 +86,9 @@ $scope.items = ['Item 1', 'Item 2', 'Item 3'];
 	
 	$scope.search = function(){
 
+		$scope.entityCrossfilter = new Crossfilter([], 'id', 'persistent', ['id', 'faceImageUrls', 'socialmedia', 'similarads']);
+		$scope.aggregates = initAggregates();
+
 		console.log('You searched for ' + $scope.elasticSearchText);
 
 		var re1 = new RegExp(".{0,50}" + $scope.elasticSearchText + '.{0,50}',"gi");
@@ -114,14 +117,20 @@ $scope.items = ['Item 1', 'Item 2', 'Item 3'];
 				}
 				else {
 					console.log("The regex returned a Null result");
+					// entity.snippet1 = start_regex;
+					// entity.snippet2 = mid_regex;
+					// entity.snippet3 = end_regex;
 				}
 
 				updateAggregates(entity, $scope.aggregates);
 			});
-			var _models = $scope.entityCrossfilter.collection();
-			$scope.entityCrossfilter.deleteModels(_models);
+			//var _models = $scope.entityCrossfilter.collection();
+			//console.log(_models)
+			//$scope.entityCrossfilter.deleteModels(_models);
+			//console.log(entities)
 			$scope.entityCrossfilter.addModels(entities);
 			console.log($scope.aggregates);
+			console.log($scope.entityCrossfilter.collection());
 
 		},function(reason){
 			console.log('Failed: ' + reason);
