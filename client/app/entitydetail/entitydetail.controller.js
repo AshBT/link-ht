@@ -2,7 +2,7 @@
 
 // TODO: inject an entity service, and use it to get the entity object
 angular.module('memexLinkerApp')
-.controller('EntitydetailCtrl', function ($scope, $http, $stateParams, $q, $modal, lodash, Auth, $sce, Crossfilter, entityService, linkUtils) {
+.controller('EntitydetailCtrl', function ($scope, $http, $stateParams, $q, $modal, lodash, Auth, $sce, Crossfilter, entityService, noteService, linkUtils) {
 	var _ = lodash;
 
 	// --- SCOPE VARIABLES --- //
@@ -210,19 +210,42 @@ angular.module('memexLinkerApp')
 	// --- SCOPE FUNCTIONS --- //
 
 	$scope.submit = function() {
-		// console.log('submit ' + this.text);
+		console.log('Submitting note: ' + this.text);
+
 		var username = 'Anonymous';
 		if(Auth.isLoggedIn()) {
 			username = Auth.getCurrentUser().name;
 		}
-		if (this.text) {
+
+		var _note = {
+			entityId: $scope.id,
+			comment: this.text,
+			username: username
+		};
+
+		// var notes = noteService.NoteResource.query({entityId:$scope.id},function() {
+		// 	//operate on notes.
+		// 	console.log('Notes...');
+		// 	console.log(notes);
+		// });
+		// 
+		var _noteResource = noteService.NoteResource.save(_note, function(){
 			$scope.annotations.push({
-				text: this.text,
-				username: username,
-				date: Date.now()
+				_id: _noteResource._id,
+				note: _noteResource.comment,
+				username: _noteResource.username, 
+				date: _noteResource.date
 			});
-			$scope.text = '';
-		}
+		});
+
+		// if (this.text) {
+		// 	$scope.annotations.push({
+		// 		text: this.text,
+		// 		username: username,
+		// 		date: Date.now()
+		// 	});
+		// 	$scope.text = '';
+		// }
 	};
 
 	$scope.getHost = function (url) {
@@ -397,7 +420,6 @@ angular.module('memexLinkerApp')
 		$scope.entity.twitter_profile_background_pic= uniqueFlatAndDefined(_.pluck($scope.ads, 'twitter_profile_background_pic')).sort();
 		$scope.entity.twitter_description= uniqueFlatAndDefined(_.pluck($scope.ads, 'twitter_description')).sort();
 		$scope.entity.yelp= uniqueFlatAndDefined(_.pluck($scope.ads, 'yelp')).sort();
-		//var priceRange = 'Missing' ;
 		if ($scope.entity.price[0] !== null) {
 			$scope.entity.minPrice = _.min($scope.entity.price);
 			$scope.entity.maxPrice = _.max($scope.entity.price);
@@ -500,6 +522,21 @@ angular.module('memexLinkerApp')
  
 	updateLinked();
 	// $scope.imagecat = $sce.trustAsResourceUrl("https://darpamemex:darpamemex@imagecat.memexproxy.com/imagespace/#search/" + "ads_id%3A" + entity.adsid.join("%20OR%20ads_id%3A"));
+
+	var _notes = noteService.NoteResource.query({entityId:$scope.id}, function(){
+		console.log('Notes for entity[' + $scope.id +']:');
+		// TODO: populate $scope.annotations
+		$scope.annotations = _notes;
+		_.forEach(_notes, function(_noteResource) {
+			$scope.annotations.push({
+				_id: _noteResource._id,
+				text: _noteResource.comment,
+				username: _noteResource.username,
+				date: _noteResource.date
+			});
+		});
+		console.log($scope.annotations);
+	});
 
 });
 
