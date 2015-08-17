@@ -5,7 +5,7 @@ var controller = require('./elastic.controller');
 
 var router = express.Router();
 
-router.post('/search', controller.search);
-router.post('/search2', controller.search);
+// router.post('/search', controller.search);
+// router.post('/search2', controller.search);
 
 module.exports = router;
