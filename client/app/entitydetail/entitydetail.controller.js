@@ -510,7 +510,7 @@ angular.module('memexLinkerApp')
 	});
  
 	updateLinked();
-	// $scope.imagecat = $sce.trustAsResourceUrl("https://darpamemex:darpamemex@imagecat.memexproxy.com/imagespace/#search/" + "ads_id%3A" + entity.adsid.join("%20OR%20ads_id%3A"));
+	//$scope.imagecat = $sce.trustAsResourceUrl("https://darpamemex:darpamemex@imagecat.memexproxy.com/imagespace/#search/" + "ads_id%3A" + entity.adsid.join("%20OR%20ads_id%3A"));
 
 	var _notes = noteService.NoteResource.query({entityId:$scope.id, now:Date.now()}, function(){
 		console.log('Notes for entity[' + $scope.id +']:');
