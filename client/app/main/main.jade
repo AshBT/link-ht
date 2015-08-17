@@ -18,8 +18,8 @@ div(ng-include='"components/navbar/navbar.html"')
 					.col-md-2.form(ng-if="aggregates.get('entityIds').length > 0", style="background-color:black")
 						left
 							h3(style='color:#ff5351') Controls
-							label(style='color:white') Blur Images:
-								input(type="checkbox", ng-model="blur", ng-init="checked=true")
+							//- label(style='color:white') Blur Images:
+							//- 	input(type="checkbox", ng-model="blur", ng-init="checked=true")
 							label(style='color:white') Has Face Picture:
 								input(type="checkbox", ng-model="hasFacePic" ng-change="onFaceChange(hasFacePic)")
 							label(style='color:white') Has Similar Ads:
@@ -87,7 +87,7 @@ div(ng-include='"components/navbar/navbar.html"')
 									.panel.panel-default
 										.panel-heading
 											.panel-title
-												h4 Snippets of Ads Containing Search Terms (# of Ads)
+												h4 # of Appearances of Search Term and Example Snippet Text
 										.panel-body.vertical-layout
 											p Snippet of ad text with search terms <span style="background-color: #FFFF00">  highlighted </span> 
 								.col-md-12
@@ -110,7 +110,8 @@ div(ng-include='"components/navbar/navbar.html"')
 			.panel.panel-default
 				.panel-heading
 					//- TODO: Bold the 'main' phone number and italicize the non-main phone numbers
-					h3 <strong> Phone Number(s): <strong> {{entity.phones.join(', ') | tel}} </strong> </strong>  ({{entity.nPosts}} Ads)
+					h3(ng-if='entity.phones.length == 1') Phone Number: <strong> {{entity.id | tel}} </strong> ({{entity.nPosts}} Ads)
+					h3(ng-if='entity.phones.length > 1') Phone Number: <strong> {{entity.id | tel}} </strong> ({{entity.nPosts}} Ads), Other Phones: {{entity.phones.join(', ')}}
 				.panel-body
 
 					.col-md-4
@@ -135,7 +136,7 @@ div(ng-include='"components/navbar/navbar.html"')
 							.panel.panel-default
 								.panel-heading
 									.panel-title
-										h4 Ads Containing Search Terms (# of Ads)
+										h4 {{entity.nResults}} Appearances of {{elasticSearchText}} in Group, Here's an Example:
 								.panel-body.vertical-layout
 									p {{entity.snippet1}} <span style="background-color: #FFFF00"> {{entity.snippet2}}  </span>  {{entity.snippet3}}
 						.col-md-12

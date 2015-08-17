@@ -18,7 +18,7 @@ angular.module('memexLinkerApp')
 
 	$scope.aggregates = initAggregates();
 	$scope.logo = 'http://icons.iconarchive.com/icons/icons8/ios7/256/Very-Basic-Paper-Clip-icon.png';
-	$scope.blur = true;
+	$scope.blur = false;
 	$scope.hasSimilarAds = false;
 	$scope.hasSocialMedia = false;
 	$scope.xx = {};
@@ -97,11 +97,10 @@ $scope.items = ['Item 1', 'Item 2', 'Item 3'];
 
 		entityService.search($scope.elasticSearchText, 50,1).then(function(paginatedResults){
 			$scope.paginatedEntites = paginatedResults;
-			var entities = paginatedResults.entities;			
+			var entities = paginatedResults.entities;
 			console.log('Found ' + paginatedResults.total + ' entites');
 			$scope.entities = entities;
 			_.forEach($scope.entities, function(entity) {
-				
 				var regex=entity.all_text.match(re1,"");
 				if (regex!=null) {
 					var start_regex = regex[0].match(re3,"")[0].replace(re2,"");
@@ -111,9 +110,10 @@ $scope.items = ['Item 1', 'Item 2', 'Item 3'];
 					entity.snippet1 = start_regex;
 					entity.snippet2 = mid_regex;
 					entity.snippet3 = end_regex;
+					entity.nResults = regex.length
 				}
 				else {
-					console.log("ummm");
+					console.log("The regex returned a Null result");
 				}
 
 				updateAggregates(entity, $scope.aggregates);
@@ -127,8 +127,6 @@ $scope.items = ['Item 1', 'Item 2', 'Item 3'];
 			console.log('Failed: ' + reason);
 		});
 	};
-
-	
 	$scope.getNSuggestedByText = function(entity) {
 	// var deferred = $q.defer();
 	// $http.get('api/entities/' + entity.id + '/byText').success(function(res){

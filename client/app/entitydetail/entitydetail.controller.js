@@ -89,14 +89,14 @@ angular.module('memexLinkerApp')
 
 	function similar_images_to_uploaded_image(s3_URL) {
 		$http.get('/api/v1/image/similar?url=' + s3_URL[0]).success(function(res){
-			_.map(res, function(element){ 
-        		var sim_image = {
+			_.map(res, function(element){
+				var sim_image = {
           			'url':element.cached_image_urls,
-        		};
+        			};
        			$scope.sim_image.push(sim_image.url);
-      		});
-    	});
-  	}
+      			});
+    		});
+  		}
 
 // ------------------------ End Similar to Uploaded Code ---------------------------------------------- //
 
@@ -121,7 +121,7 @@ angular.module('memexLinkerApp')
 		price:[],
 		postTimes:[],
 		firstPostTime:'',
-		instagram:[], 
+		instagram:[],
 		twitter:[],
 		youtube:[],
 		youtubeSameuser:[],
@@ -363,7 +363,6 @@ angular.module('memexLinkerApp')
 		$scope.entity.instagram_likers= uniqueFlatAndDefined(_.pluck($scope.ads, 'instagram_likers')).sort();
 		$scope.entity.instagram_profile_picture= uniqueFlatAndDefined(_.pluck($scope.ads, 'instagram_profile_picture')).sort();
 		$scope.entity.instagram_tags= uniqueFlatAndDefined(_.pluck($scope.ads, 'instagram_tags')).sort();
-
 		$scope.entity.youtube= uniqueFlatAndDefined(_.pluck($scope.ads, 'youtube')).sort();
 		$scope.entity.youtube_sameuser= uniqueFlatAndDefined(_.pluck($scope.ads, 'youtube_video_urls')).sort();
 		for (var i = 0; i < $scope.entity.youtube.length; i++) {
@@ -488,7 +487,6 @@ angular.module('memexLinkerApp')
  	updateLinked();
 	//$scope.imagecat = $sce.trustAsResourceUrl("https://darpamemex:darpamemex@imagecat.memexproxy.com/imagespace/#search/" + "ads_id%3A" + entity.adsid.join("%20OR%20ads_id%3A"));
 
-//#Commenting Out Notes Because I'm Getting an Error
 	var _notes = noteService.NoteResource.query({entityId:$scope.id, now:Date.now()}, function(){
 		console.log('Notes for entity[' + $scope.id +']:');
 		console.log(_notes);

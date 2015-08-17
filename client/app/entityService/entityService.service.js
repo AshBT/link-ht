@@ -107,7 +107,6 @@ function entityService($http, $q, $resource, linkUtils, lodash) {
 	 		page: page,
 	 		count: 'yes'
 	 	};
-    	
 	 	$http.post(_SEARCH_URL, {query:query}, {params:params}).then(function(response){
 			// Callback when response is available.
 			var entities = _.map(response.data.entities, function(e) {
