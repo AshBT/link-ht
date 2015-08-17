@@ -3,7 +3,7 @@
 // TODO: inject an entity service, and use it to get the entity object
 angular.module('memexLinkerApp')
 //Deleted NotesService in line below
-.controller('EntitydetailCtrl', function ($scope, $http, $stateParams, $q, $modal, lodash, Auth, $sce, Crossfilter, entityService, linkUtils) {
+.controller('EntitydetailCtrl', function ($scope, $http, $stateParams, $q, $modal, lodash, Auth, $sce, Crossfilter, entityService, noteService, linkUtils) {
 	var _ = lodash;
 
 	// --- SCOPE VARIABLES --- //
@@ -213,8 +213,6 @@ angular.module('memexLinkerApp')
 	// --- SCOPE FUNCTIONS --- //
 
 	$scope.submit = function() {
-		console.log('Submitting note: ' + this.text);
-
 		var username = 'Anonymous';
 		if(Auth.isLoggedIn()) {
 			username = Auth.getCurrentUser().name;
@@ -226,21 +224,15 @@ angular.module('memexLinkerApp')
 			username: username
 		};
 
-		// var _noteResource = noteService.NoteResource.save(_note, function(){
-		// 	console.log(_noteResource);
-		// 	$scope.annotations.push({
 
-		// 		entityid: "xx",
-		// 		text: this.text,
-		// 		username: username,
-		// 		date: Date.now()
-		// 	});
-		// 	$scope.text = '';
-		// })
-		console.log($scope.annotations)
-
-		$http.post('/api/annotations/persist', {annotation : $scope.annotations});
-
+		var _noteResource = noteService.NoteResource.save(_note, function(){
+			$scope.annotations.push({
+				_id: _noteResource._id,
+				note: _noteResource.comment,
+				username: _noteResource.username, 
+				date: _noteResource.date
+			});
+		});
 	};
 
 	$scope.getHost = function (url) {
@@ -497,20 +489,20 @@ angular.module('memexLinkerApp')
 	//$scope.imagecat = $sce.trustAsResourceUrl("https://darpamemex:darpamemex@imagecat.memexproxy.com/imagespace/#search/" + "ads_id%3A" + entity.adsid.join("%20OR%20ads_id%3A"));
 
 //#Commenting Out Notes Because I'm Getting an Error
-	// var _notes = noteService.NoteResource.query({entityId:$scope.id, now:Date.now()}, function(){
-	// 	console.log('Notes for entity[' + $scope.id +']:');
-	// 	console.log(_notes);
-	// 	// TODO: populate $scope.annotations
-	// 	_.forEach(_notes, function(_noteResource) {
-	// 		$scope.annotations.push({
-	// 			_id: _noteResource._id,
-	// 			text: _noteResource.comment,
-	// 			username: _noteResource.username,
-	// 			date: _noteResource.date
-	// 		});
-	// 	});
-	// 	console.log($scope.annotations);
-	// });
+	var _notes = noteService.NoteResource.query({entityId:$scope.id, now:Date.now()}, function(){
+		console.log('Notes for entity[' + $scope.id +']:');
+		console.log(_notes);
+		// TODO: populate $scope.annotations
+		_.forEach(_notes, function(_noteResource) {
+			$scope.annotations.push({
+				_id: _noteResource._id,
+				text: _noteResource.comment,
+				username: _noteResource.username,
+				date: _noteResource.date
+			});
+		});
+		console.log($scope.annotations);
+	});
 
 });
 
