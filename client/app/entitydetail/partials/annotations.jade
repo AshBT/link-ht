@@ -20,7 +20,7 @@
 		h1.panel-title Upload Image
 	.panel-body
 		.col-md-12.form
-			input.bottom-marg-15(type='file', name='file', file='')
+			input.bottom-marg-15(type='file', name='file', id='file')
 			.progress
 				.progress-bar(role='progressbar', aria-valuenow='{{ uploadProgress }}', aria-valuemin='0', aria-valuemax='100', style='width: {{ uploadProgress }}%;')
 					| {{ uploadProgress == 0 ? '' : uploadProgress + '%' }}

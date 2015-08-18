@@ -7,12 +7,12 @@
 					.col-md-12.form
 						.col-md-3(ng-repeat='img in entity.twitter_profile_pic')
 								p Profile Picture
-								img.responsive(ng-src="{{img}}" 
+								img.responsive(ng-src="{{img}}"
 									style="max-height:200px; margin:0 auto;"
 									ng-class="{blurry: blur == true, clear: blur != true}")
 						.col-md-3(ng-repeat='img in entity.twitter_background_pic')
 								p Background Picture
-								img.responsive(ng-src="{{img}}" 
+								img.responsive(ng-src="{{img}}"
 									style="max-height:200px; margin:0 auto;"
 									ng-class="{blurry: blur == true, clear: blur != true}")
 						li Username and Description: {{entity.twitter_name.join(', ') }} -- {{entity.twitter_description.join(', ') }}
@@ -23,11 +23,11 @@
 					.col-md-12.form
 						.col-md-3(ng-repeat='img in entity.instagram_profile_picture')
 								p Profile Picture
-								img.responsive(ng-src="{{img}}" 
+								img.responsive(ng-src="{{img}}"
 									style="max-height:200px; margin:0 auto;"
 									ng-class="{blurry: blur == true, clear: blur != true}")
 						li Username: {{entity.instagram.join(', ')}}
-						li Tags ({{entity.instagram_tags.length}}): {{entity.instagram_tags.join(', ')}} 
+						li Tags ({{entity.instagram_tags.length}}): {{entity.instagram_tags.join(', ')}}
 						li Followers ({{entity.instagram_followers.length}}): {{entity.instagram_followers.join(', ')}}
 						li Following ({{entity.instagram_follows.length}}): {{entity.instagram_follows.join(', ')}}
 						li Likers ({{entity.instagram_likers.length}}): {{entity.instagram_likers.join(', ')}}
@@ -41,7 +41,5 @@
 							iframe(width="420" height="315" ng-src='{{video2}}')
 				//- accordion-group(heading='Yelp ({{entity.yelp.length}})')
 
-
-			
 
 	

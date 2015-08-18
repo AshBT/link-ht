@@ -132,11 +132,10 @@ function entityService($http, $q, $resource, linkUtils, lodash) {
 
 	 /**
 	  * Cleans up 'entites'.
-	  * @param  {Object} rawEntity 
+	  * @param  {Object} rawEntity
 	  * @return {[type]}           [description]
 	  */
 	 function _formatEntity(rawEntity) {
-	 	
 	 	var ads = rawEntity._source.base;
 		// Aggregate ad details
 		var postTimes = _.map(ads, function(ad){

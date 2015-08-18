@@ -14,17 +14,30 @@ angular.module('memexLinkerApp')
 	$scope.sizeLimit      = 15878640; // 10MB in Bytes
 	$scope.uploadProgress = 0;
 	$scope.creds          = {};
+	// $scope.file=[]
 
 	var access='';
 	var secret='';
 	var s3_URL = [];
 
+    console.log($scope.file);
 
-	console.log($scope.note)
+	// console.log($scope.note)
 
   $scope.upload = function() {
   	console.log('uploading...');
     console.log($scope.file);
+
+  	var f = document.getElementById('file').files[0],
+      r = new FileReader();
+  		r.onloadend = function(e){
+    	var data = e.target.result;
+    //send you binary data via $http or $resource or do anything else with it
+  		}
+  		r.readAsBinaryString(f);
+		console.log(f)
+
+
     AWS.config.update({ accessKeyId: access, secretAccessKey: secret });
     AWS.config.region = 'us-west-1';
     var bucket = new AWS.S3({ params: { Bucket: 'generalmemex' } });
@@ -89,20 +102,35 @@ angular.module('memexLinkerApp')
 
 	function similar_images_to_uploaded_image(s3_URL) {
 		$http.get('/api/v1/image/similar?url=' + s3_URL[0]).success(function(res){
-			_.map(res, function(element){
-				var sim_image = {
-          			'url':element.cached_image_urls,
-        			};
-       			$scope.sim_image.push(sim_image.url);
-      			});
-    		});
+		var ad=[]
+		var url=[]
+		for (var i = 0; i < res.length; i++) {
+		        ad[i] = res[i].ad
+		        url[i] = res[i].cached_image_urls
+		      }
+		ad = _.uniq(ad)
+      	ad = _.filter(ad, function(element){
+	      	return ! _.isUndefined(element);
+	    	});
+      	url = _.uniq(url)
+      	url = _.filter(url, function(element){
+	      	return ! _.isUndefined(element);
+	    	});
+      	// console.log(ad)
+      	// console.log(url)
+      	$scope.simImageId= ad // + $scope.simImageId
+      	$scope.suggestedAds= ad
+      	$scope.simImageUrl= url
+
+			});
   		}
+
 
 // ------------------------ End Similar to Uploaded Code ---------------------------------------------- //
 
+	similar_images_to_uploaded_image(["http://static7.depositphotos.com/1001925/696/i/950/depositphotos_6961696-Funny-elderly-man-with-tongue-outdoor.jpg"])
 
-	$scope.sim_image = [];
-	similar_images_to_uploaded_image(s3_URL);
+	// similar_images_to_uploaded_image(s3_URL);
 
 
 	// Aggregate details about this entitiy.
@@ -135,7 +163,10 @@ angular.module('memexLinkerApp')
 	$scope.ads = [];
 	$scope.imageUrls = [];
 	$scope.faceImageUrl = [];
-	$scope.suggestedAds = [];
+	// $simImageId = []
+
+
+	// $scope.suggestedAds =[];
 	$scope.id = $stateParams.id;
 	$scope.sourceMap = entityService.sources;
 
@@ -247,7 +278,6 @@ angular.module('memexLinkerApp')
 		};
 
 		$http.post('/api/annotations/persist', {entityInfo : entityInfo});
-		console.log(entityInfo)
 
 	};
 
@@ -261,13 +291,14 @@ angular.module('memexLinkerApp')
 
 	// Link Ad to this Entity
 	$scope.linkToEntity = function(ad) {
-		console.log('linkToEntity');
+
 		console.log(ad);
 		var data = {
 			entityid: $scope.id,
 			adid: ad.id,
 			user: getUserName()
 		};
+
 		var attached = entityService.AttachResource.save(data, function() {
 			console.log(attached);
 		});
@@ -290,8 +321,6 @@ angular.module('memexLinkerApp')
 		// 	// console.log(data);
 		// });
 	};
-
-	
 
 	// --- NON-SCOPE FUNCTIONS --- //
 
@@ -341,8 +370,8 @@ angular.module('memexLinkerApp')
 				ad.city = ad.city.substring(0,20);
 
 
-				console.log('Bonjour');
-				console.log(ad);
+				// console.log('Bonjour');
+				// console.log(ad);
 
 				$scope.ads.push(ad);
 				$scope.$ngc.addModel(ad);

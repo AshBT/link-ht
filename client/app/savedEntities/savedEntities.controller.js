@@ -8,6 +8,8 @@ angular.module('memexLinkerApp')
     var collectAdProperty2 = linkUtils.collectAdProperty2;
     var _SEARCH_URL = '/api/v1/search';
     $scope.entities = []
+    $scope.entities2 = []
+
     $scope.adIds = []
     $scope.temp_url=[]
 
@@ -44,20 +46,14 @@ angular.module('memexLinkerApp')
   };
 
 function _formatEntity(rawEntity) {
-    
     var ads = rawEntity._source.base;
-    // Aggregate ad details
     var postTimes = _.map(ads, function(ad){
-      //console.log(ad);
       return new Date(ad.posttime);
     });
     var lastPostTime = _.max(postTimes);
     var firstPostTime = _.min(postTimes);
-
     var ages = linkUtils.uniqueFlatAndDefined(linkUtils.collectAdProperty(ads, 'age')).sort();
-
     var rates60 = linkUtils.uniqueFlatAndDefined(linkUtils.collectAdProperty(ads, 'rate60')).sort();
-    
     var websites=[];
     var sourcesid = linkUtils.uniqueFlatAndDefined(linkUtils.collectAdProperty(ads, 'sources_id'));
     for (var i = 0; i < sourcesid.length; i++) {
@@ -67,7 +63,6 @@ function _formatEntity(rawEntity) {
       return ! _.isUndefined(element);
     });
     var phones = linkUtils.uniqueFlatAndDefined(linkUtils.collectAdProperty(ads, 'phone'));
-
     var titles = linkUtils.collectAdProperty(ads, 'title');
     var texts = linkUtils.collectAdProperty(ads, 'text');
     var snippet1= "";
@@ -89,7 +84,6 @@ function _formatEntity(rawEntity) {
         return ad.image_locations;
       }),
           true));
-
     imageUrls = _.filter(imageUrls, function(element){
       return ! _.isUndefined(element);
     });
@@ -102,7 +96,6 @@ function _formatEntity(rawEntity) {
     faceImageUrls = _.filter(faceImageUrls, function(element){
       return ! _.isUndefined(element);
     });
-  
     var entity = {
       id: rawEntity._id,
       phones: phones,
@@ -138,18 +131,23 @@ function _formatEntity(rawEntity) {
       return ! _.isUndefined(element);
     });
     console.log(x)
+    // var y=[]
     for (var i = 0; i < x.length; i++) {
       $scope.adIds.push(x[i])
       $scope.temp_url.push("http://localhost:9000/entitydetail/" + x[i])
-
-      console.log('Here goes nothing...');
+      console.log('Here goes nothing...' + i);
       $http.post(_SEARCH_URL, {query:x[i]}).then(function(response){
         $scope.entities = _.map(response.data.entities, function(e) {
           var entity = _formatEntity(e);
           console.log(entity)
           return entity;
         });
+        // y[i] = $scope.entities
+        // console.log(y)
       })
     }
+    // $scope.entities2 = y
+    // console.log($scope.entities2)
   })
+
 });

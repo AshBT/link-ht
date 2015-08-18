@@ -1,14 +1,14 @@
 //- div(ngif='suggestedAds.length===0')
 //- 	p No suggested ads.
 
-.panel.panel-default(ng-repeat='ad in suggestedAds track by $index')
+.panel.panel-default(ng-repeat='ad in suggestedAds')
 
 	#head2.panel-heading.h1 {{sourceMap[ad.sources_id]}} at {{ad.posttime | date}}
 	.panel-body.vertical-layout
 		.item
 			h4 {{ad.title}}
 			p {{ad.text}}
-			p: a(href='{{ad.url}}') View original post
+			p Original Post's URL: {{ad.url}} 
 		.item
 			row
 			col-md-3(ng-repeat='img in ad.image_locations track by $index')
