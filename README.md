@@ -14,8 +14,19 @@ We recommend Homebrew to install the project requirements on OSX
 - Grunt: `npm install -g grunt-cli`
 - Sass: `brew install ruby && gem install sass`
 - Jade: `npm install jade --global`
-- Neo4j: `brew install neo4j` 
 - Mongo: `brew install mongodb`
+- 
+Currently, we're using
+
+node v0.12.7
+npm 2.11.3
+bower 1.4.1
+grunt-cli v0.1.13
+grunt v0.4.5
+Sass 3.4.13 (Selective Steve)
+jade 1.9.2
+MongoDB shell version: 3.0.2
+
 
 Next, clone this github repository.
 
