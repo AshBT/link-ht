@@ -6,6 +6,8 @@ var controller = require('./annotation.controller');
 var router = express.Router();
 
 router.post('/persist', controller.persist);
-router.post('/search', controller.search);
+// router.post('/search', controller.search);
+router.get('/search', controller.search);
+
 
 module.exports = router;

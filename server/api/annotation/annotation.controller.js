@@ -13,16 +13,19 @@ var client = new elasticsearch.Client({
   log: 'trace'
 });
 
-exports.persist = function(req) {
+exports.persist = function(req,res) {
+  console.log(req.body.entityInfo)
   client.create({
-    index: 'annotations',
-    type: 'text',
+    index: 'savedentities',
+    type: 'entityid',
     body: {
-      entityid: req.body.entityid,
-      text: req.body.text,
-      username: req.body.username,
+      entityid: req.body.entityInfo.entityId,
+      username: req.body.entityInfo.username,
       date: req.body.date,
     }
+  },
+  function(error,response,status) {
+    res.sendStatus(status);
   });
 }
 //------------------------------PERSISTING---------------------------------
@@ -31,8 +34,8 @@ exports.persist = function(req) {
 //TO DO: Search for all notes on a particular entity_id
 exports.search = function(req, res) {
   client.search({
-    index: 'annotations',
-    type: 'text',
+    index: 'savedentities',
+    type: 'entityid',
     size: 50,
     body: {
       query: {
@@ -41,9 +44,12 @@ exports.search = function(req, res) {
       }
     }
   }).then(function (body) {
+    console.log("_----------------Debugging-------------------------_")
     var hits = body.hits.hits;
-    return res.json(hits);
+    res.json(hits);
+  },
+  function(error) {
+    res.sendStatus(error);
   });
 }
-
 //------------------------------SEARCHING---------------------------------
