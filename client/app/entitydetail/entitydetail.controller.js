@@ -36,6 +36,7 @@ angular.module('memexLinkerApp')
   		}
   		r.readAsBinaryString(f);
 		console.log(f)
+		$scope.file = f
 
 
     AWS.config.update({ accessKeyId: access, secretAccessKey: secret });
