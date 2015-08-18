@@ -35,8 +35,7 @@ angular.module('memexLinkerApp')
     //send you binary data via $http or $resource or do anything else with it
   		}
   		r.readAsBinaryString(f);
-		$scope.file = r;
-
+		console.log(f)
 
 
     AWS.config.update({ accessKeyId: access, secretAccessKey: secret });
