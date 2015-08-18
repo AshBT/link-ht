@@ -6,7 +6,6 @@ div(ng-include='"components/navbar/navbar.html"')
 		left
 			h4(ng-if="entities.length==1") {{entities.length}} Saved Group
 			h4(ng-if="entities.length>1") {{entities.length}} Saved Groups
-			//- p(ng-if="entities.length>0") Temporary List of Saved Entities: {{temp_url.join(", ")}}
 .container
 	.row
 		.col-md-12(ng-repeat="entity in entities")
