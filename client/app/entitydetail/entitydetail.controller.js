@@ -14,17 +14,31 @@ angular.module('memexLinkerApp')
 	$scope.sizeLimit      = 15878640; // 10MB in Bytes
 	$scope.uploadProgress = 0;
 	$scope.creds          = {};
+	// $scope.file=[]
 
 	var access='';
 	var secret='';
 	var s3_URL = [];
 
+    console.log($scope.file);
 
 	// console.log($scope.note)
 
   $scope.upload = function() {
   	console.log('uploading...');
     console.log($scope.file);
+
+  	var f = document.getElementById('file').files[0],
+      r = new FileReader();
+  		r.onloadend = function(e){
+    	var data = e.target.result;
+    //send you binary data via $http or $resource or do anything else with it
+  		}
+  		r.readAsBinaryString(f);
+		$scope.file = r;
+
+
+
     AWS.config.update({ accessKeyId: access, secretAccessKey: secret });
     AWS.config.region = 'us-west-1';
     var bucket = new AWS.S3({ params: { Bucket: 'generalmemex' } });
@@ -105,7 +119,7 @@ angular.module('memexLinkerApp')
 	    	});
       	// console.log(ad)
       	// console.log(url)
-      	$scope.simImageId= ad
+      	$scope.simImageId= ad // + $scope.simImageId
       	$scope.suggestedAds= ad
       	$scope.simImageUrl= url
 
@@ -150,7 +164,7 @@ angular.module('memexLinkerApp')
 	$scope.ads = [];
 	$scope.imageUrls = [];
 	$scope.faceImageUrl = [];
-
+	// $simImageId = []
 
 
 	// $scope.suggestedAds =[];

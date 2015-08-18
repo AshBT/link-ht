@@ -377,7 +377,7 @@ module.exports = (function() {
       auth: config.imagesearch.user + ":" + config.imagesearch.pass,
       rejectUnauthorized: false
     }
-
+console.log(options)
     https.request(options, function(isi_res) {
       var body = '';
       isi_res.on('data', function(chunk) {

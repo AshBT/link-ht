@@ -16,6 +16,7 @@ directives.directive('file', function() {
         var file = files[0];
         scope.file = file;
         scope.$parent.file = file;
+        // console.log(scope.file)
         scope.$apply();
       });
     }
