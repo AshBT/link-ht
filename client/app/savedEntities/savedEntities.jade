@@ -6,51 +6,44 @@ div(ng-include='"components/navbar/navbar.html"')
 		left
 			h4(ng-if="entities.length==1") {{entities.length}} Saved Group
 			h4(ng-if="entities.length>1") {{entities.length}} Saved Groups
-.row
-	.col-md-12(ng-repeat="entity in entityCrossfilter.collection()")
-		.panel.panel-default
-			.panel-heading
-				//- TODO: Bold the 'main' phone number and italicize the non-main phone numbers
-				h3(ng-if='entity.phones.length == 1') Phone Number: <strong> {{entity.id | tel}} </strong> ({{entity.nPosts}} Ads)
-				h3(ng-if='entity.phones.length > 1') Phone Number: <strong> {{entity.id | tel}} </strong> ({{entity.nPosts}} Ads), Other Phones: {{entity.phones.join(', ')}}
-			.panel-body
+			//- p(ng-if="entities.length>0") Temporary List of Saved Entities: {{temp_url.join(", ")}}
+.container
+	.row
+		.col-md-12(ng-repeat="entity in entities")
+			.panel.panel-default
+				.panel-heading
+					h3(ng-if='entity.phones.length == 1') Phone Number: <strong> {{entity.id | tel}} </strong> ({{entity.nPosts}} Ads)
+					h3(ng-if='entity.phones.length > 1') Phone Number: <strong> {{entity.id | tel}} </strong> ({{entity.nPosts}} Ads), Other Phones: {{entity.phones.join(', ')}}
+				.panel-body
 
-				.col-md-4
-					h4 Active between <strong> {{entity.firstPostTime.toDateString()}} </strong> to <strong> {{entity.lastPostTime.toDateString()}} </strong>
-					h4(ng-if='entity.names && entity.names.length > 0') Listed names:  <strong>{{entity.names.join(', ') | capitalize}} </strong>
-					h4(ng-if='entity.emails && entity.emails.length > 0') Listed e-mails:  <strong>{{entity.emails.join(', ')}}</strong>
-					h4(ng-if='entity.socialmedia && entity.socialmedia.length > 0') Social Media Usernames: <strong> {{entity.socialmedia}}</strong>
-					h4(ng-if='entity.ages && entity.ages.length > 0') Listed ages:  <strong>{{entity.ages.join(', ')}}</strong>
-					h4(ng-if='entity.priceRange && entity.priceRange.length > 0') Listed price range: <strong>{{entity.priceRange}} </strong>
-					p(ng-if='entity.websites && entity.websites.length > 0') Websites:  <strong> {{entity.websites.sort().join(', ')}}</strong>
-					p(ng-if='entity.cities && entity.cities.length > 0') Cities:  <strong>{{entity.cities.sort().join(', ') | capitalize}}</strong>
-					p(ng-if='entity.imageUrls && entity.imageUrls.length > 0')  Pictures: <strong> {{entity.imageUrls.length}}</strong>
-					p(ng-if='entity.face && entity.face.length > 0') Pictures with Face: <strong> {{entity.face.length}} </strong>
-					a.button.btn-primary.btn-lg.pull-left(ui-sref="entitydetail({ id: entity.id })") Investigate
+					.col-md-4
+						h4 Active between <strong> {{entity.firstPostTime.toDateString()}} </strong> to <strong> {{entity.lastPostTime.toDateString()}} </strong>
+						h4(ng-if='entity.names && entity.names.length > 0') Listed names:  <strong>{{entity.names.join(', ') | capitalize}} </strong>
+						h4(ng-if='entity.emails && entity.emails.length > 0') Listed e-mails:  <strong>{{entity.emails.join(', ')}}</strong>
+						h4(ng-if='entity.socialmedia && entity.socialmedia.length > 0') Social Media Usernames: <strong> {{entity.socialmedia}}</strong>
+						h4(ng-if='entity.ages && entity.ages.length > 0') Listed ages:  <strong>{{entity.ages.join(', ')}}</strong>
+						h4(ng-if='entity.priceRange && entity.priceRange.length > 0') Listed price range: <strong>{{entity.priceRange}} </strong>
+						p(ng-if='entity.websites && entity.websites.length > 0') Websites:  <strong> {{entity.websites.sort().join(', ')}}</strong>
+						p(ng-if='entity.cities && entity.cities.length > 0') Cities:  <strong>{{entity.cities.sort().join(', ') | capitalize}}</strong>
+						p(ng-if='entity.imageUrls && entity.imageUrls.length > 0')  Pictures: <strong> {{entity.imageUrls.length}}</strong>
+						p(ng-if='entity.face && entity.face.length > 0') Pictures with Face: <strong> {{entity.face.length}} </strong>
+						a.button.btn-primary.btn-lg.pull-left(ui-sref="entitydetail({ id: entity.id })") Investigate
 
-				.col-md-8
-
-					.col-md-12
-						.panel.panel-default
-							.panel-heading
-								.panel-title
-									h4 {{entity.nResults}} Appearances of {{elasticSearchText}} in Group, Here's an Example:
-							.panel-body.vertical-layout
-								p {{entity.snippet1}} <span style="background-color: #FFFF00"> {{entity.snippet2}}  </span>  {{entity.snippet3}}
-					.col-md-12
-						.panel.panel-default
-							.panel-heading
-								.panel-title
-									h4 Lastest Ad on {{entity.websites[0]}}
-							.panel-body.vertical-layout
-								.item
-									h4 {{entity.titles[0]}}
-								.item
-									p
-										| {{entity.texts[0]}}
-								.item
-									.row
-										.col-md-2(ng-repeat='img in entity.imageUrls | limitTo:50')
-											img.responsive(ng-src="{{img}}"
-												style="max-height:50px; margin:0 auto;"
-												ng-class="{blurry: blur == true, clear: blur != true}")
+					.col-md-8
+						.col-md-12
+							.panel.panel-default
+								.panel-heading
+									.panel-title
+										h4 Lastest Ad on {{entity.websites[0]}}
+								.panel-body.vertical-layout
+									.item
+										h4 {{entity.titles[0]}}
+									.item
+										p
+											| {{entity.texts[0]}}
+									.item
+										.row
+											.col-md-2(ng-repeat='img in entity.imageUrls | limitTo:50')
+												img.responsive(ng-src="{{img}}"
+													style="max-height:50px; margin:0 auto;"
+													ng-class="{blurry: blur == true, clear: blur != true}")
