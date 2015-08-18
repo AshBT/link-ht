@@ -399,7 +399,9 @@ module.exports = (function() {
                   similar_images.cached_image_urls,
                   similar_images.page_urls,
                   similar_images.distance,
-                  blobs),
+                  // blobs
+                  similar_images.ht_ads_id
+                  ),
                 function(elem) {
                   return {
                     image_urls: elem[0],
