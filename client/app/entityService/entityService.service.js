@@ -163,7 +163,7 @@ function entityService($http, $q, $resource, linkUtils, lodash) {
 		var snippet1= "";
 		var snippet2= "";
 		var snippet3= "";
-		var all_text = titles + texts + phones;
+		var all_text = titles + texts;
 		var names = linkUtils.uniqueFlatAndDefined(linkUtils.collectAdProperty(ads, 'name'));
 		var cities = linkUtils.uniqueFlatAndDefined(linkUtils.collectAdProperty(ads, 'city'));
 		for (var i = 0; i < cities.length; i++) {

@@ -235,6 +235,24 @@ angular.module('memexLinkerApp')
 		});
 	};
 
+	$scope.saveEntity = function() {
+		var username = 'Anonymous';
+		if(Auth.isLoggedIn()) {
+			username = Auth.getCurrentUser().name;
+		}
+
+		var entityInfo = {
+			entityId: $scope.id,
+			username: username
+		};
+
+		$http.post('/api/annotations/persist', {entityInfo : entityInfo});
+		console.log(entityInfo)
+
+	};
+
+
+
 	$scope.getHost = function (url) {
 		var parser = document.createElement('a');
 		parser.href = url;
@@ -262,16 +280,7 @@ angular.module('memexLinkerApp')
 		});
 	};
 
-	$scope.saveEntity = function() {
-		// TODO: Get user name if logged in
-		var userName = 'test_user';
-		var data = {
-			userName: userName
-		};
-		$http.post('api/entities/' + $scope.id + '/save', data).success(function(res){
-			// console.log(res);
-		});
-	};
+	
 
 	// --- NON-SCOPE FUNCTIONS --- //
 

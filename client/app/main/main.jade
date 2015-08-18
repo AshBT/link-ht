@@ -18,12 +18,12 @@ div(ng-include='"components/navbar/navbar.html"')
 					.col-md-2.form(ng-if="aggregates.get('entityIds').length > 0", style="background-color:black")
 						left
 							h3(style='color:#ff5351') Controls
-							//- label(style='color:white') Blur Images:
-							//- 	input(type="checkbox", ng-model="blur", ng-init="checked=true")
+							label(style='color:white') Blur Images:
+								input(type="checkbox", ng-model="blur", ng-init="checked=true")
 							label(style='color:white') Has Face Picture:
 								input(type="checkbox", ng-model="hasFacePic" ng-change="onFaceChange(hasFacePic)")
-							label(style='color:white') Has Similar Ads:
-								input(type="checkbox", ng-model="hasSimilarAds" ng-change="onSimilarChange(hasSimilarAds)")
+							//- label(style='color:white') Has Similar Ads:
+							//- 	input(type="checkbox", ng-model="hasSimilarAds" ng-change="onSimilarChange(hasSimilarAds)")
 							label(style='color:white') Has Social Media
 								input(type="checkbox", ng-model="hasSocialMedia" ng-change="onSocialChange(hasSocialMedia)")
 				.search-body.panel-body(ng-if="aggregates.get('entityIds').length > 0")
@@ -125,9 +125,9 @@ div(ng-include='"components/navbar/navbar.html"')
 						p(ng-if='entity.cities && entity.cities.length > 0') Cities:  <strong>{{entity.cities.sort().join(', ') | capitalize}}</strong>
 						p(ng-if='entity.imageUrls && entity.imageUrls.length > 0')  Pictures: <strong> {{entity.imageUrls.length}}</strong>
 						p(ng-if='entity.face && entity.face.length > 0') Pictures with Face: <strong> {{entity.face.length}} </strong>
-						p Ads related by image: <strong> {{entity.nSuggestedByImage}}</strong>
-						p Ads related by text:<strong> {{entity.nSuggestedByText}}</strong>
-						p Ads related by phone co-occurence:  <strong> {{entity.nSuggestedByPhone}}</strong>
+						//- p Ads related by image: <strong> {{entity.nSuggestedByImage}}</strong>
+						//- p Ads related by text:<strong> {{entity.nSuggestedByText}}</strong>
+						//- p Ads related by phone co-occurence:  <strong> {{entity.nSuggestedByPhone}}</strong>
 						a.button.btn-primary.btn-lg.pull-left(ui-sref="entitydetail({ id: entity.id })") Investigate
 
 					.col-md-8

@@ -15,7 +15,6 @@ angular.module('memexLinkerApp')
 	};
 	// ng-crossfilter. collection | primary key | strategy | properties
 	$scope.entityCrossfilter = new Crossfilter([], 'id', 'persistent', ['id', 'faceImageUrls', 'socialmedia', 'similarads']);
-
 	$scope.aggregates = initAggregates();
 	$scope.logo = 'http://icons.iconarchive.com/icons/icons8/ios7/256/Very-Basic-Paper-Clip-icon.png';
 	$scope.blur = false;
