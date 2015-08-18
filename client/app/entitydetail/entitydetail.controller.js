@@ -290,29 +290,37 @@ angular.module('memexLinkerApp')
 		return parser.host;
 	};
 
-	// Link Ad to Entity by user-confirmed image similarity.
+	// Link Ad to this Entity
 	$scope.linkToEntity = function(ad) {
-		var username = 'Anonymous';
-		if(Auth.isLoggedIn()) {
-			username = Auth.getCurrentUser().name;
-		}
+
+		console.log(ad);
 		var data = {
-			idA: _.parseInt($scope.id),
-			idB: ad.id,
-			relType: 'BY_IMG',
-			properties: {
-				userName: username
-			}
+			entityid: $scope.id,
+			adid: ad.id,
+			user: getUserName()
 		};
-		$http.post('/api/relationships', data).
-		success(function(data, status, headers, config) {
-			updateLinked();
-			updateSuggestedText();
-			updateSuggestedImage();
-		}).
-		error(function(data, status, headers, config) {
-			// console.log(data);
+
+		var attached = entityService.AttachResource.save(data, function() {
+			console.log(attached);
 		});
+
+		// var data = {
+		// 	idA: _.parseInt($scope.id),
+		// 	idB: ad.id,
+		// 	relType: 'BY_IMG',
+		// 	properties: {
+		// 		userName: 'test_user'
+		// 	}
+		// };
+		// $http.post('/api/relationships', data).
+		// success(function(data, status, headers, config) {
+		// 	updateLinked();
+		// 	updateSuggestedText();
+		// 	updateSuggestedImage();
+		// }).
+		// error(function(data, status, headers, config) {
+		// 	// console.log(data);
+		// });
 	};
 
 	// --- NON-SCOPE FUNCTIONS --- //
@@ -543,6 +551,11 @@ angular.module('memexLinkerApp')
 		});
 		console.log($scope.annotations);
 	});
+
+
+	function getUserName() {
+		return Auth.isLoggedIn() ? Auth.getCurrentUser().name : 'Anonymous';
+	}
 
 });
 
