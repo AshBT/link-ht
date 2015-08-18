@@ -20,7 +20,7 @@ angular.module('memexLinkerApp')
 	var s3_URL = [];
 
 
-	console.log($scope.note)
+	// console.log($scope.note)
 
   $scope.upload = function() {
   	console.log('uploading...');
@@ -89,20 +89,35 @@ angular.module('memexLinkerApp')
 
 	function similar_images_to_uploaded_image(s3_URL) {
 		$http.get('/api/v1/image/similar?url=' + s3_URL[0]).success(function(res){
-			_.map(res, function(element){
-				var sim_image = {
-          			'url':element.cached_image_urls,
-        			};
-       			$scope.sim_image.push(sim_image.url);
-      			});
-    		});
+		var ad=[]
+		var url=[]
+		for (var i = 0; i < res.length; i++) {
+		        ad[i] = res[i].ad
+		        url[i] = res[i].cached_image_urls
+		      }
+		ad = _.uniq(ad)
+      	ad = _.filter(ad, function(element){
+	      	return ! _.isUndefined(element);
+	    	});
+      	url = _.uniq(url)
+      	url = _.filter(url, function(element){
+	      	return ! _.isUndefined(element);
+	    	});
+      	// console.log(ad)
+      	// console.log(url)
+      	$scope.simImageId= ad
+      	$scope.suggestedAds= ad
+      	$scope.simImageUrl= url
+
+			});
   		}
+
 
 // ------------------------ End Similar to Uploaded Code ---------------------------------------------- //
 
+	similar_images_to_uploaded_image(["http://static7.depositphotos.com/1001925/696/i/950/depositphotos_6961696-Funny-elderly-man-with-tongue-outdoor.jpg"])
 
-	$scope.sim_image = [];
-	similar_images_to_uploaded_image(s3_URL);
+	// similar_images_to_uploaded_image(s3_URL);
 
 
 	// Aggregate details about this entitiy.
@@ -135,7 +150,10 @@ angular.module('memexLinkerApp')
 	$scope.ads = [];
 	$scope.imageUrls = [];
 	$scope.faceImageUrl = [];
-	$scope.suggestedAds = [];
+
+
+
+	// $scope.suggestedAds =[];
 	$scope.id = $stateParams.id;
 	$scope.sourceMap = entityService.sources;
 
@@ -247,7 +265,6 @@ angular.module('memexLinkerApp')
 		};
 
 		$http.post('/api/annotations/persist', {entityInfo : entityInfo});
-		console.log(entityInfo)
 
 	};
 
@@ -261,12 +278,16 @@ angular.module('memexLinkerApp')
 
 	// Link Ad to Entity by user-confirmed image similarity.
 	$scope.linkToEntity = function(ad) {
+		var username = 'Anonymous';
+		if(Auth.isLoggedIn()) {
+			username = Auth.getCurrentUser().name;
+		}
 		var data = {
 			idA: _.parseInt($scope.id),
 			idB: ad.id,
 			relType: 'BY_IMG',
 			properties: {
-				userName: 'test_user'
+				userName: username
 			}
 		};
 		$http.post('/api/relationships', data).
@@ -279,8 +300,6 @@ angular.module('memexLinkerApp')
 			// console.log(data);
 		});
 	};
-
-	
 
 	// --- NON-SCOPE FUNCTIONS --- //
 
@@ -330,8 +349,8 @@ angular.module('memexLinkerApp')
 				ad.city = ad.city.substring(0,20);
 
 
-				console.log('Bonjour');
-				console.log(ad);
+				// console.log('Bonjour');
+				// console.log(ad);
 
 				$scope.ads.push(ad);
 				$scope.$ngc.addModel(ad);
