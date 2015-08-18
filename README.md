@@ -18,14 +18,14 @@ We recommend Homebrew to install the project requirements on OSX
 - 
 Currently, we're using
 
-node v0.12.7
-npm 2.11.3
-bower 1.4.1
-grunt-cli v0.1.13
-grunt v0.4.5
-Sass 3.4.13 (Selective Steve)
-jade 1.9.2
-MongoDB shell version: 3.0.2
+- node v0.12.7
+- npm 2.11.3
+- bower 1.4.1
+- grunt-cli v0.1.13
+- grunt v0.4.5
+- Sass 3.4.13 (Selective Steve)
+- jade 1.9.2
+- MongoDB shell version: 3.0.2
 
 
 Next, clone this github repository.
