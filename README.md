@@ -15,7 +15,8 @@ We recommend Homebrew to install the project requirements on OSX
 - Sass: `brew install ruby && gem install sass`
 - Jade: `npm install jade --global`
 - Mongo: `brew install mongodb`
-- 
+
+
 Currently, we're using
 
 - node v0.12.7
