@@ -137,7 +137,7 @@ similar_images_to_uploaded_image($scope.s3_URLs)
       	// console.log(ad)
       	// console.log(url)
       	// $scope.simImageId= ad // + $scope.simImageId
-      	$scope.suggestedAds= ad
+      	// $scope.suggestedAds= ad
       	$scope.simImageUrl= url // + $scope.simImageUrl
       	console.log($scope.simImageUrl)
 			});
@@ -148,7 +148,6 @@ similar_images_to_uploaded_image($scope.s3_URLs)
 
 	// similar_images_to_uploaded_image(["http://static7.depositphotos.com/1001925/696/i/950/depositphotos_6961696-Funny-elderly-man-with-tongue-outdoor.jpg"])
 
-	// similar_images_to_uploaded_image(s3_URL);
 
 
 	// Aggregate details about this entitiy.
@@ -411,6 +410,58 @@ similar_images_to_uploaded_image($scope.s3_URLs)
 		// console.log('crossfilter/updated event.');
 		updateEntity();
 	});
+
+
+
+
+
+// ------------------------ Start Suggest Ads with Similar Images ---------------------------------------------- //
+
+
+function suggestSimiliarImages(imageUrls, similarAdsByImage) {
+	for (var i = 0; i < imageUrls.length; i++) {
+		$http.get('/api/v1/image/similar?url=' + imageUrls[i]).success(function(res){
+			var ad=[]
+			for (var i = 0; i < res.length; i++) {
+				ad[i] = res[i].ad
+				}
+			adIds = _.uniq(ad)
+			adIds = _.filter(ad, function(element){
+				return ! _.isUndefined(element);
+				});
+
+			similarAdsbyImage.push(adIds)
+			similarAdsbyImage = _.flatten(similarAdsByImage);
+			});
+		}
+	console.log("Buenos Dias Senorita")
+	console.log(similarAdsbyImage)
+	for (var i = 0; i < similarAdsbyImage.length; i++) {
+		//PSEUDOCODE:
+		// POST TO IST ELASTIC SEARCH
+		// Pass As Title, Text, and Images to Scope VARIABLES
+		// Or MySQL table? This is a question for Eric
+
+
+
+
+		// $http.post('/api/v1/search', {query:similarAdsbyImage[i]}).then(function(response){
+		// 	var e = _.map(response.data.entities, function(e) {
+		// 		var entity = _formatEntity(e);
+		// 		console.log(entity);
+		// 		return entity;
+		// 		});
+		// 	console.log(e);
+		// 	similarAdsByImage.push(e);
+		// 	similarAdsByImage = _.flatten(similarAdsByImage);
+		// 	});
+		}
+	}
+
+// suggestSimiliarImages($scope.imageUrls, $scope.similarAdsByImage)
+
+
+// ------------------------ End Suggest Ads with Similar Images ---------------------------------------------- //
 
 
 
