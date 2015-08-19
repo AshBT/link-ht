@@ -421,21 +421,26 @@ function suggestSimilarImages() {
 	for (var i = 0; i < $scope.imageUrls.length; i++) {
 		$http.get('/api/v1/image/similar?url=' + $scope.imageUrls[i]).success(function(res){
 			var ad=[];
-			console.log(res);
+			// console.log(res);
 			for (var i = 0; i < res.length; i++) {
 				ad[i] = res[i].ad;
+				// console.log(ad[i])
 			}
 			var ads = _.uniq(ad);
-			ads = _.filter(ad, function(element){
-				return ! _.isUndefined(element);
+			ads = _.filter(ads, function(element){
+				return ! _.isUndefined(element) && _.has(element,'id') && ! _.contains($scope.entity.adId, element.id);
 			});
 
 			$scope.similarAdsbyImage.push(ads);
-			$scope.similarAdsbyImage = _.flatten($scope.similarAdsByImage);
+
+			$scope.similarAdsbyImage = _.flatten($scope.similarAdsbyImage);
+			console.log($scope.similarAdsbyImage)
+
+
 		});
 	}
 	console.log("Buenos Dias Senorita");
-	console.log($scope.similarAdsbyImage);
+	// console.log($scope.similarAdsbyImage);
 }
 
 

@@ -46,7 +46,7 @@ div(ng-include='"components/navbar/navbar.html"')
 				tabset
 					tab(heading='{{$ngc.collection().length}} Ads')
 						include ./partials/ads.jade
-					tab(heading='{{suggestedAds.length}} Similar Ads')
+					tab(heading='{{suggestedAds.length + similarAdsbyImage.length}} Similar Ads')
 						include ./partials/suggested.jade
 					tab(heading='{{annotations.length}} Notes')
 						include ./partials/annotations.jade
