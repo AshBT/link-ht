@@ -25,7 +25,7 @@ module.exports = (function() {
 
   var _search = function(query, size, page) {
 
-    
+
     var starting_from = (page - 1) * size;
 
     return db.elasticsearch.search({
@@ -376,9 +376,7 @@ console.log(options)
       var body = '';
       isi_res.on('data', function(chunk) {
         body += chunk;
-      });
-
-      isi_res.on('end', function() {
+      }).on('end', function() {
         var result = {}
         if (body) {
           var similar_images = JSON.parse(body)
@@ -393,7 +391,7 @@ console.log(options)
                   similar_images.cached_image_urls,
                   similar_images.page_urls,
                   similar_images.distance,
-                  // blobs
+                  blobs,
                   similar_images.ht_ads_id
                   ),
                 function(elem) {
@@ -402,7 +400,8 @@ console.log(options)
                     cached_image_urls: elem[1],
                     page_urls: elem[2],
                     distance: elem[3],
-                    ad: elem[4]
+                    ad: elem[4],
+                    ad_id: elem[5]
                   }
                 })
               return res.json(result)
@@ -410,6 +409,8 @@ console.log(options)
             function(error) {
               return res.status(400).json({error: error})
             });
+        } else {
+          return res.json(result)
         }
       });
     }).on('error', function(e) {
