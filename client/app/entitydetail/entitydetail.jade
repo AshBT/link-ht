@@ -7,7 +7,7 @@ div(ng-include='"components/navbar/navbar.html"')
 				.panel-heading Names: <strong> {{entity.name.join(', ') | capitalize}} </strong>
 				.panel-body.vertical-layout
 					.item
-						h4 WAZZZZUP {{suggestedAds}}
+						//- h4 {{suggestedAds}}
 						col-md-3(ng-if="faceImageUrl.length==0")
 							img.responsive(ng-src="http://upload.wikimedia.org/wikipedia/commons/1/1a/Black_-_replace_this_image_female.svg",
 								style="max-height:80px; margin:0 auto;")

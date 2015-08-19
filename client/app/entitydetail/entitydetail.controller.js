@@ -32,11 +32,11 @@ angular.module('memexLinkerApp')
       r = new FileReader();
   		r.onloadend = function(e){
     	var data = e.target.result;
-    //send you binary data via $http or $resource or do anything else with it
   		}
-  		r.readAsBinaryString(f);
+  		// r.readAsBinaryString(f);
 		console.log(f)
 		$scope.file = f
+
 
 
     AWS.config.update({ accessKeyId: access, secretAccessKey: secret });
@@ -53,8 +53,10 @@ angular.module('memexLinkerApp')
         // Prepend Unique String To Prevent Overwrites
         var uniqueFileName = 'Upload/' + $scope.uniqueString() + '-' + $scope.file.name;
 
-        s3_URL.push('https://s3-us-west-1.amazonaws.com/generalmemex/' + uniqueFileName);
 
+        s3_URL.push($sce.trustAsResourceUrl('https://s3-us-west-1.amazonaws.com/generalmemex/' + uniqueFileName));
+
+        // console.log($scope.s3_URLs)
         var params = { Key: uniqueFileName, ContentType: $scope.file.type, Body: $scope.file, ServerSideEncryption: 'AES256' };
 
         bucket.putObject(params, function(err, data) {
@@ -77,11 +79,17 @@ angular.module('memexLinkerApp')
           $scope.uploadProgress = Math.round(progress.loaded / progress.total * 100);
           $scope.$digest();
         });
+
+        $scope.s3_URLs = s3_URL
+
+    // console.log(s3_URL)
       }
       else {
         // No File Selected
         toastr.error('Please select a file to upload');
       }
+
+
     };
 
     $scope.fileSizeLabel = function() {
@@ -101,13 +109,22 @@ angular.module('memexLinkerApp')
 
 // ------------------------ End Upload to S3 Code ---------------------------------------------- //
 
+
+
+  $scope.seeImages = function() {
+similar_images_to_uploaded_image($scope.s3_URLs)
+}
+
 	function similar_images_to_uploaded_image(s3_URL) {
+		// console.log(s3_URL)
+		$scope.simImageUrl =[]
+
 		$http.get('/api/v1/image/similar?url=' + s3_URL[0]).success(function(res){
 		var ad=[]
 		var url=[]
 		for (var i = 0; i < res.length; i++) {
 		        ad[i] = res[i].ad
-		        url[i] = res[i].cached_image_urls
+		        url[i] = $sce.trustAsResourceUrl(res[i].cached_image_urls)
 		      }
 		ad = _.uniq(ad)
       	ad = _.filter(ad, function(element){
@@ -119,17 +136,17 @@ angular.module('memexLinkerApp')
 	    	});
       	// console.log(ad)
       	// console.log(url)
-      	$scope.simImageId= ad // + $scope.simImageId
+      	// $scope.simImageId= ad // + $scope.simImageId
       	$scope.suggestedAds= ad
-      	$scope.simImageUrl= url
-
+      	$scope.simImageUrl= url // + $scope.simImageUrl
+      	console.log($scope.simImageUrl)
 			});
-  		}
-
+}
+	// similar_images_to_uploaded_image(s3_URL)
 
 // ------------------------ End Similar to Uploaded Code ---------------------------------------------- //
 
-	similar_images_to_uploaded_image(["http://static7.depositphotos.com/1001925/696/i/950/depositphotos_6961696-Funny-elderly-man-with-tongue-outdoor.jpg"])
+	// similar_images_to_uploaded_image(["http://static7.depositphotos.com/1001925/696/i/950/depositphotos_6961696-Funny-elderly-man-with-tongue-outdoor.jpg"])
 
 	// similar_images_to_uploaded_image(s3_URL);
 
@@ -291,18 +308,26 @@ angular.module('memexLinkerApp')
 	};
 
 	// Link Ad to this Entity
-	$scope.linkToEntity = function(ad) {
-
-		console.log(ad);
-		var data = {
-			entityid: $scope.id,
-			adid: ad.id,
+	$scope.linkToEntity = function(adId) {
+		console.log('--ad');
+		console.log(adId);
+		$http.post('/api/v1/entity/' + $scope.id + '/link/' + adId, {
 			user: getUserName()
-		};
-
-		var attached = entityService.AttachResource.save(data, function() {
-			console.log(attached);
+		}).then(function(response){
+			console.log('--success');
+			console.log(response);
+		}, function(response){
+			console.log('doom!');
+			console.log(response);
 		});
+
+		// var attached = entityService.Attach.save({
+		// 	id: $scope.id,
+		// 	adid: ad.id,
+		// 	user: getUserName()
+		// }, function() {
+		// 	console.log(attached);
+		// });
 
 		// var data = {
 		// 	idA: _.parseInt($scope.id),

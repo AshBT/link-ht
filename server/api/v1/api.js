@@ -18,17 +18,7 @@ module.exports = (function() {
         log: 'trace'
       });
 
-// exports.search = function(query) {
-  // client.create({
-  //   index: 'query_logging',
-  //   type: 'search',
-  //   body: {
-  //     username: "demo_user",
-  //     query: req.body.elasticSearchText,
-  //     published_at: Date.now(),
-  //   }
-  // });           
-// }
+
 //------------------------------LOGGING---------------------------------
 
 
@@ -252,9 +242,13 @@ module.exports = (function() {
   }
 
   var attachAd = function(req, res) {
+    console.log('--attachAd');
+    console.log(req.params.id);
     var entity_id = req.params.id,
         ad_id = req.params.ad_id,
         user = req.query.user || "auto";
+
+
 
     // first, insert into the table
     var query = "INSERT INTO entities (ad_id, entity_id, user) VALUES (?, ?, ?)";
