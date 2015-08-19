@@ -20,132 +20,132 @@ angular.module('memexLinkerApp')
 	var secret='';
 	var s3_URL = [];
 
-    console.log($scope.file);
+	console.log($scope.file);
 
 	// console.log($scope.note)
 
-  $scope.upload = function() {
-  	console.log('uploading...');
-    console.log($scope.file);
+	$scope.upload = function() {
+		console.log('uploading...');
+		console.log($scope.file);
 
-  	var f = document.getElementById('file').files[0],
-      r = new FileReader();
-  		r.onloadend = function(e){
-    	var data = e.target.result;
-  		}
-  		// r.readAsBinaryString(f);
+		var f = document.getElementById('file').files[0],
+		r = new FileReader();
+		r.onloadend = function(e){
+			var data = e.target.result;
+		}
+		// r.readAsBinaryString(f);
 		console.log(f)
 		$scope.file = f
 		var access="AKIAJ5LO4XW7YN2NN25A"
-        var secret="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"
+		var secret="iXqPZvv6T26HX4cDnm042XHMpwULIc6fdE+I+PCU"
 
 
-    AWS.config.update({ accessKeyId: access, secretAccessKey: secret });
-    AWS.config.region = 'us-west-1';
-    var bucket = new AWS.S3({ params: { Bucket: 'generalmemex' } });
+		AWS.config.update({ accessKeyId: access, secretAccessKey: secret });
+		AWS.config.region = 'us-west-1';
+		var bucket = new AWS.S3({ params: { Bucket: 'generalmemex' } });
 
-    if($scope.file) {
-        // Perform File Size Check First
-        var fileSize = Math.round(parseInt($scope.file.size));
-        if (fileSize > $scope.sizeLimit) {
-          toastr.error('Sorry, your attachment is too big. <br/> Maximum 15mb file attachment allowed','File Too Large');
-          return false;
-        }
-        // Prepend Unique String To Prevent Overwrites
-        var uniqueFileName = 'Upload/' + $scope.uniqueString() + '-' + $scope.file.name;
-
-
-        s3_URL.push($sce.trustAsResourceUrl('https://s3-us-west-1.amazonaws.com/generalmemex/' + uniqueFileName));
-
-        // console.log($scope.s3_URLs)
-        var params = { Key: uniqueFileName, ContentType: $scope.file.type, Body: $scope.file, ServerSideEncryption: 'AES256' };
-
-        bucket.putObject(params, function(err, data) {
-          if(err) {
-            toastr.error(err.message,err.code);
-            return false;
-          }
-          else {
-            // Upload Successfully Finished
-            toastr.success('File Uploaded Successfully', 'Done');
-
-            // Reset The Progress Bar
-            setTimeout(function() {
-              $scope.uploadProgress = 0;
-              $scope.$digest();
-            }, 4000);
-          }
-        })
-        .on('httpUploadProgress',function(progress) {
-          $scope.uploadProgress = Math.round(progress.loaded / progress.total * 100);
-          $scope.$digest();
-        });
-
-        $timeout(function() {
-	        $scope.s3_URLs = s3_URL
-	        console.log('update with timeout fired')
-    		}, 5000);
-
-    // console.log(s3_URL)
-      }
-      else {
-        // No File Selected
-        toastr.error('Please select a file to upload');
-      }
+		if($scope.file) {
+		// Perform File Size Check First
+		var fileSize = Math.round(parseInt($scope.file.size));
+		if (fileSize > $scope.sizeLimit) {
+			toastr.error('Sorry, your attachment is too big. <br/> Maximum 15mb file attachment allowed','File Too Large');
+			return false;
+		}
+		// Prepend Unique String To Prevent Overwrites
+		var uniqueFileName = 'Upload/' + $scope.uniqueString() + '-' + $scope.file.name;
 
 
-    };
+		s3_URL.push($sce.trustAsResourceUrl('https://s3-us-west-1.amazonaws.com/generalmemex/' + uniqueFileName));
 
-    $scope.fileSizeLabel = function() {
-    // Convert Bytes To MB
-    return Math.round($scope.sizeLimit / 1024 / 1024) + 'MB';
-  };
+		// console.log($scope.s3_URLs)
+		var params = { Key: uniqueFileName, ContentType: $scope.file.type, Body: $scope.file, ServerSideEncryption: 'AES256' };
 
-  $scope.uniqueString = function() {
-    var text     = '';
-    var possible = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+		bucket.putObject(params, function(err, data) {
+			if(err) {
+				toastr.error(err.message,err.code);
+				return false;
+			}
+			else {
+			// Upload Successfully Finished
+			toastr.success('File Uploaded Successfully', 'Done');
 
-    for( var i=0; i < 8; i++ ) {
-      text += possible.charAt(Math.floor(Math.random() * possible.length));
-    }
-    return text;
-  };
+			// Reset The Progress Bar
+			setTimeout(function() {
+				$scope.uploadProgress = 0;
+				$scope.$digest();
+			}, 4000);
+		}
+	})
+		.on('httpUploadProgress',function(progress) {
+			$scope.uploadProgress = Math.round(progress.loaded / progress.total * 100);
+			$scope.$digest();
+		});
+
+		$timeout(function() {
+			$scope.s3_URLs = s3_URL
+			console.log('update with timeout fired')
+		}, 5000);
+
+	// console.log(s3_URL)
+}
+else {
+		// No File Selected
+		toastr.error('Please select a file to upload');
+	}
+
+
+};
+
+$scope.fileSizeLabel = function() {
+	// Convert Bytes To MB
+	return Math.round($scope.sizeLimit / 1024 / 1024) + 'MB';
+};
+
+$scope.uniqueString = function() {
+	var text     = '';
+	var possible = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+
+	for( var i=0; i < 8; i++ ) {
+		text += possible.charAt(Math.floor(Math.random() * possible.length));
+	}
+	return text;
+};
 
 // ------------------------ End Upload to S3 Code ---------------------------------------------- //
 
 
 
-  $scope.seeImages = function() {
-similar_images_to_uploaded_image($scope.s3_URLs)
+$scope.seeImages = function() {
+	similar_images_to_uploaded_image($scope.s3_URLs)
 }
 
-	function similar_images_to_uploaded_image(s3_URL) {
+function similar_images_to_uploaded_image(s3_URL) {
 		// console.log(s3_URL)
 		$scope.simImageUrl =[]
 
 		$http.get('/api/v1/image/similar?url=' + s3_URL[0]).success(function(res){
-		var ad=[]
-		var url=[]
-		for (var i = 0; i < res.length; i++) {
-		        ad[i] = res[i].ad
-		        url[i] = $sce.trustAsResourceUrl(res[i].cached_image_urls)
-		      }
-		ad = _.uniq(ad)
-      	ad = _.filter(ad, function(element){
-	      	return ! _.isUndefined(element);
-	    	});
-      	url = _.uniq(url)
-      	url = _.filter(url, function(element){
-	      	return ! _.isUndefined(element);
-	    	});
-      	// console.log(ad)
-      	// console.log(url)
-      	// $scope.simImageId= ad // + $scope.simImageId
-      	// $scope.suggestedAds= ad
-      	$scope.simImageUrl= url // + $scope.simImageUrl
-      	console.log($scope.simImageUrl)
+			var ad=[]
+			var url=[]
+			for (var i = 0; i < res.length; i++) {
+				ad[i] = res[i].ad
+				url[i] = $sce.trustAsResourceUrl(res[i].cached_image_urls)
+			}
+			ad = _.uniq(ad)
+			ad = _.filter(ad, function(element){
+				return ! _.isUndefined(element);
 			});
-}
+			url = _.uniq(url)
+			url = _.filter(url, function(element){
+				return ! _.isUndefined(element);
+			});
+		// console.log(ad)
+		// console.log(url)
+		// $scope.simImageId= ad // + $scope.simImageId
+		// $scope.suggestedAds= ad
+		$scope.simImageUrl= url // + $scope.simImageUrl
+		console.log($scope.simImageUrl)
+	});
+	}
 	// similar_images_to_uploaded_image(s3_URL)
 
 // ------------------------ End Similar to Uploaded Code ---------------------------------------------- //
@@ -220,19 +220,19 @@ similar_images_to_uploaded_image($scope.s3_URLs)
 	// Callback for changes in showSelector, which indicates whether the goegraphic selection box is enabled.
 	$scope.onShowSelector = function(showSelector) {
 		$scope.showSelector = showSelector;
-    	if(showSelector) {
+		if(showSelector) {
 			// 
 		} else {
 			$scope.$ngc.unfilterBy('latitude');
 			$scope.$ngc.unfilterBy('longitude');
 		}
-    };
+	};
 
-    // Callback for changes in geographic bounding box.
-    $scope.onBoundsChange = function(bounds) {
-    	console.log('onBoundsChange');
-    	console.log(bounds);
-    	$scope.$ngc.unfilterBy('latitude');
+	// Callback for changes in geographic bounding box.
+	$scope.onBoundsChange = function(bounds) {
+		console.log('onBoundsChange');
+		console.log(bounds);
+		$scope.$ngc.unfilterBy('latitude');
 		$scope.$ngc.unfilterBy('longitude');
 		if($scope.showSelector) {
 			var sw = bounds.sw;
@@ -253,14 +253,14 @@ similar_images_to_uploaded_image($scope.s3_URLs)
 		} else {
 			//
 		}
-    };
+	};
 
-    // Callback for changes in date slider range.
-    $scope.onRangeChange = function(range) {
+	// Callback for changes in date slider range.
+	$scope.onRangeChange = function(range) {
 		$scope.$ngc.filterBy('timestamp', {minDate: range.minDate, maxDate: range.maxDate}, function(range, timestamp) {
 			return range.minDate <= timestamp && timestamp <= range.maxDate;
 		});
-    };
+	};
 
 	// --- SCOPE FUNCTIONS --- //
 
@@ -349,7 +349,7 @@ similar_images_to_uploaded_image($scope.s3_URLs)
 	var uniqueFlatAndDefined = linkUtils.uniqueFlatAndDefined;
 
 
-		$scope.similarAdsbyImage =[]
+	$scope.similarAdsbyImage =[];
 
 	function updateLinked() {
 
@@ -365,7 +365,7 @@ similar_images_to_uploaded_image($scope.s3_URLs)
 							url: entityService.icons[ad.sources_id],
 							scaledSize: new google.maps.Size(34, 44)
 						}
-    				};
+					};
 
 				} else {
 					console.log('No icon found.');
@@ -382,16 +382,17 @@ similar_images_to_uploaded_image($scope.s3_URLs)
 					// If latitude and longitude are not present, try to geocode the city name.
 					if(_.has(ad, 'city')) {
 						geocodeCity(ad.city).then(function(point) {
-	  							ad.latitude = point.latitude;
-	  							ad.longitude = point.longitude;
-							}, function(reason) {
-	  							alert('Failed: ' + reason);
-							});
-						}
+							ad.latitude = point.latitude;
+							ad.longitude = point.longitude;
+						}, function(reason) {
+							alert('Failed: ' + reason);
+						});
+					}
 				}
+
 				ad.timestamp = Date.parse(ad.posttime);
 				ad.city = ad.city.substring(0,20);
-		suggestSimilarImages()
+				
 
 				// console.log('Bonjour');
 				// console.log(ad);
@@ -402,7 +403,7 @@ similar_images_to_uploaded_image($scope.s3_URLs)
 		});
 	}
 
-	$scope.$on('crossfilter/updated', function(event, collection, identifier) {
+$scope.$on('crossfilter/updated', function(event, collection, identifier) {
 		// console.log('crossfilter/updated event.');
 		updateEntity();
 	});
@@ -413,28 +414,29 @@ similar_images_to_uploaded_image($scope.s3_URLs)
 
 // ------------------------ Start Suggest Ads with Similar Images ---------------------------------------------- //
 
+var suggestTask;
 
 function suggestSimilarImages() {
+	console.log($scope.imageUrls);
 	for (var i = 0; i < $scope.imageUrls.length; i++) {
-		console.log($scope.imageUrls[i])
 		$http.get('/api/v1/image/similar?url=' + $scope.imageUrls[i]).success(function(res){
-			var ad=[]
-			console.log(res)
+			var ad=[];
+			console.log(res);
 			for (var i = 0; i < res.length; i++) {
-				ad[i] = res[i].ad
-				}
-			var ads = _.uniq(ad)
+				ad[i] = res[i].ad;
+			}
+			var ads = _.uniq(ad);
 			ads = _.filter(ad, function(element){
 				return ! _.isUndefined(element);
-				});
-
-			$scope.similarAdsbyImage.push(ads)
-			$scope.similarAdsbyImage = _.flatten($scope.similarAdsByImage);
 			});
-		}
-	console.log("Buenos Dias Senorita")
-	console.log($scope.similarAdsbyImage)
+
+			$scope.similarAdsbyImage.push(ads);
+			$scope.similarAdsbyImage = _.flatten($scope.similarAdsByImage);
+		});
 	}
+	console.log("Buenos Dias Senorita");
+	console.log($scope.similarAdsbyImage);
+}
 
 
 
@@ -445,101 +447,101 @@ function suggestSimilarImages() {
 	/**
 	 * Update the aggregate statistics for this entity, based on the (possibly filtered) set of linked ads, suggested ads, etc.
 	 */
-	function updateEntity() {
-		$scope.entity.adId = uniqueFlatAndDefined(_.pluck($scope.ads, 'id')).sort();
-		var boom = 'ads_id%3A' + $scope.entity.adId.join('%20OR%20ads_id%3A');
-    	$scope.imagecat = $sce.trustAsResourceUrl('https://darpamemex:darpamemex@imagecat.memexproxy.com/imagespace/#search/' + boom);
+	 function updateEntity() {
+	 	$scope.entity.adId = uniqueFlatAndDefined(_.pluck($scope.ads, 'id')).sort();
+	 	var boom = 'ads_id%3A' + $scope.entity.adId.join('%20OR%20ads_id%3A');
+	 	$scope.imagecat = $sce.trustAsResourceUrl('https://darpamemex:darpamemex@imagecat.memexproxy.com/imagespace/#search/' + boom);
 
-		$scope.entity.phone = uniqueFlatAndDefined(_.pluck($scope.ads, 'phone')).sort();
-		$scope.entity.cities = uniqueFlatAndDefined(_.pluck($scope.ads, 'city')).sort();
-		$scope.entity.postTime = uniqueFlatAndDefined(_.pluck($scope.ads, 'posttime')).sort();
-		$scope.entity.age = uniqueFlatAndDefined(_.pluck($scope.ads, 'age')).sort();
-		$scope.entity.ethnicities = uniqueFlatAndDefined(_.pluck($scope.ads, 'ethnicity')).sort();
-		$scope.entity.height = uniqueFlatAndDefined(_.pluck($scope.ads, 'height')).sort();
-		$scope.entity.weight = uniqueFlatAndDefined(_.pluck($scope.ads, 'weight')).sort();
-		$scope.entity.eyes = uniqueFlatAndDefined(_.pluck($scope.ads, 'eyes')).sort();
-		$scope.entity.hair = uniqueFlatAndDefined(_.pluck($scope.ads, 'hair')).sort();
-		$scope.entity.price = uniqueFlatAndDefined(_.pluck($scope.ads, 'rate60')).sort();
-		$scope.entity.email = uniqueFlatAndDefined(_.pluck($scope.ads, 'email')).sort();
-		$scope.entity.name = uniqueFlatAndDefined(_.pluck($scope.ads, 'name')).sort();
-		$scope.entity.instagram = uniqueFlatAndDefined(_.pluck($scope.ads, 'instagram')).sort();
-		$scope.entity.instagram_followers= uniqueFlatAndDefined(_.pluck($scope.ads, 'instagram_followers')).sort();
-		$scope.entity.instagram_follows= uniqueFlatAndDefined(_.pluck($scope.ads, 'instagram_follows')).sort();
-		$scope.entity.instagram_likers= uniqueFlatAndDefined(_.pluck($scope.ads, 'instagram_likers')).sort();
-		$scope.entity.instagram_profile_picture= uniqueFlatAndDefined(_.pluck($scope.ads, 'instagram_profile_picture')).sort();
-		$scope.entity.instagram_tags= uniqueFlatAndDefined(_.pluck($scope.ads, 'instagram_tags')).sort();
-		$scope.entity.youtube= uniqueFlatAndDefined(_.pluck($scope.ads, 'youtube')).sort();
-		$scope.entity.youtube_sameuser= uniqueFlatAndDefined(_.pluck($scope.ads, 'youtube_video_urls')).sort();
-		for (var i = 0; i < $scope.entity.youtube.length; i++) {
-			$scope.entity.youtube[i]=$sce.trustAsResourceUrl($scope.entity.youtube[i]);
-		}
-		for (var i = 0; i < $scope.entity.youtube_sameuser.length; i++) {
-			$scope.entity.youtube_sameuser[i]=$sce.trustAsResourceUrl($scope.entity.youtube_sameuser[i].replace("watch?v=", "embed/"));
-		}
-		$scope.entity.youtube_username= uniqueFlatAndDefined(_.pluck($scope.ads, 'youtube')).sort();
-		$scope.entity.twitter= uniqueFlatAndDefined(_.pluck($scope.ads, 'twitter')).sort();
-		for (var i = 0; i < $scope.entity.twitter.length; i++) {
-			$scope.entity.twitter[i]=$scope.entity.twitter[i].replace("https://twitter.com/","@");
-		}
-		$scope.entity.tweets= uniqueFlatAndDefined(_.pluck($scope.ads, 'twitter')).sort();
-		$scope.entity.twitter_followers= uniqueFlatAndDefined(_.pluck($scope.ads, 'twitter_followers')).sort();
-		$scope.entity.twitter_friends= uniqueFlatAndDefined(_.pluck($scope.ads, 'twitter_friends')).sort();
-		$scope.entity.twitter_name= uniqueFlatAndDefined(_.pluck($scope.ads, 'twitter_name')).sort();
-		$scope.entity.twitter_profile_pic= uniqueFlatAndDefined(_.pluck($scope.ads, 'twitter_profile_pic')).sort();
-		$scope.entity.twitter_profile_background_pic= uniqueFlatAndDefined(_.pluck($scope.ads, 'twitter_profile_background_pic')).sort();
-		$scope.entity.twitter_description= uniqueFlatAndDefined(_.pluck($scope.ads, 'twitter_description')).sort();
-		$scope.entity.yelp= uniqueFlatAndDefined(_.pluck($scope.ads, 'yelp')).sort();
-		if ($scope.entity.price[0] !== null) {
-			$scope.entity.minPrice = _.min($scope.entity.price);
-			$scope.entity.maxPrice = _.max($scope.entity.price);
-		}
-		else {
-			$scope.entity.minPrice = 'Missing';
-			$scope.entity.maxPrice = 'Missing';
-		}
-		$scope.entity.modePrice = linkUtils.mode($scope.entity.price);
+	 	$scope.entity.phone = uniqueFlatAndDefined(_.pluck($scope.ads, 'phone')).sort();
+	 	$scope.entity.cities = uniqueFlatAndDefined(_.pluck($scope.ads, 'city')).sort();
+	 	$scope.entity.postTime = uniqueFlatAndDefined(_.pluck($scope.ads, 'posttime')).sort();
+	 	$scope.entity.age = uniqueFlatAndDefined(_.pluck($scope.ads, 'age')).sort();
+	 	$scope.entity.ethnicities = uniqueFlatAndDefined(_.pluck($scope.ads, 'ethnicity')).sort();
+	 	$scope.entity.height = uniqueFlatAndDefined(_.pluck($scope.ads, 'height')).sort();
+	 	$scope.entity.weight = uniqueFlatAndDefined(_.pluck($scope.ads, 'weight')).sort();
+	 	$scope.entity.eyes = uniqueFlatAndDefined(_.pluck($scope.ads, 'eyes')).sort();
+	 	$scope.entity.hair = uniqueFlatAndDefined(_.pluck($scope.ads, 'hair')).sort();
+	 	$scope.entity.price = uniqueFlatAndDefined(_.pluck($scope.ads, 'rate60')).sort();
+	 	$scope.entity.email = uniqueFlatAndDefined(_.pluck($scope.ads, 'email')).sort();
+	 	$scope.entity.name = uniqueFlatAndDefined(_.pluck($scope.ads, 'name')).sort();
+	 	$scope.entity.instagram = uniqueFlatAndDefined(_.pluck($scope.ads, 'instagram')).sort();
+	 	$scope.entity.instagram_followers= uniqueFlatAndDefined(_.pluck($scope.ads, 'instagram_followers')).sort();
+	 	$scope.entity.instagram_follows= uniqueFlatAndDefined(_.pluck($scope.ads, 'instagram_follows')).sort();
+	 	$scope.entity.instagram_likers= uniqueFlatAndDefined(_.pluck($scope.ads, 'instagram_likers')).sort();
+	 	$scope.entity.instagram_profile_picture= uniqueFlatAndDefined(_.pluck($scope.ads, 'instagram_profile_picture')).sort();
+	 	$scope.entity.instagram_tags= uniqueFlatAndDefined(_.pluck($scope.ads, 'instagram_tags')).sort();
+	 	$scope.entity.youtube= uniqueFlatAndDefined(_.pluck($scope.ads, 'youtube')).sort();
+	 	$scope.entity.youtube_sameuser= uniqueFlatAndDefined(_.pluck($scope.ads, 'youtube_video_urls')).sort();
+	 	for (var i = 0; i < $scope.entity.youtube.length; i++) {
+	 		$scope.entity.youtube[i]=$sce.trustAsResourceUrl($scope.entity.youtube[i]);
+	 	}
+	 	for (var i = 0; i < $scope.entity.youtube_sameuser.length; i++) {
+	 		$scope.entity.youtube_sameuser[i]=$sce.trustAsResourceUrl($scope.entity.youtube_sameuser[i].replace("watch?v=", "embed/"));
+	 	}
+	 	$scope.entity.youtube_username= uniqueFlatAndDefined(_.pluck($scope.ads, 'youtube')).sort();
+	 	$scope.entity.twitter= uniqueFlatAndDefined(_.pluck($scope.ads, 'twitter')).sort();
+	 	for (var i = 0; i < $scope.entity.twitter.length; i++) {
+	 		$scope.entity.twitter[i]=$scope.entity.twitter[i].replace("https://twitter.com/","@");
+	 	}
+	 	$scope.entity.tweets= uniqueFlatAndDefined(_.pluck($scope.ads, 'twitter')).sort();
+	 	$scope.entity.twitter_followers= uniqueFlatAndDefined(_.pluck($scope.ads, 'twitter_followers')).sort();
+	 	$scope.entity.twitter_friends= uniqueFlatAndDefined(_.pluck($scope.ads, 'twitter_friends')).sort();
+	 	$scope.entity.twitter_name= uniqueFlatAndDefined(_.pluck($scope.ads, 'twitter_name')).sort();
+	 	$scope.entity.twitter_profile_pic= uniqueFlatAndDefined(_.pluck($scope.ads, 'twitter_profile_pic')).sort();
+	 	$scope.entity.twitter_profile_background_pic= uniqueFlatAndDefined(_.pluck($scope.ads, 'twitter_profile_background_pic')).sort();
+	 	$scope.entity.twitter_description= uniqueFlatAndDefined(_.pluck($scope.ads, 'twitter_description')).sort();
+	 	$scope.entity.yelp= uniqueFlatAndDefined(_.pluck($scope.ads, 'yelp')).sort();
+	 	if ($scope.entity.price[0] !== null) {
+	 		$scope.entity.minPrice = _.min($scope.entity.price);
+	 		$scope.entity.maxPrice = _.max($scope.entity.price);
+	 	}
+	 	else {
+	 		$scope.entity.minPrice = 'Missing';
+	 		$scope.entity.maxPrice = 'Missing';
+	 	}
+	 	$scope.entity.modePrice = linkUtils.mode($scope.entity.price);
 
-		var rawImageUrls = _.flatten(
-			_.map($scope.ads, function(ad) {
-				return ad.image_locations;
-			}),
-			true
-			);
-		$scope.imageUrls = linkUtils.uniqueFlatAndDefined(_.filter(rawImageUrls, function(element){
-			return ! _.isUndefined(element);
-		}));
-		
-		$scope.faceImageUrl = _.flatten(
-			_.map($scope.ads, function(ad) {
-				return ad.faceImageUrl;
-			}),
-			true
-			);
-		$scope.faceImageUrl = _.filter($scope.faceImageUrl, function(element){
-			return ! _.isUndefined(element);
-		});
+	 	var rawImageUrls = _.flatten(
+	 		_.map($scope.ads, function(ad) {
+	 			return ad.image_locations;
+	 		}),
+	 		true
+	 		);
+	 	$scope.imageUrls = linkUtils.uniqueFlatAndDefined(_.filter(rawImageUrls, function(element){
+	 		return ! _.isUndefined(element);
+	 	}));
 
-		if (! _.isEmpty($scope.entity.cities)) {
+	 	$scope.faceImageUrl = _.flatten(
+	 		_.map($scope.ads, function(ad) {
+	 			return ad.faceImageUrl;
+	 		}),
+	 		true
+	 		);
+	 	$scope.faceImageUrl = _.filter($scope.faceImageUrl, function(element){
+	 		return ! _.isUndefined(element);
+	 	});
 
-			var promise = geocodeCity($scope.entity.cities[0]);
-			promise.then(function(point) {
-				$scope.map = {
-					center: {
-						latitude: point.latitude,
-						longitude: point.longitude
-					},
-					zoom: 3
-				};
-			}, function(reason) {
-				console.log('Failed');
-				console.log(reason);
-			}, function(update) {
-				console.log(update);
-			});
+	 	if (! _.isEmpty($scope.entity.cities)) {
 
-			_.forEach($scope.entity.cities, function(city, key) {
-				geocodeCity(city)
-				.then(function(point){
+	 		var promise = geocodeCity($scope.entity.cities[0]);
+	 		promise.then(function(point) {
+	 			$scope.map = {
+	 				center: {
+	 					latitude: point.latitude,
+	 					longitude: point.longitude
+	 				},
+	 				zoom: 3
+	 			};
+	 		}, function(reason) {
+	 			console.log('Failed');
+	 			console.log(reason);
+	 		}, function(update) {
+	 			console.log(update);
+	 		});
+
+	 		_.forEach($scope.entity.cities, function(city, key) {
+	 			geocodeCity(city)
+	 			.then(function(point){
 				 //   id: 583187,
 				 //   latitude: 46.7682,
 				 //   longitude: -71.3234,
@@ -552,9 +554,14 @@ function suggestSimilarImages() {
 				 };
 				 $scope.markers.push(m);
 				});
-			});
-		}
-	}
+	 		});
+	 	}
+
+	 	if(suggestTask !== undefined) {
+	 		$timeout.cancel(suggestTask);
+	 	} 
+ 		suggestTask = $timeout(suggestSimilarImages, 1000);	
+	 }
 
 	// The following function requires access to the internet. We need to develop an offline version of this geocoder.
 	var geocoder = new google.maps.Geocoder();
@@ -589,7 +596,7 @@ function suggestSimilarImages() {
 		console.log($scope.suggestedAds);
 	});
 
- 	updateLinked();
+	updateLinked();
 	//$scope.imagecat = $sce.trustAsResourceUrl("https://darpamemex:darpamemex@imagecat.memexproxy.com/imagespace/#search/" + "ads_id%3A" + entity.adsid.join("%20OR%20ads_id%3A"));
 
 	var _notes = noteService.NoteResource.query({entityId:$scope.id, now:Date.now()}, function(){
