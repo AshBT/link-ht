@@ -314,8 +314,6 @@ function similar_images_to_uploaded_image(s3_URL) {
 
 	// Link Ad to this Entity
 	$scope.linkToEntity = function(adId) {
-		console.log('--ad');
-		console.log(adId);
 		$http.post('/api/v1/entity/' + $scope.id + '/link/' + adId, {
 			user: getUserName()
 		}).then(function(response){
@@ -325,23 +323,18 @@ function similar_images_to_uploaded_image(s3_URL) {
 			console.log('doom!');
 			console.log(response);
 		});
-
-
-
 	};
 
 	$scope.delinkFromEntity = function(adId) {
-		console.log('--ad');
-		console.log(adId);
-		$http.delete('/api/v1/entity/' + $scope.id + '/link/' + adId, {
-			user: getUserName()
-		}).then(function(response){
-			console.log('--success');
-			console.log(response);
-		}, function(response){
-			console.log('doom!');
-			console.log(response);
-		});
+			$http.delete('/api/v1/entity/' + $scope.id + '/link/' + adId, {
+				user: getUserName()
+			}).then(function(response){
+				console.log('--success');
+				console.log(response);
+			}, function(response){
+				console.log('doom!');
+				console.log(response);
+			});
 	};
 
 	// --- NON-SCOPE FUNCTIONS --- //
