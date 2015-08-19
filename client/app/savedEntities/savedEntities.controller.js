@@ -2,16 +2,16 @@
 
 angular.module('memexLinkerApp')
 .controller('SavedentitiesCtrl', function ($scope, $http, $q, socket, lodash, entityService, linkUtils, Crossfilter) {
-    var _ = lodash;
-    var uniqueFlatAndDefined = linkUtils.uniqueFlatAndDefined;
-    var collectAdProperty = linkUtils.collectAdProperty;
-    var collectAdProperty2 = linkUtils.collectAdProperty2;
-    var _SEARCH_URL = '/api/v1/search';
-    $scope.entities = []
-    $scope.entities2 = []
+  var _ = lodash;
+  var uniqueFlatAndDefined = linkUtils.uniqueFlatAndDefined;
+  var collectAdProperty = linkUtils.collectAdProperty;
+  var collectAdProperty2 = linkUtils.collectAdProperty2;
+  var _SEARCH_URL = '/api/v1/search';
+  $scope.entities = []
+  $scope.entities2 = []
 
-    $scope.adIds = []
-    $scope.temp_url=[]
+  $scope.adIds = []
+  $scope.temp_url=[]
 
 
   var sources = {
@@ -45,7 +45,7 @@ angular.module('memexLinkerApp')
     28 : 'MissingKids'
   };
 
-function _formatEntity(rawEntity) {
+  function _formatEntity(rawEntity) {
     var ads = rawEntity._source.base;
     var postTimes = _.map(ads, function(ad){
       return new Date(ad.posttime);
@@ -72,8 +72,8 @@ function _formatEntity(rawEntity) {
     var names = linkUtils.uniqueFlatAndDefined(linkUtils.collectAdProperty(ads, 'name'));
     var cities = linkUtils.uniqueFlatAndDefined(linkUtils.collectAdProperty(ads, 'city'));
     for (var i = 0; i < cities.length; i++) {
-          cities[i]=cities[i].substring(0,20);
-        }
+      cities[i]=cities[i].substring(0,20);
+    }
     var youtube = linkUtils.uniqueFlatAndDefined(linkUtils.collectAdProperty(ads, 'youtube'));
     var instagram = linkUtils.uniqueFlatAndDefined(linkUtils.collectAdProperty(ads, 'instagram'));
     var twitter = linkUtils.uniqueFlatAndDefined(linkUtils.collectAdProperty(ads, 'twitter'));
@@ -83,7 +83,7 @@ function _formatEntity(rawEntity) {
       _.map(ads, function(ad) {
         return ad.image_locations;
       }),
-          true));
+      true));
     imageUrls = _.filter(imageUrls, function(element){
       return ! _.isUndefined(element);
     });
@@ -92,7 +92,7 @@ function _formatEntity(rawEntity) {
         return ad.face_image_url;
       }),
       true
-    ));
+      ));
     faceImageUrls = _.filter(faceImageUrls, function(element){
       return ! _.isUndefined(element);
     });
@@ -121,33 +121,37 @@ function _formatEntity(rawEntity) {
     return entity;
   }
 
-    $http.get('/api/annotations/search').then(function(response){
-      var x=[]
-      for (var i = 0; i < response.data.length; i++) {
-        x[i] = response.data[i]._source.entityid
-      }
-      x = _.uniq(x)
-      x = _.filter(x, function(element){
+  $http.get('/api/annotations/search').then(function(response){
+
+    var x=[];
+    for (var i = 0; i < response.data.length; i++) {
+      x[i] = response.data[i]._source.entityid;
+    }
+    x = _.uniq(x);
+    x = _.filter(x, function(element){
       return ! _.isUndefined(element);
     });
-    console.log(x)
-    // var y=[]
+    console.log(x);
+    $scope.entities = [];
+
     for (var i = 0; i < x.length; i++) {
-      $scope.adIds.push(x[i])
-      $scope.temp_url.push("http://localhost:9000/entitydetail/" + x[i])
-      console.log('Here goes nothing...' + i);
+      $scope.adIds.push(x[i]);
+      $scope.temp_url.push('http://localhost:9000/entitydetail/' + x[i]);
+
       $http.post(_SEARCH_URL, {query:x[i]}).then(function(response){
-        $scope.entities = _.map(response.data.entities, function(e) {
+        var e = _.map(response.data.entities, function(e) {
           var entity = _formatEntity(e);
-          console.log(entity)
+          console.log(entity);
           return entity;
         });
-        // y[i] = $scope.entities
-        // console.log(y)
-      })
+        console.log('adding entity...');
+        console.log(e);
+        $scope.entities.push(e);
+        $scope.entities = _.flatten($scope.entities);
+      });
     }
     // $scope.entities2 = y
     // console.log($scope.entities2)
-  })
+  });
 
 });

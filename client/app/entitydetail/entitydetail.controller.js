@@ -262,6 +262,8 @@ similar_images_to_uploaded_image($scope.s3_URLs)
 	// --- SCOPE FUNCTIONS --- //
 
 	$scope.submit = function() {
+		console.log('sumbitting...');
+		console.log($scope.annotations);
 		var username = 'Anonymous';
 		if(Auth.isLoggedIn()) {
 			username = Auth.getCurrentUser().name;
@@ -273,14 +275,14 @@ similar_images_to_uploaded_image($scope.s3_URLs)
 			username: username
 		};
 
-
 		var _noteResource = noteService.NoteResource.save(_note, function(){
 			$scope.annotations.push({
 				_id: _noteResource._id,
-				note: _noteResource.comment,
+				text: _noteResource.comment,
 				username: _noteResource.username, 
 				date: _noteResource.date
 			});
+			console.log($scope.annotations);
 		});
 	};
 
