@@ -3,7 +3,7 @@
 // TODO: inject an entity service, and use it to get the entity object
 angular.module('memexLinkerApp')
 //Deleted NotesService in line below
-.controller('EntitydetailCtrl', function ($scope, $http, $stateParams, $q, $modal, lodash, Auth, $sce, Crossfilter, entityService, noteService, linkUtils) {
+.controller('EntitydetailCtrl', function ($scope, $timeout, $http, $stateParams, $q, $modal, lodash, Auth, $sce, Crossfilter, entityService, noteService, linkUtils) {
 	var _ = lodash;
 
 	// --- SCOPE VARIABLES --- //
@@ -36,7 +36,8 @@ angular.module('memexLinkerApp')
   		// r.readAsBinaryString(f);
 		console.log(f)
 		$scope.file = f
-
+		var access="AKIAJ5LO4XW7YN2NN25A"
+        var secret="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"
 
 
     AWS.config.update({ accessKeyId: access, secretAccessKey: secret });
@@ -80,7 +81,10 @@ angular.module('memexLinkerApp')
           $scope.$digest();
         });
 
-        $scope.s3_URLs = s3_URL
+        $timeout(function() {
+	        $scope.s3_URLs = s3_URL
+	        console.log('update with timeout fired')
+    		}, 5000);
 
     // console.log(s3_URL)
       }
@@ -322,31 +326,22 @@ similar_images_to_uploaded_image($scope.s3_URLs)
 			console.log(response);
 		});
 
-		// var attached = entityService.Attach.save({
-		// 	id: $scope.id,
-		// 	adid: ad.id,
-		// 	user: getUserName()
-		// }, function() {
-		// 	console.log(attached);
-		// });
 
-		// var data = {
-		// 	idA: _.parseInt($scope.id),
-		// 	idB: ad.id,
-		// 	relType: 'BY_IMG',
-		// 	properties: {
-		// 		userName: 'test_user'
-		// 	}
-		// };
-		// $http.post('/api/relationships', data).
-		// success(function(data, status, headers, config) {
-		// 	updateLinked();
-		// 	updateSuggestedText();
-		// 	updateSuggestedImage();
-		// }).
-		// error(function(data, status, headers, config) {
-		// 	// console.log(data);
-		// });
+
+	};
+
+	$scope.delinkFromEntity = function(adId) {
+		console.log('--ad');
+		console.log(adId);
+		$http.delete('/api/v1/entity/' + $scope.id + '/link/' + adId, {
+			user: getUserName()
+		}).then(function(response){
+			console.log('--success');
+			console.log(response);
+		}, function(response){
+			console.log('doom!');
+			console.log(response);
+		});
 	};
 
 	// --- NON-SCOPE FUNCTIONS --- //
@@ -354,6 +349,7 @@ similar_images_to_uploaded_image($scope.s3_URLs)
 	var uniqueFlatAndDefined = linkUtils.uniqueFlatAndDefined;
 
 
+		$scope.similarAdsbyImage =[]
 
 	function updateLinked() {
 
@@ -395,7 +391,7 @@ similar_images_to_uploaded_image($scope.s3_URLs)
 				}
 				ad.timestamp = Date.parse(ad.posttime);
 				ad.city = ad.city.substring(0,20);
-
+		suggestSimilarImages()
 
 				// console.log('Bonjour');
 				// console.log(ad);
@@ -418,47 +414,28 @@ similar_images_to_uploaded_image($scope.s3_URLs)
 // ------------------------ Start Suggest Ads with Similar Images ---------------------------------------------- //
 
 
-function suggestSimiliarImages(imageUrls, similarAdsByImage) {
-	for (var i = 0; i < imageUrls.length; i++) {
-		$http.get('/api/v1/image/similar?url=' + imageUrls[i]).success(function(res){
+function suggestSimilarImages() {
+	for (var i = 0; i < $scope.imageUrls.length; i++) {
+		console.log($scope.imageUrls[i])
+		$http.get('/api/v1/image/similar?url=' + $scope.imageUrls[i]).success(function(res){
 			var ad=[]
+			console.log(res)
 			for (var i = 0; i < res.length; i++) {
 				ad[i] = res[i].ad
 				}
-			adIds = _.uniq(ad)
-			adIds = _.filter(ad, function(element){
+			var ads = _.uniq(ad)
+			ads = _.filter(ad, function(element){
 				return ! _.isUndefined(element);
 				});
 
-			similarAdsbyImage.push(adIds)
-			similarAdsbyImage = _.flatten(similarAdsByImage);
+			$scope.similarAdsbyImage.push(ads)
+			$scope.similarAdsbyImage = _.flatten($scope.similarAdsByImage);
 			});
 		}
 	console.log("Buenos Dias Senorita")
-	console.log(similarAdsbyImage)
-	for (var i = 0; i < similarAdsbyImage.length; i++) {
-		//PSEUDOCODE:
-		// POST TO IST ELASTIC SEARCH
-		// Pass As Title, Text, and Images to Scope VARIABLES
-		// Or MySQL table? This is a question for Eric
-
-
-
-
-		// $http.post('/api/v1/search', {query:similarAdsbyImage[i]}).then(function(response){
-		// 	var e = _.map(response.data.entities, function(e) {
-		// 		var entity = _formatEntity(e);
-		// 		console.log(entity);
-		// 		return entity;
-		// 		});
-		// 	console.log(e);
-		// 	similarAdsByImage.push(e);
-		// 	similarAdsByImage = _.flatten(similarAdsByImage);
-		// 	});
-		}
+	console.log($scope.similarAdsbyImage)
 	}
 
-// suggestSimiliarImages($scope.imageUrls, $scope.similarAdsByImage)
 
 
 // ------------------------ End Suggest Ads with Similar Images ---------------------------------------------- //
@@ -531,7 +508,7 @@ function suggestSimiliarImages(imageUrls, similarAdsByImage) {
 		$scope.imageUrls = linkUtils.uniqueFlatAndDefined(_.filter(rawImageUrls, function(element){
 			return ! _.isUndefined(element);
 		}));
-
+		
 		$scope.faceImageUrl = _.flatten(
 			_.map($scope.ads, function(ad) {
 				return ad.faceImageUrl;

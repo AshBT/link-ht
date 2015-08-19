@@ -1,6 +1,34 @@
 //- div(ngif='suggestedAds.length===0')
 //- 	p No suggested ads.
 
+.panel.panel-default(ng-repeat='ad in similarAdsbyImage')
+
+	#head2.panel-heading.h1 {{sourceMap[ad.sources_id]}} at {{ad.posttime | date}}
+	.panel-body.vertical-layout
+		.item
+			h4 {{ad.title}}
+			p {{ad.text}}
+			p Original Post's URL: {{ad.url}} 
+		.item
+			row
+			col-md-3(ng-repeat='img in ad.image_locations track by $index')
+				img.responsive(ng-src="{{img}}" 
+					style="max-height:100px; margin:0 auto;"
+					ng-class="{blurry: blur == true, clear: blur != true}")
+		.panel-footer.clearfix
+			span.glyphicon.glyphicon-camera(ng-if='ad.suggestedByImage' popover="Suggested by image similarity" popover-trigger="mouseenter" popover-placement="right")
+			span.label.label-default(ng-if='ad.suggestedByImage' popover="Suggested by image similarity" popover-trigger="mouseenter" popover-placement="right") Similar Images
+			span.glyphicon.glyphicon-font(ng-if='ad.suggestedByText' popover="Suggested by text similarity" popover-trigger="mouseenter" popover-placement="right")
+			span.label.label-default(ng-if='ad.suggestedByText' popover="Suggested by text similarity" popover-trigger="mouseenter" popover-placement="right") Similar Text
+			span.glyphicon.glyphicon-user(ng-if='ad.suggestedByUsername' popover="Suggested by identical username" popover-trigger="mouseenter" popover-placement="right")
+			span.label.label-default(ng-if='ad.suggestedByUsername' popover="Suggested by identical username" popover-trigger="mouseenter" popover-placement="right") Identical Username
+			span.glyphicon.glyphicon-film(ng-if='ad.suggestedByVideo' popover="Suggested by video similarity" popover-trigger="mouseenter" popover-placement="right")
+			span.glyphicon.glyphicon-earphone(ng-if='ad.suggestedByPhone' popover="Suggested by phone number co-occurence" popover-trigger="mouseenter" popover-placement="right")
+			span.label.label-default(ng-if='ad.suggestedByPhone' popover="Suggested by phone number co-occurence" popover-trigger="mouseenter" popover-placement="right") Phone Co-occurrence
+			.pull-right
+				button.btn-primary(ng-click='linkToEntity(ad)') 
+					|Link to Entity
+
 .panel.panel-default(ng-repeat='ad in suggestedAds')
 
 	#head2.panel-heading.h1 {{sourceMap[ad.sources_id]}} at {{ad.posttime | date}}

@@ -29,7 +29,6 @@
 		//- span.glyphicon.glyphicon-film(ng-if='ad.suggestedByVideo')
 		//- span.glyphicon.glyphicon-earphone(ng-if='ad.suggestedByPhone')
 
-//- Commenting out 'Detach from Entity' until it's working
-		//- .pull-right
-		//- 	button.btn-primary(ng-click='')
-		//- 		|Detach from Entity
+		.pull-right
+			button.btn-primary(ng-click='delinkFromEntity(ad)')
+				|Detach from Entity
