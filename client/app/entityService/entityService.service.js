@@ -13,7 +13,7 @@ var _SEARCH_URL = '/api/v1/search';
 function entityService($http, $q, $resource, linkUtils, lodash) {
 	var _ = lodash;
 
-	var EntityResource = $resource('/api/v1/entity/:id', {}, {'query': {method: 'GET', isArray: false }});
+	var EntityResource = $resource('/api/v1/entity/:id', {size:50}, {'query': {method: 'GET', isArray: false }});
 	var SuggestResource = $resource('/api/v1/entity/:id/suggest', {}, {'query': {method: 'GET', isArray: false }});
 	var SimilarImageResource = $resource('/api/v1/image/similar', {}, {'query': {method: 'GET', isArray: false }});
 	var AttachResource = $resource('/api/v1/entity/:id/link/:adid');
