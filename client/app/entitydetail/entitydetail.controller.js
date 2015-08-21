@@ -313,51 +313,35 @@ function similar_images_to_uploaded_image(s3_URL) {
 	};
 
 	// Link Ad to this Entity
-	$scope.linkToEntity = function(ad) {
-		$http.post('/api/v1/entity/' + $scope.id + '/link/' + ad.id, {
+	$scope.linkToEntity = function(adId) {
+		console.log('--ad');
+		console.log(adId);
+		$http.post('/api/v1/entity/' + $scope.id + '/link/' + adId, {
 			user: getUserName()
 		}).then(function(response){
 			console.log('--success');
 			console.log(response);
-			console.log('pushing ad...');
-			console.log(ad);
-			if(!_.has(ad, 'latitude')) {
-				ad.latitude = 41.9033;
-				ad.longitude = 12.4533;
-				ad.timestamp = 1341316500000;
-			}
-			console.log($scope.$ngc.collection().length);
-			$scope.ads.push(ad);
-			// TODO: why aren't these ads being added to the crossfilter collection?
-			$scope.$ngc.addModel(ad);
-			console.log($scope.$ngc.collection().length);
-			$scope.suggestedAds = _.filter($scope.suggestedAds, function(_ad) {
-				return _ad.id !== ad.id;
-			});
-			$scope.similarAdsbyImage = _.filter($scope.similarAdsbyImage, function(_ad) {
-				return _ad.id !== ad.id;
-			});
 		}, function(response){
 			console.log('doom!');
 			console.log(response);
 		});
+
+
+
 	};
 
-	$scope.delinkFromEntity = function(ad) {
-			$http.delete('/api/v1/entity/' + $scope.id + '/link/' + ad.id, {
-				user: getUserName()
-			}).then(function(response){
-				console.log('--success');
-				console.log(response);
-				// $scope.ads
-				$scope.ads = _.filter($scope.ads, function(_ad) {
-					return _ad.id !== ad.id;
-				});
-				$scope.$ngc.deleteModel(ad);
-			}, function(response){
-				console.log('doom!');
-				console.log(response);
-			});
+	$scope.delinkFromEntity = function(adId) {
+		console.log('--ad');
+		console.log(adId);
+		$http.delete('/api/v1/entity/' + $scope.id + '/link/' + adId, {
+			user: getUserName()
+		}).then(function(response){
+			console.log('--success');
+			console.log(response);
+		}, function(response){
+			console.log('doom!');
+			console.log(response);
+		});
 	};
 
 	// --- NON-SCOPE FUNCTIONS --- //
@@ -371,7 +355,6 @@ function similar_images_to_uploaded_image(s3_URL) {
 
 		entityService.Entity.query({id: $scope.id}, function(data) {
 			var _ads = data.ads;
-			console.log(data);
 
 			_.map(_ads, function(ad) {
 				if(_.has(ad, 'sources_id') && _.has(entityService.icons, ad.sources_id)) {
@@ -408,7 +391,6 @@ function similar_images_to_uploaded_image(s3_URL) {
 				}
 
 				ad.timestamp = Date.parse(ad.posttime);
-				console.log(ad);
 				ad.city = ad.city.substring(0,20);
 				
 

@@ -38,8 +38,10 @@
 					style="max-height:100px; margin:0 auto;"
 					ng-class="{blurry: blur == true, clear: blur != true}")
 		.panel-footer.clearfix
-			span.glyphicon.glyphicon-font(popover="Suggested by text similarity" popover-trigger="mouseenter" popover-placement="right")
-			span.label.label-default(popover="Suggested by text similarity" popover-trigger="mouseenter" popover-placement="right") Similar Text
+			span.glyphicon.glyphicon-font(ng-if='_.contains(ad.reasons, "text")', popover="Suggested by text similarity" popover-trigger="mouseenter" popover-placement="right")
+			span.label.label-default(ng-if='_.contains(ad.reasons, "text")', popover="Suggested by text similarity" popover-trigger="mouseenter" popover-placement="right") Similar Text
+			span.glyphicon.glyphicon-earphone(ng-if='_.contains(ad.reasons, "phone")', popover="Suggested by phone co-occurence" popover-trigger="mouseenter" popover-placement="right")
+			span.label.label-default(ng-if='_.contains(ad.reasons, "phone")', popover="Suggested by phone co-occurence" popover-trigger="mouseenter" popover-placement="right") Phone Co-occurrence
 
 
 			//- span.glyphicon.glyphicon-camera(ng-if='ad.suggestedByImage' popover="Suggested by image similarity" popover-trigger="mouseenter" popover-placement="right")

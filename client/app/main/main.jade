@@ -9,6 +9,7 @@ div(ng-include='"components/navbar/navbar.html"')
 					.col-md-6.form
 						center
 							h1 <strong> Link <span style="color:#ff5351;"> HT </span></strong>
+							h4 'The investigative search and case building app'
 							form(ng-submit='search()' ng-click="counter = counter + 1" ng-init="counter=0")
 								input.search-query.form-control(type='text',ng-model='elasticSearchText', name='text', placeholder='Search...')
 								input.btn.btn-primary#submit(type='submit', value='Submit')
@@ -19,9 +20,9 @@ div(ng-include='"components/navbar/navbar.html"')
 						left
 							h3(style='color:#ff5351') Controls
 							label(style='color:white') Blur Images:
-								input(type="checkbox", ng-model="blur", ng-init="checked=true")
-							label(style='color:white') Has Face Picture:
-								input(type="checkbox", ng-model="hasFacePic" ng-change="onFaceChange(hasFacePic)")
+								input(type="checkbox" ng-model="blur")
+							//- label(style='color:white') Has Face Picture:
+							//- 	input(type="checkbox", ng-model="hasFacePic" ng-change="onFaceChange(hasFacePic)")
 							//- label(style='color:white') Has Similar Ads:
 							//- 	input(type="checkbox", ng-model="hasSimilarAds" ng-change="onSimilarChange(hasSimilarAds)")
 							label(style='color:white') Has Social Media
