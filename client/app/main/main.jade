@@ -32,7 +32,7 @@ div(ng-include='"components/navbar/navbar.html"')
 						center
 							h3 Search Results Summary
 							//- h4 <strong> {{aggregates.get('entityIds').length}} groups </strong>  -- <strong> {{aggregates.get('nAds')}} ads </strong> with <strong> {{aggregates.get('nPictures')}} </strong> pictures. 
-							h4 <strong> Displaying {{paginatedEntites.entities.length}} of {{paginatedEntites.total}} groups </strong>  -- <strong> {{aggregates.get('nAds')}} ads </strong> with <strong> {{aggregates.get('nPictures')}} </strong> pictures. 
+							h4 <strong> Displaying Results {{pageNumber * paginatedEntites.entities.length - 49}} -- {{pageNumber * paginatedEntites.entities.length}} of {{paginatedEntites.total}} groups </strong>  -- <strong> {{aggregates.get('nAds')}} ads </strong> with <strong> {{aggregates.get('nPictures')}} </strong> pictures. 
 							h5(ng-if="aggregates.get('ages').length > 0") Extracted age range: {{aggregates.get('age_min')}} to {{aggregates.get('age_max')}}.
 							h5(ng-if="aggregates.get('prices').length > 0") Extracted price range: {{aggregates.get('price_min') | currency:"$"}} to {{aggregates.get('price_max') | currency:"$"}} 
 							p {{aggregates.get('websites').sort().join(', ')}}
@@ -111,8 +111,6 @@ div(ng-include='"components/navbar/navbar.html"')
 							a(href='#', ng-click="previous()") Previous
 						li
 							a(href='#', ng-click="next()") Next
-						li
-							h4 Current Page ({{pageNumber}})
 				br
 		.col-md-12(ng-repeat="entity in entityCrossfilter.collection()")
 
