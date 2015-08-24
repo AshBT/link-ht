@@ -85,15 +85,16 @@ $scope.items = ['Item 1', 'Item 2', 'Item 3'];
 	
 
 	$scope.next = function(){
-			$scope.pageNumber=1+$scope.pageNumber
-			$scope.search()
+			var num =1+$scope.pageNumber
+			$scope.search(num)
 	}
 	$scope.previous = function(){
-		$scope.pageNumber= $scope.pageNumber == 1 ? $scope.pageNumber : $scope.pageNumber-1
-		$scope.search()
+		var num = $scope.pageNumber == 1 ? $scope.pageNumber : $scope.pageNumber-1
+		$scope.search(num)
 	}
-	$scope.pageNumber=1
-	$scope.search = function(){
+	$scope.lastSearch="arandomstring"
+
+	$scope.search = function(pageNumber){
 
 		$scope.entityCrossfilter = new Crossfilter([], 'id', 'persistent', ['id', 'faceImageUrls', 'socialmedia', 'similarads']);
 		$scope.aggregates = initAggregates();
@@ -105,10 +106,10 @@ $scope.items = ['Item 1', 'Item 2', 'Item 3'];
 		var re2 = new RegExp($scope.elasticSearchText,"gi");
 		var re3 = new RegExp(".{0,50}" + $scope.elasticSearchText,"gi");
 		var re4 = new RegExp($scope.elasticSearchText + '.{0,50}',"gi");
-
 		$http.post('/api/loggings/search', {elasticSearchText : $scope.elasticSearchText});
-
-		entityService.search($scope.elasticSearchText, 50,$scope.pageNumber).then(function(paginatedResults){
+		var page = pageNumber || 1;
+		$scope.pageNumber = page
+		entityService.search($scope.elasticSearchText, 50,pageNumber).then(function(paginatedResults){
 			$scope.paginatedEntites = paginatedResults;
 			var entities = paginatedResults.entities;
 			console.log('Found ' + paginatedResults.total + ' entites');
@@ -142,7 +143,7 @@ $scope.items = ['Item 1', 'Item 2', 'Item 3'];
 			console.log($scope.aggregates);
 			console.log($scope.entityCrossfilter.collection());
 			toastr.clear()
-			toastr.success("Search completed.", "Search")
+			// toastr.success("Search completed.", "Search")
 
 		},function(reason){
 			console.log('Failed: ' + reason);

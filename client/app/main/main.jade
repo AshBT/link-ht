@@ -32,7 +32,9 @@ div(ng-include='"components/navbar/navbar.html"')
 						center
 							h3 Search Results Summary
 							//- h4 <strong> {{aggregates.get('entityIds').length}} groups </strong>  -- <strong> {{aggregates.get('nAds')}} ads </strong> with <strong> {{aggregates.get('nPictures')}} </strong> pictures. 
-							h4 <strong> Displaying Results {{pageNumber * paginatedEntites.entities.length - 49}} -- {{pageNumber * paginatedEntites.entities.length}} of {{paginatedEntites.total}} groups </strong>  -- <strong> {{aggregates.get('nAds')}} ads </strong> with <strong> {{aggregates.get('nPictures')}} </strong> pictures. 
+							h4(ng-if="paginatedEntites.total < 51") <strong> Displaying Results 1 -- {{paginatedEntites.entities.length}} of {{paginatedEntites.total}} groups </strong> 
+							h4(ng-if="paginatedEntites.total > 50") <strong> Displaying Results {{pageNumber * paginatedEntites.entities.length - 49}} -- {{pageNumber * paginatedEntites.entities.length}} of {{paginatedEntites.total}} groups </strong>  
+							h4 Currently Displaying <strong> {{aggregates.get('nAds')}} ads </strong> with <strong> {{aggregates.get('nPictures')}} </strong> pictures. 
 							h5(ng-if="aggregates.get('ages').length > 0") Extracted age range: {{aggregates.get('age_min')}} to {{aggregates.get('age_max')}}.
 							h5(ng-if="aggregates.get('prices').length > 0") Extracted price range: {{aggregates.get('price_min') | currency:"$"}} to {{aggregates.get('price_max') | currency:"$"}} 
 							p {{aggregates.get('websites').sort().join(', ')}}
