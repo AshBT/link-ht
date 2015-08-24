@@ -38,7 +38,8 @@ module.exports = (function() {
           match: {
             "_all": query
           }
-        }
+        },
+        sort: [{"entity": "desc"}]
       }
     }).then(function (body) {
       var hits = body.hits.hits;

@@ -89,6 +89,7 @@ $scope.items = ['Item 1', 'Item 2', 'Item 3'];
 		$scope.aggregates = initAggregates();
 
 		console.log('You searched for ' + $scope.elasticSearchText);
+		toastr.info("Searching. Please wait....", "Search")
 
 		var re1 = new RegExp(".{0,50}" + $scope.elasticSearchText + '.{0,50}',"gi");
 		var re2 = new RegExp($scope.elasticSearchText,"gi");
@@ -130,9 +131,13 @@ $scope.items = ['Item 1', 'Item 2', 'Item 3'];
 			$scope.entityCrossfilter.addModels(entities);
 			console.log($scope.aggregates);
 			console.log($scope.entityCrossfilter.collection());
+			toastr.clear()
+			toastr.success("Search completed.", "Search")
 
 		},function(reason){
 			console.log('Failed: ' + reason);
+			toastr.clear()
+			toastr.error("Search failed: " + reason, "Search")
 		});
 	};
 	$scope.getNSuggestedByText = function(entity) {
