@@ -83,6 +83,16 @@ $scope.items = ['Item 1', 'Item 2', 'Item 3'];
 		isFirstDisabled: false
 	};
 	
+
+	$scope.next = function(){
+			$scope.pageNumber=1+$scope.pageNumber
+			$scope.search()
+	}
+	$scope.previous = function(){
+		$scope.pageNumber= $scope.pageNumber == 1 ? $scope.pageNumber : $scope.pageNumber-1
+		$scope.search()
+	}
+	$scope.pageNumber=1
 	$scope.search = function(){
 
 		$scope.entityCrossfilter = new Crossfilter([], 'id', 'persistent', ['id', 'faceImageUrls', 'socialmedia', 'similarads']);
@@ -98,7 +108,7 @@ $scope.items = ['Item 1', 'Item 2', 'Item 3'];
 
 		$http.post('/api/loggings/search', {elasticSearchText : $scope.elasticSearchText});
 
-		entityService.search($scope.elasticSearchText, 50,1).then(function(paginatedResults){
+		entityService.search($scope.elasticSearchText, 50,$scope.pageNumber).then(function(paginatedResults){
 			$scope.paginatedEntites = paginatedResults;
 			var entities = paginatedResults.entities;
 			console.log('Found ' + paginatedResults.total + ' entites');

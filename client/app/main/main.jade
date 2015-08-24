@@ -105,6 +105,14 @@ div(ng-include='"components/navbar/navbar.html"')
 		.col-md-12(ng-if='entities && entities.length > 0')
 			center
 				h2(style='black') View Search Results Below
+				nav
+					ul.pager
+						li
+							a(href='#', ng-click="previous()") Previous
+						li
+							a(href='#', ng-click="next()") Next
+						li
+							h4 Current Page ({{pageNumber}})
 				br
 		.col-md-12(ng-repeat="entity in entityCrossfilter.collection()")
 
