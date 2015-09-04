@@ -124,6 +124,7 @@ function similar_images_to_uploaded_image(s3_URL) {
 		$scope.simImageUrl =[]
 
 		$http.get('/api/v1/image/similar?url=' + s3_URL[0]).success(function(res){
+
 			var ad=[]
 			var url=[]
 			for (var i = 0; i < res.length; i++) {
@@ -392,7 +393,7 @@ function similar_images_to_uploaded_image(s3_URL) {
 
 				ad.timestamp = Date.parse(ad.posttime);
 				ad.city = ad.city.substring(0,20);
-				
+
 
 				// console.log('Bonjour');
 				// console.log(ad);
@@ -418,6 +419,7 @@ var suggestTask;
 
 function suggestSimilarImages() {
 	console.log($scope.imageUrls);
+	toastr.info("Starting...", "Reverse Image Search")
 	for (var i = 0; i < $scope.imageUrls.length; i++) {
 		$http.get('/api/v1/image/similar?url=' + $scope.imageUrls[i]).success(function(res){
 			var ad=[];
@@ -437,9 +439,18 @@ function suggestSimilarImages() {
 			console.log($scope.similarAdsbyImage)
 
 
+
 		});
 	}
-	console.log("Buenos Dias Senorita");
+			console.log("Buenos Dias Senorita");
+			toastr.clear
+			if ($scope.similarAdsbyImage.length>0) {
+				toastr.success("Found" + $scope.similarAdsbyImage.length +"Similar Images", "Reverse Image Search")
+
+			}
+			else {
+				toastr.error("Did Not Find Similar Images", "Reverse Image Search")
+			}
 	// console.log($scope.similarAdsbyImage);
 }
 
@@ -592,6 +603,7 @@ function suggestSimilarImages() {
 
 	var _suggestionsPromise = entityService.Suggest.query({id: $scope.id}, function() {
 		console.log('Suggest:');
+		toastr.info("Starting...", "Text Similarity Search")
 		console.log(_suggestionsPromise.suggestions);
 		$scope.suggestedAds = [];
 		_.forEach(_suggestionsPromise.suggestions, function(e) {
@@ -599,6 +611,15 @@ function suggestSimilarImages() {
 			$scope.suggestedAds.push(e.json);
 		});
 		console.log($scope.suggestedAds);
+		toastr.clear
+			if ($scope.suggestedAds.length>0) {
+				toastr.success("Found" + $scope.suggestedAds.length + "Similar Ad Text", "Reverse Image Search")
+
+			}
+			else {
+				toastr.error("Did Not Find Similar Ad Text", "Reverse Image Search")
+			}
+
 	});
 
 	updateLinked();

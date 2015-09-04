@@ -13,7 +13,6 @@ div(ng-include='"components/navbar/navbar.html"')
 							form(ng-submit='search()' ng-click="counter = counter + 1" ng-init="counter=0")
 								input.search-query.form-control(type='text',ng-model='elasticSearchText', name='text', placeholder='Search...')
 								input.btn.btn-primary#submit(type='submit', value='Submit')
-
 					.col-md-1.form
 					.col-md-2.form(ng-if="aggregates.get('entityIds').length == 0")
 					.col-md-2.form(ng-if="aggregates.get('entityIds').length > 0", style="background-color:black")
@@ -115,10 +114,8 @@ div(ng-include='"components/navbar/navbar.html"')
 							a(href='#', ng-click="next()") Next
 				br
 		.col-md-12(ng-repeat="entity in entityCrossfilter.collection()")
-
 			.panel.panel-default
 				.panel-heading
-					//- TODO: Bold the 'main' phone number and italicize the non-main phone numbers
 					h3(ng-if='entity.phones.length == 1') Phone Number: <strong> {{entity.id | tel}} </strong> ({{entity.nPosts}} Ads)
 					h3(ng-if='entity.phones.length > 1') Phone Number: <strong> {{entity.id | tel}} </strong> ({{entity.nPosts}} Ads), Other Phones: {{entity.phones.join(', ')}}
 				.panel-body
@@ -147,7 +144,7 @@ div(ng-include='"components/navbar/navbar.html"')
 									.panel-title
 										h4 {{entity.nResults}} Appearances of '{{elasticSearchText}}' in Group, Here's an Example:
 								.panel-body.vertical-layout
-									p {{entity.snippet1}} <span style="background-color: #FFFF00"> {{entity.snippet2}}  </span>  {{entity.snippet3}}
+									p(ng-bind-html='entity.highlight')
 						.col-md-12
 							.panel.panel-default
 								.panel-heading

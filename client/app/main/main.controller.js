@@ -1,7 +1,7 @@
 'use strict';
 
 angular.module('memexLinkerApp')
-.controller('MainCtrl', function ($scope, $http, $q, socket, lodash, entityService, linkUtils, Crossfilter) {
+.controller('MainCtrl', function ($scope, $http, $sce, $q, socket, lodash, entityService, linkUtils, Crossfilter) {
 
 	var _ = lodash;
 
@@ -120,7 +120,7 @@ $scope.items = ['Item 1', 'Item 2', 'Item 3'];
 					var start_regex = regex[0].match(re3,"")[0].replace(re2,"");
 					var mid_regex = regex[0].match(re2,"")[0]
 					var end_regex = regex[0].match(re4,"")[0].replace(re2,"");
-					console.log(start_regex + mid_regex + end_regex);
+					// console.log(start_regex + mid_regex + end_regex);
 					entity.snippet1 = start_regex;
 					entity.snippet2 = mid_regex;
 					entity.snippet3 = end_regex;
@@ -132,7 +132,6 @@ $scope.items = ['Item 1', 'Item 2', 'Item 3'];
 					// entity.snippet2 = mid_regex;
 					// entity.snippet3 = end_regex;
 				}
-
 				updateAggregates(entity, $scope.aggregates);
 			});
 			//var _models = $scope.entityCrossfilter.collection();

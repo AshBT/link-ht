@@ -1,4 +1,12 @@
 //- TODO: | orderBy:"-ad.posttime"
+
+nav(ng-if='$ngc.collection().length>50')
+	ul.pager
+		li
+			a(href='#', ng-click="previous()") Previous
+		li
+			a(href='#', ng-click="next()") Next
+br
 .panel.panel-default(ng-repeat='ad in $ngc.collection()')
 	.panel-heading.h1  {{sourceMap[ad.sources_id]}} at {{ad.posttime | date}}
 	.panel-body.vertical-layout

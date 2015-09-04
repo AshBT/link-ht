@@ -4,16 +4,19 @@ angular
 .module('memexLinkerApp')
 .factory('entityService', entityService);
 
-entityService.$inject = ['$http', '$q', '$resource', 'linkUtils', 'lodash'];
+entityService.$inject = ['$http', '$q', '$sce','$resource', 'linkUtils', 'lodash'];
 
 // API endpoints
 // /api/v1/search?size=10&page=1&count=yes -d query=fun -XPOST
-var _SEARCH_URL = '/api/v1/search'; 
+var _SEARCH_URL = '/api/v1/search';
 
-function entityService($http, $q, $resource, linkUtils, lodash) {
+function entityService($http, $q, $sce, $resource, linkUtils, lodash) {
 	var _ = lodash;
 
-	var EntityResource = $resource('/api/v1/entity/:id', {size:50}, {'query': {method: 'GET', isArray: false }});
+
+
+
+	var EntityResource = $resource('/api/v1/entity/:id', {size:300, page:1}, {'query': {method: 'GET', isArray: false }});
 	var SuggestResource = $resource('/api/v1/entity/:id/suggest', {}, {'query': {method: 'GET', isArray: false }});
 	var SimilarImageResource = $resource('/api/v1/image/similar', {}, {'query': {method: 'GET', isArray: false }});
 	var AttachResource = $resource('/api/v1/entity/:id/link/:adid');
@@ -112,6 +115,9 @@ function entityService($http, $q, $resource, linkUtils, lodash) {
 	 	};
 	 	$http.post(_SEARCH_URL, {query:query}, {params:params}).then(function(response){
 			// Callback when response is available.
+			console.log("__________________bonjour__________")
+			console.log(response)
+
 			var entities = _.map(response.data.entities, function(e) {
 				var entity = _formatEntity(e);
 				return entity;
@@ -137,6 +143,13 @@ function entityService($http, $q, $resource, linkUtils, lodash) {
 	  * @return {[type]}           [description]
 	  */
 	 function _formatEntity(rawEntity) {
+	 	var highlight =  rawEntity.highlight.text[0];
+		var spanStart = new RegExp("<em>","gi");
+		var spanEnd = new RegExp("</em>","gi");
+		highlight = highlight.replace(spanStart,'<span style="background-color: #FFFF00">');
+		highlight = highlight.replace(spanEnd,'</span>');
+		highlight = $sce.trustAsHtml(highlight);
+
 	 	var ads = rawEntity._source.base;
 		// Aggregate ad details
 		var postTimes = _.map(ads, function(ad){
@@ -215,7 +228,8 @@ function entityService($http, $q, $resource, linkUtils, lodash) {
 			socialmedia: socialmedia,
 			titles: titles,
 			texts: texts,
-			all_text: all_text
+			all_text: all_text,
+			highlight: highlight
 		};
 		return entity;
 	}
