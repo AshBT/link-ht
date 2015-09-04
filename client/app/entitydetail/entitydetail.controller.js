@@ -395,6 +395,7 @@ function similar_images_to_uploaded_image(s3_URL) {
 				ad.city = ad.city.substring(0,20);
 
 
+
 				// console.log('Bonjour');
 				// console.log(ad);
 

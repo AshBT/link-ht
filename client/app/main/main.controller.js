@@ -139,7 +139,7 @@ $scope.items = ['Item 1', 'Item 2', 'Item 3'];
 			//$scope.entityCrossfilter.deleteModels(_models);
 			//console.log(entities)
 			$scope.entityCrossfilter.addModels(entities);
-			console.log($scope.aggregates);
+			// console.log($scope.aggregates);
 			console.log($scope.entityCrossfilter.collection());
 			toastr.clear()
 			// toastr.success("Search completed.", "Search")
@@ -203,19 +203,19 @@ $scope.items = ['Item 1', 'Item 2', 'Item 3'];
 	aggregates.set('entityIds', uniqueFlatAndDefined(entityIds));
 	// Websites
 	var websites = aggregates.get('websites');
-	websites.push(entitySummary.website);
-	aggregates.set('websites', uniqueFlatAndDefined(websites));
+	websites.push(entitySummary.websites);
+	aggregates.set('websites', _.filter(uniqueFlatAndDefined(websites)));
 	//Names
 	var names = aggregates.get('names');
-	names.push(entitySummary.name);
+	names.push(entitySummary.names);
 	aggregates.set('names', uniqueFlatAndDefined(names));
 	//Instagram
 	var instagrams = aggregates.get('instagrams');
-	instagrams.push(entitySummary.instagram);
+	instagrams.push(entitySummary.instagrams);
 	aggregates.set('instagrams', uniqueFlatAndDefined(instagrams));
 	//Twitter
 	var twitters = aggregates.get('twitters');
-	twitters.push(entitySummary.twitter);
+	twitters.push(entitySummary.twitters);
 	aggregates.set('twitters', uniqueFlatAndDefined(twitters));
 	//Ethnicities
 	var ethnicities = aggregates.get('ethnicities');

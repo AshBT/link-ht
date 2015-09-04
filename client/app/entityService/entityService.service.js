@@ -115,8 +115,8 @@ function entityService($http, $q, $sce, $resource, linkUtils, lodash) {
 	 	};
 	 	$http.post(_SEARCH_URL, {query:query}, {params:params}).then(function(response){
 			// Callback when response is available.
-			console.log("__________________bonjour__________")
-			console.log(response)
+			// console.log("__________________bonjour__________")
+			// console.log(response)
 
 			var entities = _.map(response.data.entities, function(e) {
 				var entity = _formatEntity(e);
@@ -158,11 +158,8 @@ function entityService($http, $q, $sce, $resource, linkUtils, lodash) {
 		});
 		var lastPostTime = _.max(postTimes);
 		var firstPostTime = _.min(postTimes);
-
 		var ages = linkUtils.uniqueFlatAndDefined(linkUtils.collectAdProperty(ads, 'age')).sort();
-
 		var rates60 = linkUtils.uniqueFlatAndDefined(linkUtils.collectAdProperty(ads, 'rate60')).sort();
-		
 		var websites=[];
 		var sourcesid = linkUtils.uniqueFlatAndDefined(linkUtils.collectAdProperty(ads, 'sources_id'));
 		for (var i = 0; i < sourcesid.length; i++) {
@@ -184,6 +181,7 @@ function entityService($http, $q, $sce, $resource, linkUtils, lodash) {
 		for (var i = 0; i < cities.length; i++) {
           cities[i]=cities[i].substring(0,20);
         }
+       	var cities = linkUtils.uniqueFlatAndDefined(cities);
 		var youtube = linkUtils.uniqueFlatAndDefined(linkUtils.collectAdProperty(ads, 'youtube'));
 		var instagram = linkUtils.uniqueFlatAndDefined(linkUtils.collectAdProperty(ads, 'instagram'));
 		var twitter = linkUtils.uniqueFlatAndDefined(linkUtils.collectAdProperty(ads, 'twitter'));
