@@ -35,14 +35,22 @@ module.exports = (function() {
       from: starting_from,
       body: {
         query: {
-          match: {
-            "_all": query
+          match_phrase: {
+            "text": query
           }
         },
-        sort: [{"entity": "desc"}]
+        sort: [{"entity": "desc"}],
+        highlight: {
+            fields : {
+                "text" : {}
+            }
+        }
       }
     }).then(function (body) {
       var hits = body.hits.hits;
+      console.log("**********___________________________**********")
+      console.log(hits)
+      console.log("**********___________________________**********")
       return {status: 200, payload: hits}
       // res.json({
       //   _num: size,
@@ -93,7 +101,8 @@ module.exports = (function() {
     return db.elasticsearch.getSource({
       index: config.elasticsearch.index,
       type: 'entity',
-      id: entity_id
+      id: entity_id,
+      from: starting_from
     }).then(function (source) {
       var ads = [];
       for (var key in source) {
