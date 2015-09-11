@@ -107,16 +107,23 @@ module.exports = (function() {
       var ads = [];
       for (var key in source) {
         // other than the 'entity' key, all other keys are lists of ads
-        if (key != 'entity') {
+        if (key !== 'entity' && key !== 'notes') {
           var record = source[key];
           record.user = key;
           ads = ads.concat(record);
         }
       }
       ads.sort();
+
+      var notes = [];
+      if (source.hasOwnProperty('notes')) {
+        notes = source.notes;
+      }
+      
       return {status: 200, payload: {
         total: ads.length,
-        ads: ads.slice(starting_from, starting_from + size)
+        ads: ads.slice(starting_from, starting_from + size),
+        notes: notes
       }};
     }, function (error) {
       return {status: 400, payload: error};
@@ -238,12 +245,14 @@ module.exports = (function() {
 
     _getEntity(entity_id, number_per_page, page)
       .then(function(result) {
+        console.log(result);
         var return_result = {_max_num: number_per_page, _page: page};
-        if (result.status == 400) {
+        if (result.status === 400) {
           res.status(400).json({error: result.payload})
           return
         }
         return_result.ads = result.payload.ads;
+        return_result.notes = result.payload.notes;
         if (count === "yes") {
           return_result.total = result.payload.total;
         }
@@ -347,6 +356,36 @@ module.exports = (function() {
     })
   }
 
+  var annotate = function(req, res) {
+    var user = req.query.user;
+    var text = req.query.text;
+    var entity_id = req.params.id;
+
+    var note = {
+      user: user,
+      text: text
+    };
+
+    var script = "if (ctx._source.containsKey('notes')) { ctx._source['notes'] += note } else { ctx._source['notes'] = [note] }";
+
+    db.elasticsearch.update({
+      index: config.elasticsearch.index,
+      type: 'entity',
+      id: entity_id,
+      retryOnConflict: 5,
+      body: {
+        script: script,
+        params: {
+          note: note
+        }
+      }
+    }).then(function(response) {
+      res.json(response)
+    }, function(error) {
+      return res.status(400).json({error: error});
+    })
+  }
+
   var findSimilarImage = function(req, res) {
     var url = req.query.url;
     if (!url) {
@@ -429,6 +468,7 @@ console.log(options)
   }
 
   return {
+    annotate: annotate,
     search: search,
     suggestAd: suggestAd,
     getEntity: getEntity,

@@ -69,6 +69,20 @@ router.get('/entity/:id', api.getEntity);
  */
 router.post('/entity/:id/link/:ad_id', api.attachAd);
 
+/**
+ * note
+ * 
+ * This will add a note to the entity with the given id.
+ *
+ * Query parameters:
+ * 		user -- the username creating the annotation
+ * 		text -- the text of the note
+ *
+ * curl -XPOST "HOSTNAME/api/v1/entity/18004441234/note?user=foobar&text=baz"
+ * 
+ */
+router.post('/entity/:id/note', api.annotate);
+
 /** deleteAd
  *
  * The deleteAd endpoint can be used with
