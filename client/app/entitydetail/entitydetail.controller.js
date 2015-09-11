@@ -3,7 +3,7 @@
 // TODO: inject an entity service, and use it to get the entity object
 angular.module('memexLinkerApp')
 //Deleted NotesService in line below
-.controller('EntitydetailCtrl', function ($scope, $timeout, $http, $stateParams, $q, $modal, lodash, Auth, $sce, Crossfilter, entityService, noteService, linkUtils) {
+.controller('EntitydetailCtrl', function ($scope, $timeout, $http, $stateParams, $q, $modal, lodash, Auth, $sce, Crossfilter, entityService, linkUtils) {
 	var _ = lodash;
 
 	// --- SCOPE VARIABLES --- //
