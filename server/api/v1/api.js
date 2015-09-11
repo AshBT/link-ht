@@ -381,7 +381,7 @@ module.exports = (function() {
         }
       }
     }).then(function(response) {
-      res.json(response)
+      return res.json(response)
     }, function(error) {
       return res.status(400).json({error: error});
     })

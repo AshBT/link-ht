@@ -8,7 +8,7 @@
 				input(type="submit" id="submit" value="Submit")
 
 .panel.panel-default(ng-repeat='annotation in annotations')
-	.panel-heading.h1  {{annotation.username}} -- {{annotation.date | date}}
+	.panel-heading.h1  {{annotation.user}} -- {{annotation.timestamp | date}}
 	.panel-body
 		| {{annotation.text}}
 

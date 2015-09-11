@@ -268,26 +268,29 @@ function similar_images_to_uploaded_image(s3_URL) {
 	$scope.submit = function() {
 		console.log('sumbitting...');
 		console.log($scope.annotations);
+		var text = this.text;
 		var username = 'Anonymous';
 		if(Auth.isLoggedIn()) {
 			username = Auth.getCurrentUser().name;
 		}
 
-		var _note = {
-			entityId: $scope.id,
-			comment: this.text,
-			username: username
-		};
-
-		var _noteResource = noteService.NoteResource.save(_note, function(){
+		$http.post('/api/v1/entity/' + $scope.id + '/note?user=' + username + '&text=' + text).
+			then(function(response) {
+			// this callback will be called asynchronously
+			// when the response is available
 			$scope.annotations.push({
-				_id: _noteResource._id,
-				text: _noteResource.comment,
-				username: _noteResource.username, 
-				date: _noteResource.date
+				text: text,
+				user: username, 
+				timestamp: Date.now()
 			});
-			console.log($scope.annotations);
+			console.log(response);
+		}, function(response) {
+			// called asynchronously if an error occurs
+			// or server returns response with an error status.
+			console.log(response);
 		});
+
+
 	};
 
 	$scope.saveEntity = function() {
@@ -356,6 +359,15 @@ function similar_images_to_uploaded_image(s3_URL) {
 
 		entityService.Entity.query({id: $scope.id}, function(data) {
 			var _ads = data.ads;
+			var notes = data.notes;
+
+			
+			console.log('NOTES:');
+			_.map(notes, function(note){
+				console.log('note...');
+				console.log(note);	
+				$scope.annotations.push(note);
+			});
 
 			_.map(_ads, function(ad) {
 				if(_.has(ad, 'sources_id') && _.has(entityService.icons, ad.sources_id)) {
@@ -402,8 +414,8 @@ function similar_images_to_uploaded_image(s3_URL) {
 				$scope.ads.push(ad);
 				$scope.$ngc.addModel(ad);
 			});
-		});
-	}
+});
+}
 
 $scope.$on('crossfilter/updated', function(event, collection, identifier) {
 		// console.log('crossfilter/updated event.');
@@ -420,7 +432,7 @@ var suggestTask;
 
 function suggestSimilarImages() {
 	console.log($scope.imageUrls);
-	toastr.info("Starting...", "Reverse Image Search")
+	toastr.info('Starting...', 'Reverse Image Search');
 	for (var i = 0; i < $scope.imageUrls.length; i++) {
 		$http.get('/api/v1/image/similar?url=' + $scope.imageUrls[i]).success(function(res){
 			var ad=[];
@@ -437,22 +449,16 @@ function suggestSimilarImages() {
 			$scope.similarAdsbyImage.push(ads);
 
 			$scope.similarAdsbyImage = _.flatten($scope.similarAdsbyImage);
-			console.log($scope.similarAdsbyImage)
-
-
-
+			console.log($scope.similarAdsbyImage);
 		});
 	}
-			console.log("Buenos Dias Senorita");
-			toastr.clear
-			if ($scope.similarAdsbyImage.length>0) {
-				toastr.success("Found" + $scope.similarAdsbyImage.length +"Similar Images", "Reverse Image Search")
-
-			}
-			else {
-				toastr.error("Did Not Find Similar Images", "Reverse Image Search")
-			}
-	// console.log($scope.similarAdsbyImage);
+	toastr.clear;
+	if ($scope.similarAdsbyImage.length>0) {
+		toastr.success('Found' + $scope.similarAdsbyImage.length + 'Similar Images', 'Reverse Image Search');
+	}
+	else {
+		toastr.error('Did Not Find Similar Images', 'Reverse Image Search');
+	}
 }
 
 
@@ -577,7 +583,7 @@ function suggestSimilarImages() {
 	 	if(suggestTask !== undefined) {
 	 		$timeout.cancel(suggestTask);
 	 	} 
- 		suggestTask = $timeout(suggestSimilarImages, 1000);	
+	 	suggestTask = $timeout(suggestSimilarImages, 1000);	
 	 }
 
 	// The following function requires access to the internet. We need to develop an offline version of this geocoder.
@@ -613,33 +619,33 @@ function suggestSimilarImages() {
 		});
 		console.log($scope.suggestedAds);
 		toastr.clear
-			if ($scope.suggestedAds.length>0) {
-				toastr.success("Found" + $scope.suggestedAds.length + "Similar Ad Text", "Reverse Image Search")
+		if ($scope.suggestedAds.length>0) {
+			toastr.success("Found" + $scope.suggestedAds.length + "Similar Ad Text", "Reverse Image Search")
 
-			}
-			else {
-				toastr.error("Did Not Find Similar Ad Text", "Reverse Image Search")
-			}
+		}
+		else {
+			toastr.error("Did Not Find Similar Ad Text", "Reverse Image Search")
+		}
 
 	});
 
 	updateLinked();
 	//$scope.imagecat = $sce.trustAsResourceUrl("https://darpamemex:darpamemex@imagecat.memexproxy.com/imagespace/#search/" + "ads_id%3A" + entity.adsid.join("%20OR%20ads_id%3A"));
 
-	var _notes = noteService.NoteResource.query({entityId:$scope.id, now:Date.now()}, function(){
-		console.log('Notes for entity[' + $scope.id +']:');
-		console.log(_notes);
-		// TODO: populate $scope.annotations
-		_.forEach(_notes, function(_noteResource) {
-			$scope.annotations.push({
-				_id: _noteResource._id,
-				text: _noteResource.comment,
-				username: _noteResource.username,
-				date: _noteResource.date
-			});
-		});
-		console.log($scope.annotations);
-	});
+	// var _notes = noteService.NoteResource.query({entityId:$scope.id, now:Date.now()}, function(){
+	// 	console.log('Notes for entity[' + $scope.id +']:');
+	// 	console.log(_notes);
+	// 	// TODO: populate $scope.annotations
+	// 	_.forEach(_notes, function(_noteResource) {
+	// 		$scope.annotations.push({
+	// 			_id: _noteResource._id,
+	// 			text: _noteResource.comment,
+	// 			username: _noteResource.username,
+	// 			date: _noteResource.date
+	// 		});
+	// 	});
+	// 	console.log($scope.annotations);
+	// });
 
 
 	function getUserName() {
