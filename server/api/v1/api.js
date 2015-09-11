@@ -119,7 +119,7 @@ module.exports = (function() {
       if (source.hasOwnProperty('notes')) {
         notes = source.notes;
       }
-      
+
       return {status: 200, payload: {
         total: ads.length,
         ads: ads.slice(starting_from, starting_from + size),
@@ -363,7 +363,8 @@ module.exports = (function() {
 
     var note = {
       user: user,
-      text: text
+      text: text,
+      timestamp: Date.now()
     };
 
     var script = "if (ctx._source.containsKey('notes')) { ctx._source['notes'] += note } else { ctx._source['notes'] = [note] }";
