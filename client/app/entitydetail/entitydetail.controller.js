@@ -1,13 +1,9 @@
 'use strict';
 
-// TODO: inject an entity service, and use it to get the entity object
 angular.module('memexLinkerApp')
-//Deleted NotesService in line below
+
 .controller('EntitydetailCtrl', function ($scope, $timeout, $http, $stateParams, $q, $modal, lodash, Auth, $sce, Crossfilter, entityService, linkUtils) {
 	var _ = lodash;
-
-	// --- SCOPE VARIABLES --- //
-
 
 // ------------------------ Start Upload to S3 Code ---------------------------------------------- //
 // TODO: this logic should be moved to a service.
@@ -116,26 +112,26 @@ $scope.uniqueString = function() {
 
 
 $scope.seeImages = function() {
-	similar_images_to_uploaded_image($scope.s3_URLs)
-}
+	similar_images_to_uploaded_image($scope.s3_URLs);
+};
 
 function similar_images_to_uploaded_image(s3_URL) {
 		// console.log(s3_URL)
-		$scope.simImageUrl =[]
+		$scope.simImageUrl =[];
 
 		$http.get('/api/v1/image/similar?url=' + s3_URL[0]).success(function(res){
 
-			var ad=[]
-			var url=[]
+			var ad=[];
+			var url=[];
 			for (var i = 0; i < res.length; i++) {
-				ad[i] = res[i].ad
-				url[i] = $sce.trustAsResourceUrl(res[i].cached_image_urls)
+				ad[i] = res[i].ad;
+				url[i] = $sce.trustAsResourceUrl(res[i].cached_image_urls);
 			}
-			ad = _.uniq(ad)
+			ad = _.uniq(ad);
 			ad = _.filter(ad, function(element){
 				return ! _.isUndefined(element);
 			});
-			url = _.uniq(url)
+			url = _.uniq(url);
 			url = _.filter(url, function(element){
 				return ! _.isUndefined(element);
 			});
@@ -143,8 +139,8 @@ function similar_images_to_uploaded_image(s3_URL) {
 		// console.log(url)
 		// $scope.simImageId= ad // + $scope.simImageId
 		// $scope.suggestedAds= ad
-		$scope.simImageUrl= url // + $scope.simImageUrl
-		console.log($scope.simImageUrl)
+		$scope.simImageUrl = url; // + $scope.simImageUrl
+		console.log($scope.simImageUrl);
 	});
 	}
 	// similar_images_to_uploaded_image(s3_URL)
@@ -152,8 +148,6 @@ function similar_images_to_uploaded_image(s3_URL) {
 // ------------------------ End Similar to Uploaded Code ---------------------------------------------- //
 
 	// similar_images_to_uploaded_image(["http://static7.depositphotos.com/1001925/696/i/950/depositphotos_6961696-Funny-elderly-man-with-tongue-outdoor.jpg"])
-
-
 
 	// Aggregate details about this entitiy.
 	$scope.entity = {
@@ -179,16 +173,10 @@ function similar_images_to_uploaded_image(s3_URL) {
 		yelp:[]
 	};
 
-
-	// $scope.imagecat = []
 	$scope.blur = true;
 	$scope.ads = [];
 	$scope.imageUrls = [];
 	$scope.faceImageUrl = [];
-	// $simImageId = []
-
-
-	// $scope.suggestedAds =[];
 	$scope.id = $stateParams.id;
 	$scope.sourceMap = entityService.sources;
 
@@ -204,14 +192,16 @@ function similar_images_to_uploaded_image(s3_URL) {
 		zoom: 3
 	};
 
-	$scope.markers = [
-				 // {
-				 //   id: 583187,
-				 //   latitude: 46.7682,
-				 //   longitude: -71.3234,
-				 //   title: 'title'
-				 // }
-				 ];
+	/*
+	Array of marker objects
+	 {
+		id: 583187,
+		latitude: 46.7682,
+		longitude: -71.3234,
+		title: 'title'
+	 }
+	 */
+	$scope.markers = [];
 
 	// ng-crossfilter. collection | primary key | strategy | properties
 	$scope.$ngc = new Crossfilter([], 'id', 'persistent', ['id','latitude', 'longitude', 'timestamp']);
@@ -231,8 +221,8 @@ function similar_images_to_uploaded_image(s3_URL) {
 
 	// Callback for changes in geographic bounding box.
 	$scope.onBoundsChange = function(bounds) {
-		console.log('onBoundsChange');
-		console.log(bounds);
+		// console.log('onBoundsChange');
+		// console.log(bounds);
 		$scope.$ngc.unfilterBy('latitude');
 		$scope.$ngc.unfilterBy('longitude');
 		if($scope.showSelector) {
@@ -241,13 +231,12 @@ function similar_images_to_uploaded_image(s3_URL) {
 			console.log('crossfilter collection:');
 			console.log($scope.$ngc.collection());
 			$scope.$ngc.filterBy('latitude', {minLatitude: sw.latitude, maxLatitude: ne.latitude}, function(range, latitude) {
-				console.log('range:');
-				console.log(range);
-				console.log('latitude:');
-				console.log(latitude);
+				// console.log('range:');
+				// console.log(range);
+				// console.log('latitude:');
+				// console.log(latitude);
 				return range.minLatitude <= latitude && latitude <= range.maxLatitude;
 			});
-
 			$scope.$ngc.filterBy('longitude', {minLon: sw.longitude, maxLon: ne.longitude}, function(range, lon) {
 				return range.minLon <= lon && lon <= range.maxLon;
 			});
@@ -262,8 +251,6 @@ function similar_images_to_uploaded_image(s3_URL) {
 			return range.minDate <= timestamp && timestamp <= range.maxDate;
 		});
 	};
-
-	// --- SCOPE FUNCTIONS --- //
 
 	$scope.submit = function() {
 		console.log('sumbitting...');
@@ -299,17 +286,12 @@ function similar_images_to_uploaded_image(s3_URL) {
 		if(Auth.isLoggedIn()) {
 			username = Auth.getCurrentUser().name;
 		}
-
 		var entityInfo = {
 			entityId: $scope.id,
 			username: username
 		};
-
 		$http.post('/api/annotations/persist', {entityInfo : entityInfo});
-
 	};
-
-
 
 	$scope.getHost = function (url) {
 		var parser = document.createElement('a');
@@ -330,9 +312,6 @@ function similar_images_to_uploaded_image(s3_URL) {
 			console.log('doom!');
 			console.log(response);
 		});
-
-
-
 	};
 
 	$scope.delinkFromEntity = function(adId) {
@@ -349,10 +328,7 @@ function similar_images_to_uploaded_image(s3_URL) {
 		});
 	};
 
-	// --- NON-SCOPE FUNCTIONS --- //
-
 	var uniqueFlatAndDefined = linkUtils.uniqueFlatAndDefined;
-
 
 	$scope.similarAdsbyImage =[];
 
@@ -362,11 +338,7 @@ function similar_images_to_uploaded_image(s3_URL) {
 			var _ads = data.ads;
 			var notes = data.notes;
 
-			
-			console.log('NOTES:');
 			_.map(notes, function(note){
-				console.log('note...');
-				console.log(note);	
 				$scope.annotations.push(note);
 			});
 
@@ -407,11 +379,6 @@ function similar_images_to_uploaded_image(s3_URL) {
 				ad.timestamp = Date.parse(ad.posttime);
 				ad.city = ad.city.substring(0,20);
 
-
-
-				// console.log('Bonjour');
-				// console.log(ad);
-
 				$scope.ads.push(ad);
 				$scope.$ngc.addModel(ad);
 			});
@@ -419,12 +386,8 @@ function similar_images_to_uploaded_image(s3_URL) {
 }
 
 $scope.$on('crossfilter/updated', function(event, collection, identifier) {
-		// console.log('crossfilter/updated event.');
 		updateEntity();
 	});
-
-
-
 
 
 // ------------------------ Start Suggest Ads with Similar Images ---------------------------------------------- //
@@ -611,7 +574,7 @@ function suggestSimilarImages() {
 
 	var _suggestionsPromise = entityService.Suggest.query({id: $scope.id}, function() {
 		console.log('Suggest:');
-		toastr.info("Starting...", "Text Similarity Search")
+		toastr.info('Starting...', 'Text Similarity Search');
 		console.log(_suggestionsPromise.suggestions);
 		$scope.suggestedAds = [];
 		_.forEach(_suggestionsPromise.suggestions, function(e) {
@@ -619,15 +582,13 @@ function suggestSimilarImages() {
 			$scope.suggestedAds.push(e.json);
 		});
 		console.log($scope.suggestedAds);
-		toastr.clear
-		if ($scope.suggestedAds.length>0) {
-			toastr.success("Found" + $scope.suggestedAds.length + "Similar Ad Text", "Reverse Image Search")
-
+		toastr.clear;
+		if ($scope.suggestedAds.length > 0) {
+			toastr.success('Found' + $scope.suggestedAds.length + 'Similar Ad Text', 'Reverse Image Search');
 		}
 		else {
-			toastr.error("Did Not Find Similar Ad Text", "Reverse Image Search")
+			toastr.error('Did Not Find Similar Ad Text', 'Reverse Image Search');
 		}
-
 	});
 
 	updateLinked();
@@ -655,8 +616,6 @@ function suggestSimilarImages() {
 
 });
 
-
-// TODO: put this under components
 angular.module('memexLinkerApp').
 filter('capitalize', function() {
 	return function(input) {
