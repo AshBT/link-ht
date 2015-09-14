@@ -32,12 +32,12 @@ angular.module('memexLinkerApp')
 		r = new FileReader();
 		r.onloadend = function(e){
 			var data = e.target.result;
-		}
+		};
 		// r.readAsBinaryString(f);
-		console.log(f)
-		$scope.file = f
-		var access="AKIAJ5LO4XW7YN2NN25A"
-		var secret="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"
+		console.log(f);
+		$scope.file = f;
+		var access='AKIAJ5LO4XW7YN2NN25A';
+		var secret='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';
 
 
 		AWS.config.update({ accessKeyId: access, secretAccessKey: secret });
@@ -267,8 +267,9 @@ function similar_images_to_uploaded_image(s3_URL) {
 
 	$scope.submit = function() {
 		console.log('sumbitting...');
-		console.log($scope.annotations);
+		//console.log($scope.annotations);
 		var text = this.text;
+		this.text = '';
 		var username = 'Anonymous';
 		if(Auth.isLoggedIn()) {
 			username = Auth.getCurrentUser().name;
