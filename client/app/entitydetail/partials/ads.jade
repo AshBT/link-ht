@@ -7,36 +7,41 @@ nav(ng-if='$ngc.collection().length>50')
 		li
 			a(href='#', ng-click="next()") Next
 br
-.panel.panel-default(ng-repeat='ad in $ngc.collection()')
-	.panel-heading.h1  {{sourceMap[ad.sources_id]}} at {{ad.posttime | date}}
-	.panel-body.vertical-layout
-		.item
-			h4 {{ad.title}}
-			p {{ad.text}}
-			p Original Post's URL: {{ad.url}}
-		.item
-			row
-				col-md-3(ng-repeat = 'img in ad.image_locations track by $index')
-					img.responsive(ng-src = "{{img}}"
-						style="max-height:100px; margin:0 auto;"
-						ng-class="{blurry: blur == true, clear: blur != true}")
-	.panel-footer.clearfix
-		span.glyphicon.glyphicon-camera(ng-if='ad.linkedByImage' popover="Linked by image similarity" popover-trigger="mouseenter" popover-placement="right")
-		span.label.label-default(ng-if='ad.linkedByImage' popover="Linked by image similarity" popover-trigger="mouseenter" popover-placement="right") Linked By Image
-		span.glyphicon.glyphicon-font(ng-if='ad.LinkedByText' popover="Linked by text similarity" popover-trigger="mouseenter" popover-placement="right")
-		span.label.label-default(ng-if='ad.linkedByText' popover="Linked by text similarity" popover-trigger="mouseenter" popover-placement="right") Linked By Text
-		span.glyphicon.glyphicon-user(ng-if='ad.linkedByUsername' popover="Linked by identical username" popover-trigger="mouseenter" popover-placement="right")
-		span.label.label-default(ng-if='ad.linkedByUsername' popover="Linked by identical username" popover-trigger="mouseenter" popover-placement="right") Linked By Identical Username
-		span.glyphicon.glyphicon-film(ng-if='ad.linkedByVideo' popover="Linked by video similarity" popover-trigger="mouseenter" popover-placement="right")
-		span.glyphicon.glyphicon-earphone(ng-if='ad.linkedByPhone' popover="Linked by phone number" popover-trigger="mouseenter" popover-placement="right")
-		span.label.label-default(ng-if='ad.linkedByPhone' popover="Suggested by phone number" popover-trigger="mouseenter" popover-placement="right") Linked By Same Phone
 
-		//- span.glyphicon.glyphicon-camera(ng-if='ad.suggestedByImage' popover="Suggested by image similarity" popover-trigger="mouseenter" popover-placement="right")
-		//- span.glyphicon.glyphicon-film(ng-if='ad.suggestedByText' popover="Suggested by text similarity" popover-trigger="mouseenter" popover-placement="right")
-		//- span.glyphicon.glyphicon-user(ng-if='ad.suggestedByUsername')
-		//- span.glyphicon.glyphicon-film(ng-if='ad.suggestedByVideo')
-		//- span.glyphicon.glyphicon-earphone(ng-if='ad.suggestedByPhone')
+div(infinite-scroll='addMoreItems()')
+	.panel.panel-default(ng-repeat='ad in $ngc.collection()')
+		.panel-heading.h1  {{sourceMap[ad.sources_id]}} at {{ad.posttime | date}}
+		.panel-body.vertical-layout
+			.item
+				h4 {{ad.title}}
+				p {{ad.text}}
+				p Original Post's URL: {{ad.url}}
+			.item
+				row
+					col-md-3(ng-repeat = 'img in ad.image_locations track by $index')
+						img.responsive(ng-src = "{{img}}"
+							style="max-height:100px; margin:0 auto;"
+							ng-class="{blurry: blur == true, clear: blur != true}")
+		.panel-footer.clearfix
+			span.glyphicon.glyphicon-camera(ng-if='ad.linkedByImage' popover="Linked by image similarity" popover-trigger="mouseenter" popover-placement="right")
+			span.label.label-default(ng-if='ad.linkedByImage' popover="Linked by image similarity" popover-trigger="mouseenter" popover-placement="right") Linked By Image
+			span.glyphicon.glyphicon-font(ng-if='ad.LinkedByText' popover="Linked by text similarity" popover-trigger="mouseenter" popover-placement="right")
+			span.label.label-default(ng-if='ad.linkedByText' popover="Linked by text similarity" popover-trigger="mouseenter" popover-placement="right") Linked By Text
+			span.glyphicon.glyphicon-user(ng-if='ad.linkedByUsername' popover="Linked by identical username" popover-trigger="mouseenter" popover-placement="right")
+			span.label.label-default(ng-if='ad.linkedByUsername' popover="Linked by identical username" popover-trigger="mouseenter" popover-placement="right") Linked By Identical Username
+			span.glyphicon.glyphicon-film(ng-if='ad.linkedByVideo' popover="Linked by video similarity" popover-trigger="mouseenter" popover-placement="right")
+			span.glyphicon.glyphicon-earphone(ng-if='ad.linkedByPhone' popover="Linked by phone number" popover-trigger="mouseenter" popover-placement="right")
+			span.label.label-default(ng-if='ad.linkedByPhone' popover="Suggested by phone number" popover-trigger="mouseenter" popover-placement="right") Linked By Same Phone
 
-		.pull-right
-			button.btn-primary(ng-click='delinkFromEntity(ad)')
-				|Detach from Entity
+			//- span.glyphicon.glyphicon-camera(ng-if='ad.suggestedByImage' popover="Suggested by image similarity" popover-trigger="mouseenter" popover-placement="right")
+			//- span.glyphicon.glyphicon-film(ng-if='ad.suggestedByText' popover="Suggested by text similarity" popover-trigger="mouseenter" popover-placement="right")
+			//- span.glyphicon.glyphicon-user(ng-if='ad.suggestedByUsername')
+			//- span.glyphicon.glyphicon-film(ng-if='ad.suggestedByVideo')
+			//- span.glyphicon.glyphicon-earphone(ng-if='ad.suggestedByPhone')
+
+			.pull-right
+				button.btn-primary(ng-click='delinkFromEntity(ad)')
+					|Detach from Entity
+
+//- button.btn-primary(ng-click='addMoreItems()')
+//- 					|Load more ads

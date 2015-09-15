@@ -205,7 +205,7 @@ function similar_images_to_uploaded_image(s3_URL) {
 
 	$scope.adPagination = {
 		page: 1,
-		perPage: 50,
+		perPage: 5,
 		total: 0
 	};
 	// ng-crossfilter. collection | primary key | strategy | properties
@@ -332,29 +332,8 @@ function similar_images_to_uploaded_image(s3_URL) {
 	$scope.similarAdsbyImage =[];
 
 
-	/**
-	 * Gets ads linked to this entity, and notes.
-	 * @return {[type]} [description]
-	 */
-	function updateLinked() {
-
-		entityService.Entity.query({id: $scope.id, size:$scope.adPagination.perPage, page:$scope.adPagination.page, count:'yes'}, function(data) {
-			console.log(data);
-			var _ads = data.ads;
-
-			// console.log('---');
-			// var firstAd = _ads[0];
-			// console.log(JSON.stringify(firstAd, null, '\t'));
-			// console.log('---');			
-
-			$scope.adPagination.total = data.total;
-			var notes = data.notes;
-
-			_.map(notes, function(note){
-				$scope.annotations.push(note);
-			});
-
-			_.map(_ads, function(ad) {
+	function _appendAds(ads) {
+		_.map(ads, function(ad) {
 				ad.timestamp = Date.parse(ad.posttime);
 				ad.city = ad.city.substring(0,20);
 
@@ -368,7 +347,7 @@ function similar_images_to_uploaded_image(s3_URL) {
 					};
 				} else {
 					console.log('No icon found.');
-					ad.icon = '/assets/images/yeoman.png';
+					ad.icon = '/assets/images/backpage.png';
 				}
 
 				// If ad has latitude and longitude values, convert them to numbers
@@ -396,9 +375,52 @@ function similar_images_to_uploaded_image(s3_URL) {
 						console.log('location?');
 					}
 				}
-		});
-	});	
-}
+			});
+	}
+
+	/**
+	 * Gets ads linked to this entity, and notes.
+	 * @return {[type]} [description]
+	 */
+	function updateLinked() {
+
+		entityService.Entity.query({id: $scope.id, size:$scope.adPagination.perPage, page:$scope.adPagination.page, count:'yes'}, function(data) {
+			console.log(data);
+			var _ads = data.ads;
+
+			// console.log('---');
+			// var firstAd = _ads[0];
+			// console.log(JSON.stringify(firstAd, null, '\t'));
+			// console.log('---');			
+
+			$scope.adPagination.total = data.total;
+			var notes = data.notes;
+
+			_.map(notes, function(note){
+				$scope.annotations.push(note);
+			});
+			_appendAds(_ads);
+
+		});	
+	}
+
+	$scope.addMoreItems = function() {
+		console.log('scroll?');
+		if($scope.adPagination.page * $scope.adPagination.perPage < $scope.adPagination.total) {
+			console.log('yes');
+			var nextPage = $scope.adPagination.page + 1;
+
+			$scope.adPagination.page = nextPage;
+			//TODO: check if there are any more ads before querying?
+			entityService.Entity.query({id: $scope.id, size:$scope.adPagination.perPage, page:nextPage, count:'no'}, function(data) {
+				console.log(data);
+				//$scope.adPagination.total = data.total;
+				var _ads = data.ads;
+				_appendAds(_ads);
+			});
+		}
+		
+	};
 
 $scope.$on('crossfilter/updated', function(event, collection, identifier) {
 		updateEntity();
@@ -428,7 +450,7 @@ function suggestSimilarImages() {
 			$scope.similarAdsbyImage.push(ads);
 
 			$scope.similarAdsbyImage = _.flatten($scope.similarAdsbyImage);
-			console.log($scope.similarAdsbyImage);
+			//console.log($scope.similarAdsbyImage);
 		});
 	}
 	toastr.clear;

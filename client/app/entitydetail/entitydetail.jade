@@ -44,7 +44,7 @@ div(ng-include='"components/navbar/navbar.html"')
 			map-box(data='ads' on-bounds-change='onBoundsChange' on-show-selector='onShowSelector' on-range-change='onRangeChange')
 			.panel.panel-default
 				tabset
-					tab(heading='Ads {{(adPagination.page - 1) * adPagination.perPage + 1}} - {{(adPagination.page - 1) * adPagination.perPage + $ngc.collection().length}} of {{adPagination.total}} Ads')
+					tab(heading='{{$ngc.collection().length}} of {{adPagination.total}} Ads')
 						include ./partials/ads.jade
 					tab(heading='{{suggestedAds.length + similarAdsbyImage.length}} Similar Ads')
 						include ./partials/suggested.jade
@@ -55,5 +55,5 @@ div(ng-include='"components/navbar/navbar.html"')
 						include ./partials/twitter.jade
 					tab(heading='{{imageUrls.length}} Images')
 						include ./partials/images.jade
-					tab(heading='Image Space')
-						include ./partials/imagespace.jade
+					//- tab(heading='Image Space')
+					//- 	include ./partials/imagespace.jade

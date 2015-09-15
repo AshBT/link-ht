@@ -96,6 +96,8 @@ module.exports = (function() {
    * db for pagination instead of the manual one in this case.
    */
   var _getEntity = function(entity_id, size, page) {
+    size = Number(size);
+    page = Number(page);
     var starting_from = (page - 1) * size;
 
     return db.elasticsearch.getSource({
@@ -120,9 +122,19 @@ module.exports = (function() {
         notes = source.notes;
       }
 
+
+      var slicedAds = ads.slice(starting_from, starting_from + size);
+
+      console.log('_getEntity:');
+      console.log('  size: ' + size);
+      console.log('  page: ' + page);
+      console.log('  starting_from: ' + starting_from);
+      console.log('  starting_from + size: ' + (starting_from + size));
+      console.log('  slice length: ' + slicedAds.length);
+
       return {status: 200, payload: {
         total: ads.length,
-        ads: ads.slice(starting_from, starting_from + size),
+        ads: slicedAds,
         notes: notes
       }};
     }, function (error) {
@@ -243,15 +255,20 @@ module.exports = (function() {
         page = req.query.page || 1,
         count = req.query.count || "no";
 
+    
     _getEntity(entity_id, number_per_page, page)
       .then(function(result) {
-        console.log(result);
         var return_result = {_max_num: number_per_page, _page: page};
         if (result.status === 400) {
           res.status(400).json({error: result.payload})
           return
         }
         return_result.ads = result.payload.ads;
+        console.log('getEntity:');
+        console.log('  page: ' + page);
+        console.log('  per page: ' + number_per_page);
+
+        console.log('returning ' + return_result.ads.length + ' ads.');
         return_result.notes = result.payload.notes;
         if (count === "yes") {
           return_result.total = result.payload.total;
