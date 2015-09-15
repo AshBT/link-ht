@@ -75,10 +75,10 @@ function MapBoxController($scope) {
 	// Temporal Filtering with Angular-Rangeslider
 	mb.dateSlider = {
 		range : {
-			MIN : (new Date(2012, 0, 1)).getTime(),
+			MIN : (new Date(2010, 0, 1)).getTime(),
 			MAX : (new Date()).getTime()
 		},
-		minDate: (new Date(2012, 0, 1)).getTime(),
+		minDate: (new Date(2010, 0, 1)).getTime(),
 		maxDate : (new Date()).getTime()
 	};
 

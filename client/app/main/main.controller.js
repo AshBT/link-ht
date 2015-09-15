@@ -85,14 +85,15 @@ $scope.items = ['Item 1', 'Item 2', 'Item 3'];
 	
 
 	$scope.next = function(){
-			var num =1+$scope.pageNumber
-			$scope.search(num)
-	}
+			var num =1+$scope.pageNumber;
+			$scope.search(num);
+	};
+
 	$scope.previous = function(){
-		var num = $scope.pageNumber == 1 ? $scope.pageNumber : $scope.pageNumber-1
-		$scope.search(num)
-	}
-	$scope.lastSearch="arandomstring"
+		var num = $scope.pageNumber == 1 ? $scope.pageNumber : $scope.pageNumber-1;
+		$scope.search(num);
+	};
+	$scope.lastSearch='arandomstring';
 
 	$scope.search = function(pageNumber){
 
@@ -100,7 +101,7 @@ $scope.items = ['Item 1', 'Item 2', 'Item 3'];
 		$scope.aggregates = initAggregates();
 
 		console.log('You searched for ' + $scope.elasticSearchText);
-		toastr.info("Searching. Please wait....", "Search")
+		toastr.info("Searching. Please wait....", "Search");
 
 		var re1 = new RegExp(".{0,50}" + $scope.elasticSearchText + '.{0,50}',"gi");
 		var re2 = new RegExp($scope.elasticSearchText,"gi");
@@ -108,7 +109,7 @@ $scope.items = ['Item 1', 'Item 2', 'Item 3'];
 		var re4 = new RegExp($scope.elasticSearchText + '.{0,50}',"gi");
 		$http.post('/api/loggings/search', {elasticSearchText : $scope.elasticSearchText});
 		var page = pageNumber || 1;
-		$scope.pageNumber = page
+		$scope.pageNumber = page;
 		entityService.search($scope.elasticSearchText, 50,pageNumber).then(function(paginatedResults){
 			$scope.paginatedEntites = paginatedResults;
 			var entities = paginatedResults.entities;
@@ -124,7 +125,7 @@ $scope.items = ['Item 1', 'Item 2', 'Item 3'];
 					entity.snippet1 = start_regex;
 					entity.snippet2 = mid_regex;
 					entity.snippet3 = end_regex;
-					entity.nResults = regex.length
+					entity.nResults = regex.length;
 				}
 				else {
 					console.log("The regex returned a Null result");
@@ -146,8 +147,8 @@ $scope.items = ['Item 1', 'Item 2', 'Item 3'];
 
 		},function(reason){
 			console.log('Failed: ' + reason);
-			toastr.clear()
-			toastr.error("Search failed: " + reason, "Search")
+			toastr.clear();
+			toastr.error("Search failed: " + reason, "Search");
 		});
 	};
 	$scope.getNSuggestedByText = function(entity) {

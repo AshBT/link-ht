@@ -109,8 +109,6 @@ $scope.uniqueString = function() {
 
 // ------------------------ End Upload to S3 Code ---------------------------------------------- //
 
-
-
 $scope.seeImages = function() {
 	similar_images_to_uploaded_image($scope.s3_URLs);
 };
@@ -174,7 +172,7 @@ function similar_images_to_uploaded_image(s3_URL) {
 	};
 
 	$scope.blur = true;
-	$scope.ads = [];
+	
 	$scope.imageUrls = [];
 	$scope.faceImageUrl = [];
 	$scope.id = $stateParams.id;
@@ -203,6 +201,13 @@ function similar_images_to_uploaded_image(s3_URL) {
 	 */
 	$scope.markers = [];
 
+	$scope.ads = [];
+
+	$scope.adPagination = {
+		page: 1,
+		perPage: 50,
+		total: 0
+	};
 	// ng-crossfilter. collection | primary key | strategy | properties
 	$scope.$ngc = new Crossfilter([], 'id', 'persistent', ['id','latitude', 'longitude', 'timestamp']);
 
@@ -221,8 +226,6 @@ function similar_images_to_uploaded_image(s3_URL) {
 
 	// Callback for changes in geographic bounding box.
 	$scope.onBoundsChange = function(bounds) {
-		// console.log('onBoundsChange');
-		// console.log(bounds);
 		$scope.$ngc.unfilterBy('latitude');
 		$scope.$ngc.unfilterBy('longitude');
 		if($scope.showSelector) {
@@ -231,10 +234,6 @@ function similar_images_to_uploaded_image(s3_URL) {
 			console.log('crossfilter collection:');
 			console.log($scope.$ngc.collection());
 			$scope.$ngc.filterBy('latitude', {minLatitude: sw.latitude, maxLatitude: ne.latitude}, function(range, latitude) {
-				// console.log('range:');
-				// console.log(range);
-				// console.log('latitude:');
-				// console.log(latitude);
 				return range.minLatitude <= latitude && latitude <= range.maxLatitude;
 			});
 			$scope.$ngc.filterBy('longitude', {minLon: sw.longitude, maxLon: ne.longitude}, function(range, lon) {
@@ -332,10 +331,23 @@ function similar_images_to_uploaded_image(s3_URL) {
 
 	$scope.similarAdsbyImage =[];
 
+
+	/**
+	 * Gets ads linked to this entity, and notes.
+	 * @return {[type]} [description]
+	 */
 	function updateLinked() {
 
-		entityService.Entity.query({id: $scope.id}, function(data) {
+		entityService.Entity.query({id: $scope.id, size:$scope.adPagination.perPage, page:$scope.adPagination.page, count:'yes'}, function(data) {
+			console.log(data);
 			var _ads = data.ads;
+
+			// console.log('---');
+			// var firstAd = _ads[0];
+			// console.log(JSON.stringify(firstAd, null, '\t'));
+			// console.log('---');			
+
+			$scope.adPagination.total = data.total;
 			var notes = data.notes;
 
 			_.map(notes, function(note){
@@ -343,46 +355,49 @@ function similar_images_to_uploaded_image(s3_URL) {
 			});
 
 			_.map(_ads, function(ad) {
+				ad.timestamp = Date.parse(ad.posttime);
+				ad.city = ad.city.substring(0,20);
+
 				if(_.has(ad, 'sources_id') && _.has(entityService.icons, ad.sources_id)) {
 					//ad.icon = entityService.icons[ad.sources_id];
-
 					ad.options = {
 						icon: {
 							url: entityService.icons[ad.sources_id],
 							scaledSize: new google.maps.Size(34, 44)
 						}
 					};
-
 				} else {
 					console.log('No icon found.');
-					console.log(ad);
 					ad.icon = '/assets/images/yeoman.png';
 				}
 
 				// If ad has latitude and longitude values, convert them to numbers
-				if (_.has(ad, 'latitude') && _.has(ad, 'longitude')) {
-					// console.log('converting lat lon values to numbers');
+				if ( 'latitude' in ad && 'longitude' in ad) {
+					console.log('converting lat lon values to numbers');
 					ad.latitude = Number(ad.latitude);
 					ad.longitude = Number(ad.longitude);
+					$scope.ads.push(ad);
+					$scope.$ngc.addModel(ad);
 				} else {
 					// If latitude and longitude are not present, try to geocode the city name.
 					if(_.has(ad, 'city')) {
 						geocodeCity(ad.city).then(function(point) {
 							ad.latitude = point.latitude;
 							ad.longitude = point.longitude;
+							//console.log('geoceded ' + ad.city + ' to (' + point.latitude + ', ' + point.longitude + ')');
+							$scope.ads.push(ad);
+							var before = $scope.$ngc.collection().length; 
+							$scope.$ngc.addModel(ad);
+							// Note: If an ad does not appear to be added, check if any filters applied to $ngc apply to the ad.
 						}, function(reason) {
-							alert('Failed: ' + reason);
+							console.log('Failed: ' + reason);
 						});
+					} else {
+						console.log('location?');
 					}
 				}
-
-				ad.timestamp = Date.parse(ad.posttime);
-				ad.city = ad.city.substring(0,20);
-
-				$scope.ads.push(ad);
-				$scope.$ngc.addModel(ad);
-			});
-});
+		});
+	});	
 }
 
 $scope.$on('crossfilter/updated', function(event, collection, identifier) {
