@@ -2,7 +2,7 @@
 //- 	p No suggested ads.
 
 
-.panel.panel-default(ng-repeat='ad in similarAdsbyImage' | orderBy:'-posttime')
+.panel.panel-default(ng-repeat="ad in similarAdsbyImage | orderBy:'-posttime'")
 
 	#head2.panel-heading.h1 {{sourceMap[ad.sources_id]}} at {{ad.posttime | date}}
 	.panel-body.vertical-layout

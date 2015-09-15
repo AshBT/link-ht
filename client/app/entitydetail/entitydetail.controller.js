@@ -10,7 +10,6 @@ angular.module('memexLinkerApp')
 	$scope.sizeLimit      = 15878640; // 10MB in Bytes
 	$scope.uploadProgress = 0;
 	$scope.creds          = {};
-	// $scope.file=[]
 
 	var access='';
 	var secret='';
@@ -316,7 +315,14 @@ function similar_images_to_uploaded_image(s3_URL) {
 
 	function _appendAds(ads) {
 		_.map(ads, function(ad) {
-			ad.timestamp = Date.parse(ad.posttime);
+
+			ad.timestamp = Date.parse(ad.posttime);	
+			
+			if(isNaN(ad.timestamp)) {
+				console.log('Unable to parse ad posttime ' + ad.posttime + ' Using an arbitrary date instead.');
+				ad.timestamp = (new Date(2015, 0, 1)).getTime();
+				ad.posttime = (new Date(2015, 0, 1)).getTime();
+			}
 			ad.city = ad.city.substring(0,20);
 
 			if(_.has(ad, 'sources_id') && _.has(entityService.icons, ad.sources_id)) {
@@ -365,15 +371,9 @@ function similar_images_to_uploaded_image(s3_URL) {
 	 * @return {[type]} [description]
 	 */
 	 function updateLinked() {
-
-	 	entityService.Entity.query({id: $scope.id, size:$scope.adPagination.perPage, page:$scope.adPagination.page, count:'yes'}, function(data) {
+		entityService.Entity.query({id: $scope.id, size:$scope.adPagination.perPage, page:$scope.adPagination.page, count:'yes'}, function(data) {
 	 		console.log(data);
 	 		var _ads = data.ads;
-
-			// console.log('---');
-			// var firstAd = _ads[0];
-			// console.log(JSON.stringify(firstAd, null, '\t'));
-			// console.log('---');			
 
 			$scope.adPagination.total = data.total;
 			var notes = data.notes;
@@ -382,12 +382,10 @@ function similar_images_to_uploaded_image(s3_URL) {
 				$scope.annotations.push(note);
 			});
 			_appendAds(_ads);
-
 		});	
 	 }
 
 	 $scope.addMoreItems = function() {
-	 	console.log('scroll?');
 	 	if($scope.adPagination.page * $scope.adPagination.perPage < $scope.adPagination.total) {
 	 		console.log('yes');
 	 		var nextPage = $scope.adPagination.page + 1;
@@ -396,12 +394,10 @@ function similar_images_to_uploaded_image(s3_URL) {
 			//TODO: check if there are any more ads before querying?
 			entityService.Entity.query({id: $scope.id, size:$scope.adPagination.perPage, page:nextPage, count:'no'}, function(data) {
 				console.log(data);
-				//$scope.adPagination.total = data.total;
 				var _ads = data.ads;
 				_appendAds(_ads);
 			});
 		}
-		
 	};
 
 	$scope.$on('crossfilter/updated', function(event, collection, identifier) {
@@ -413,32 +409,67 @@ function similar_images_to_uploaded_image(s3_URL) {
 
 var suggestTask;
 
-function suggestSimilarImages() {
-	console.log($scope.imageUrls);
-	toastr.info('Starting...', 'Reverse Image Search');
-	for (var i = 0; i < $scope.imageUrls.length; i++) {
-		$http.get('/api/v1/image/similar?url=' + $scope.imageUrls[i]).success(function(res){
-			var ad=[];
-			for (var i = 0; i < res.length; i++) {
-				ad[i] = res[i].ad;
-			}
-			var ads = _.uniq(ad);
-			ads = _.filter(ads, function(element){
-				return ! _.isUndefined(element) && _.has(element,'id') && ! _.contains($scope.entity.adId, element.id);
-			});
 
-			$scope.similarAdsbyImage.push(ads);
-			$scope.similarAdsbyImage = _.flatten($scope.similarAdsbyImage);
+/**
+ * Suggests ads that have similar images to the set of provided images.
+ * @param  {[type]} imageUrls [description]
+ * @return {[type]} Promise of an array of ads.
+ */
+function suggestSimilarImages(imageUrls) {
+	console.log('Starting Reverse Image Search: ' + imageUrls.length + ' image URLs.');
+	if(imageUrls.length > 0) {
+		toastr.info('Starting Reverse Image Search: ' + imageUrls.length + ' image URLs.');
+	}
+	
+	var defer = $q.defer();
+	var promises = [];
+
+	angular.forEach(imageUrls, function(imageUrl){
+		promises.push($http.get('/api/v1/image/similar?url=' + imageUrl));
+	});
+
+	$q.all(promises).then(function(responses){
+		var _suggestedAds = [];
+		angular.forEach(responses, function(res) {
+			var _ads = _.pluck(res, 'ad');
+			_suggestedAds = _suggestedAds.concat(_ads);
 		});
-	}
-	toastr.clear;
-	if ($scope.similarAdsbyImage.length>0) {
-		toastr.success('Found' + $scope.similarAdsbyImage.length + 'Similar Images', 'Reverse Image Search');
-	}
-	else {
-		toastr.error('Did Not Find Similar Images', 'Reverse Image Search');
-	}
+		_suggestedAds = _.uniq(_.flatten(_suggestedAds));
+		_suggestedAds = _.filter(_suggestedAds, function(element) {
+			return ! _.isUndefined(element) && _.has(element,'id');
+		});
+		defer.resolve(_suggestedAds);
+	});
+
+	return defer.promise;
 }
+
+// function suggestSimilarImages() {
+// 	toastr.info('Starting Reverse Image Search');
+	
+// 	for (var i = 0; i < $scope.imageUrls.length; i++) {
+// 		$http.get('/api/v1/image/similar?url=' + $scope.imageUrls[i]).success(function(res){
+// 			var ad=[];
+// 			for (var i = 0; i < res.length; i++) {
+// 				ad[i] = res[i].ad;
+// 			}
+// 			var ads = _.uniq(ad);
+// 			ads = _.filter(ads, function(element){
+// 				return ! _.isUndefined(element) && _.has(element,'id') && ! _.contains($scope.entity.adId, element.id);
+// 			});
+
+// 			$scope.similarAdsbyImage.push(ads);
+// 			$scope.similarAdsbyImage = _.flatten($scope.similarAdsbyImage);
+// 		});
+// 	}
+// 	toastr.clear;
+// 	if ($scope.similarAdsbyImage.length>0) {
+// 		toastr.success('Found' + $scope.similarAdsbyImage.length + 'Similar Images', 'Reverse Image Search');
+// 	}
+// 	else {
+// 		toastr.error('Did Not Find Similar Images', 'Reverse Image Search');
+// 	}
+// }
 
 // ------------------------ End Suggest Ads with Similar Images ---------------------------------------------- //
 
@@ -557,10 +588,13 @@ function suggestSimilarImages() {
 	 		});
 	 	}
 
-	 	if(suggestTask !== undefined) {
-	 		$timeout.cancel(suggestTask);
-	 	} 
-	 	suggestTask = $timeout(suggestSimilarImages, 1000);	
+	 	suggestSimilarImages($scope.imageUrls).then(function(suggestedAds){
+	 		console.log('Received ' + suggestedAds.length + ' suggestedAds.');
+	 		suggestedAds = _.filter(suggestedAds, function(element){
+	 			return !_.contains($scope.entity.adId, element.id);
+	 		});
+	 		$scope.similarAdsbyImage = _.uniq($scope.similarAdsbyImage.concat(suggestedAds));
+	 	});	
 	 }
 
 	// The following function requires access to the internet. We need to develop an offline version of this geocoder.
@@ -597,7 +631,7 @@ function suggestSimilarImages() {
 		console.log($scope.suggestedAds);
 		toastr.clear;
 		if ($scope.suggestedAds.length > 0) {
-			toastr.success('Found' + $scope.suggestedAds.length + 'Similar Ad Text', 'Reverse Image Search');
+			toastr.success('Found ' + $scope.suggestedAds.length + ' Ads by Similar Text', 'Reverse Image Search');
 		}
 		else {
 			toastr.error('Did Not Find Similar Ad Text', 'Reverse Image Search');
