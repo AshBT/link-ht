@@ -48,9 +48,9 @@ module.exports = (function() {
       }
     }).then(function (body) {
       var hits = body.hits.hits;
-      console.log("**********___________________________**********")
-      console.log(hits)
-      console.log("**********___________________________**********")
+      // console.log("**********___________________________**********")
+      // console.log(hits)
+      // console.log("**********___________________________**********")
       return {status: 200, payload: hits}
       // res.json({
       //   _num: size,
@@ -122,15 +122,7 @@ module.exports = (function() {
         notes = source.notes;
       }
 
-
       var slicedAds = ads.slice(starting_from, starting_from + size);
-
-      console.log('_getEntity:');
-      console.log('  size: ' + size);
-      console.log('  page: ' + page);
-      console.log('  starting_from: ' + starting_from);
-      console.log('  starting_from + size: ' + (starting_from + size));
-      console.log('  slice length: ' + slicedAds.length);
 
       return {status: 200, payload: {
         total: ads.length,
@@ -264,11 +256,6 @@ module.exports = (function() {
           return
         }
         return_result.ads = result.payload.ads;
-        console.log('getEntity:');
-        console.log('  page: ' + page);
-        console.log('  per page: ' + number_per_page);
-
-        console.log('returning ' + return_result.ads.length + ' ads.');
         return_result.notes = result.payload.notes;
         if (count === "yes") {
           return_result.total = result.payload.total;

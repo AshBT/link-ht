@@ -18,8 +18,10 @@ angular.module('memexLinkerApp')
 
 	console.log($scope.file);
 
-	// console.log($scope.note)
-
+	/**
+	 * [upload description]
+	 * @return {[type]} [description]
+	 */
 	$scope.upload = function() {
 		console.log('uploading...');
 		console.log($scope.file);
@@ -35,62 +37,52 @@ angular.module('memexLinkerApp')
 		var access='AKIAJ5LO4XW7YN2NN25A';
 		var secret='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';
 
-
 		AWS.config.update({ accessKeyId: access, secretAccessKey: secret });
 		AWS.config.region = 'us-west-1';
 		var bucket = new AWS.S3({ params: { Bucket: 'generalmemex' } });
 
 		if($scope.file) {
-		// Perform File Size Check First
-		var fileSize = Math.round(parseInt($scope.file.size));
-		if (fileSize > $scope.sizeLimit) {
-			toastr.error('Sorry, your attachment is too big. <br/> Maximum 15mb file attachment allowed','File Too Large');
-			return false;
-		}
-		// Prepend Unique String To Prevent Overwrites
-		var uniqueFileName = 'Upload/' + $scope.uniqueString() + '-' + $scope.file.name;
-
-
-		s3_URL.push($sce.trustAsResourceUrl('https://s3-us-west-1.amazonaws.com/generalmemex/' + uniqueFileName));
-
-		// console.log($scope.s3_URLs)
-		var params = { Key: uniqueFileName, ContentType: $scope.file.type, Body: $scope.file, ServerSideEncryption: 'AES256' };
-
-		bucket.putObject(params, function(err, data) {
-			if(err) {
-				toastr.error(err.message,err.code);
+			// Perform File Size Check First
+			var fileSize = Math.round(parseInt($scope.file.size));
+			if (fileSize > $scope.sizeLimit) {
+				toastr.error('Sorry, your attachment is too big. <br/> Maximum 15mb file attachment allowed','File Too Large');
 				return false;
 			}
-			else {
-			// Upload Successfully Finished
-			toastr.success('File Uploaded Successfully', 'Done');
+			// Prepend Unique String To Prevent Overwrites
+			var uniqueFileName = 'Upload/' + $scope.uniqueString() + '-' + $scope.file.name;
+			s3_URL.push($sce.trustAsResourceUrl('https://s3-us-west-1.amazonaws.com/generalmemex/' + uniqueFileName));
+			var params = { Key: uniqueFileName, ContentType: $scope.file.type, Body: $scope.file, ServerSideEncryption: 'AES256' };
 
-			// Reset The Progress Bar
-			setTimeout(function() {
-				$scope.uploadProgress = 0;
+			bucket.putObject(params, function(err, data) {
+				if(err) {
+					toastr.error(err.message,err.code);
+					return false;
+				}
+				else {
+				// Upload Successfully Finished
+				toastr.success('File Uploaded Successfully', 'Done');
+
+				// Reset The Progress Bar
+				setTimeout(function() {
+					$scope.uploadProgress = 0;
+					$scope.$digest();
+					}, 4000);
+				}
+			})
+			.on('httpUploadProgress',function(progress) {
+				$scope.uploadProgress = Math.round(progress.loaded / progress.total * 100);
 				$scope.$digest();
-			}, 4000);
+			});
+
+			$timeout(function() {
+				$scope.s3_URLs = s3_URL
+				console.log('update with timeout fired')
+			}, 5000);
+		} else {
+			// No File Selected
+			toastr.error('Please select a file to upload');
 		}
-	})
-		.on('httpUploadProgress',function(progress) {
-			$scope.uploadProgress = Math.round(progress.loaded / progress.total * 100);
-			$scope.$digest();
-		});
-
-		$timeout(function() {
-			$scope.s3_URLs = s3_URL
-			console.log('update with timeout fired')
-		}, 5000);
-
-	// console.log(s3_URL)
-}
-else {
-		// No File Selected
-		toastr.error('Please select a file to upload');
-	}
-
-
-};
+	};
 
 $scope.fileSizeLabel = function() {
 	// Convert Bytes To MB
@@ -114,38 +106,31 @@ $scope.seeImages = function() {
 };
 
 function similar_images_to_uploaded_image(s3_URL) {
-		// console.log(s3_URL)
-		$scope.simImageUrl =[];
+	$scope.simImageUrl =[];
 
-		$http.get('/api/v1/image/similar?url=' + s3_URL[0]).success(function(res){
+	$http.get('/api/v1/image/similar?url=' + s3_URL[0]).success(function(res){
 
-			var ad=[];
-			var url=[];
-			for (var i = 0; i < res.length; i++) {
-				ad[i] = res[i].ad;
-				url[i] = $sce.trustAsResourceUrl(res[i].cached_image_urls);
-			}
-			ad = _.uniq(ad);
-			ad = _.filter(ad, function(element){
-				return ! _.isUndefined(element);
-			});
-			url = _.uniq(url);
-			url = _.filter(url, function(element){
-				return ! _.isUndefined(element);
-			});
-		// console.log(ad)
-		// console.log(url)
-		// $scope.simImageId= ad // + $scope.simImageId
-		// $scope.suggestedAds= ad
+		var ad=[];
+		var url=[];
+		for (var i = 0; i < res.length; i++) {
+			ad[i] = res[i].ad;
+			url[i] = $sce.trustAsResourceUrl(res[i].cached_image_urls);
+		}
+		ad = _.uniq(ad);
+		ad = _.filter(ad, function(element){
+			return ! _.isUndefined(element);
+		});
+		url = _.uniq(url);
+		url = _.filter(url, function(element){
+			return ! _.isUndefined(element);
+		});
+
 		$scope.simImageUrl = url; // + $scope.simImageUrl
 		console.log($scope.simImageUrl);
 	});
-	}
-	// similar_images_to_uploaded_image(s3_URL)
+}
 
 // ------------------------ End Similar to Uploaded Code ---------------------------------------------- //
-
-	// similar_images_to_uploaded_image(["http://static7.depositphotos.com/1001925/696/i/950/depositphotos_6961696-Funny-elderly-man-with-tongue-outdoor.jpg"])
 
 	// Aggregate details about this entitiy.
 	$scope.entity = {
@@ -172,7 +157,6 @@ function similar_images_to_uploaded_image(s3_URL) {
 	};
 
 	$scope.blur = true;
-	
 	$scope.imageUrls = [];
 	$scope.faceImageUrl = [];
 	$scope.id = $stateParams.id;
@@ -202,18 +186,26 @@ function similar_images_to_uploaded_image(s3_URL) {
 	$scope.markers = [];
 
 	$scope.ads = [];
-
 	$scope.adPagination = {
 		page: 1,
 		perPage: 5,
 		total: 0
 	};
+
+	$scope.similarAdsbyImage =[];
+	$scope.similarAdsPagination = {
+		page: 1,
+		perPage: 5,
+		total: 0
+	};
+
 	// ng-crossfilter. collection | primary key | strategy | properties
 	$scope.$ngc = new Crossfilter([], 'id', 'persistent', ['id','latitude', 'longitude', 'timestamp']);
 
+	// This indicates whether the goegraphic selection box is enabled.
 	$scope.showSelector = false;
 
-	// Callback for changes in showSelector, which indicates whether the goegraphic selection box is enabled.
+	// Callback for changes in showSelector.
 	$scope.onShowSelector = function(showSelector) {
 		$scope.showSelector = showSelector;
 		if(showSelector) {
@@ -239,8 +231,6 @@ function similar_images_to_uploaded_image(s3_URL) {
 			$scope.$ngc.filterBy('longitude', {minLon: sw.longitude, maxLon: ne.longitude}, function(range, lon) {
 				return range.minLon <= lon && lon <= range.maxLon;
 			});
-		} else {
-			//
 		}
 	};
 
@@ -251,9 +241,8 @@ function similar_images_to_uploaded_image(s3_URL) {
 		});
 	};
 
+	// Submit a new note.
 	$scope.submit = function() {
-		console.log('sumbitting...');
-		//console.log($scope.annotations);
 		var text = this.text;
 		this.text = '';
 		var username = 'Anonymous';
@@ -262,7 +251,7 @@ function similar_images_to_uploaded_image(s3_URL) {
 		}
 
 		$http.post('/api/v1/entity/' + $scope.id + '/note?user=' + username + '&text=' + text).
-			then(function(response) {
+		then(function(response) {
 			// this callback will be called asynchronously
 			// when the response is available
 			$scope.annotations.push({
@@ -270,14 +259,12 @@ function similar_images_to_uploaded_image(s3_URL) {
 				user: username, 
 				timestamp: Date.now()
 			});
-			console.log(response);
 		}, function(response) {
 			// called asynchronously if an error occurs
 			// or server returns response with an error status.
+			console.log('Error while submitting annotation.');
 			console.log(response);
 		});
-
-
 	};
 
 	$scope.saveEntity = function() {
@@ -319,25 +306,20 @@ function similar_images_to_uploaded_image(s3_URL) {
 		$http.delete('/api/v1/entity/' + $scope.id + '/link/' + adId, {
 			user: getUserName()
 		}).then(function(response){
-			console.log('--success');
-			console.log(response);
+			console.log('delinked.');
 		}, function(response){
-			console.log('doom!');
-			console.log(response);
+			console.log('DELINK FAILED');
 		});
 	};
 
 	var uniqueFlatAndDefined = linkUtils.uniqueFlatAndDefined;
 
-	$scope.similarAdsbyImage =[];
-
-
 	function _appendAds(ads) {
 		_.map(ads, function(ad) {
-				ad.timestamp = Date.parse(ad.posttime);
-				ad.city = ad.city.substring(0,20);
+			ad.timestamp = Date.parse(ad.posttime);
+			ad.city = ad.city.substring(0,20);
 
-				if(_.has(ad, 'sources_id') && _.has(entityService.icons, ad.sources_id)) {
+			if(_.has(ad, 'sources_id') && _.has(entityService.icons, ad.sources_id)) {
 					//ad.icon = entityService.icons[ad.sources_id];
 					ad.options = {
 						icon: {
@@ -376,17 +358,17 @@ function similar_images_to_uploaded_image(s3_URL) {
 					}
 				}
 			});
-	}
+}
 
 	/**
 	 * Gets ads linked to this entity, and notes.
 	 * @return {[type]} [description]
 	 */
-	function updateLinked() {
+	 function updateLinked() {
 
-		entityService.Entity.query({id: $scope.id, size:$scope.adPagination.perPage, page:$scope.adPagination.page, count:'yes'}, function(data) {
-			console.log(data);
-			var _ads = data.ads;
+	 	entityService.Entity.query({id: $scope.id, size:$scope.adPagination.perPage, page:$scope.adPagination.page, count:'yes'}, function(data) {
+	 		console.log(data);
+	 		var _ads = data.ads;
 
 			// console.log('---');
 			// var firstAd = _ads[0];
@@ -402,15 +384,15 @@ function similar_images_to_uploaded_image(s3_URL) {
 			_appendAds(_ads);
 
 		});	
-	}
+	 }
 
-	$scope.addMoreItems = function() {
-		console.log('scroll?');
-		if($scope.adPagination.page * $scope.adPagination.perPage < $scope.adPagination.total) {
-			console.log('yes');
-			var nextPage = $scope.adPagination.page + 1;
+	 $scope.addMoreItems = function() {
+	 	console.log('scroll?');
+	 	if($scope.adPagination.page * $scope.adPagination.perPage < $scope.adPagination.total) {
+	 		console.log('yes');
+	 		var nextPage = $scope.adPagination.page + 1;
 
-			$scope.adPagination.page = nextPage;
+	 		$scope.adPagination.page = nextPage;
 			//TODO: check if there are any more ads before querying?
 			entityService.Entity.query({id: $scope.id, size:$scope.adPagination.perPage, page:nextPage, count:'no'}, function(data) {
 				console.log(data);
@@ -422,7 +404,7 @@ function similar_images_to_uploaded_image(s3_URL) {
 		
 	};
 
-$scope.$on('crossfilter/updated', function(event, collection, identifier) {
+	$scope.$on('crossfilter/updated', function(event, collection, identifier) {
 		updateEntity();
 	});
 
@@ -437,10 +419,8 @@ function suggestSimilarImages() {
 	for (var i = 0; i < $scope.imageUrls.length; i++) {
 		$http.get('/api/v1/image/similar?url=' + $scope.imageUrls[i]).success(function(res){
 			var ad=[];
-			// console.log(res);
 			for (var i = 0; i < res.length; i++) {
 				ad[i] = res[i].ad;
-				// console.log(ad[i])
 			}
 			var ads = _.uniq(ad);
 			ads = _.filter(ads, function(element){
@@ -448,9 +428,7 @@ function suggestSimilarImages() {
 			});
 
 			$scope.similarAdsbyImage.push(ads);
-
 			$scope.similarAdsbyImage = _.flatten($scope.similarAdsbyImage);
-			//console.log($scope.similarAdsbyImage);
 		});
 	}
 	toastr.clear;
@@ -461,8 +439,6 @@ function suggestSimilarImages() {
 		toastr.error('Did Not Find Similar Images', 'Reverse Image Search');
 	}
 }
-
-
 
 // ------------------------ End Suggest Ads with Similar Images ---------------------------------------------- //
 
@@ -647,9 +623,9 @@ function suggestSimilarImages() {
 	// });
 
 
-	function getUserName() {
-		return Auth.isLoggedIn() ? Auth.getCurrentUser().name : 'Anonymous';
-	}
+function getUserName() {
+	return Auth.isLoggedIn() ? Auth.getCurrentUser().name : 'Anonymous';
+}
 
 });
 
