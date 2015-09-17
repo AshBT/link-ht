@@ -16,7 +16,7 @@ angular.module('memexLinkerApp')
 	var secret='';
 	var s3_URL = [];
 
-	console.log($scope.file);
+	//console.log($scope.file);
 
 	/**
 	 * [upload description]
@@ -49,7 +49,7 @@ angular.module('memexLinkerApp')
 				return false;
 			}
 			// Prepend Unique String To Prevent Overwrites
-			var uniqueFileName = 'Upload/' + $scope.uniqueString() + '-' + $scope.file.name;
+			var uniqueFileName = 'Upload/' + uniqueString() + '-' + $scope.file.name;
 			s3_URL.push($sce.trustAsResourceUrl('https://s3-us-west-1.amazonaws.com/generalmemex/' + uniqueFileName));
 			var params = { Key: uniqueFileName, ContentType: $scope.file.type, Body: $scope.file, ServerSideEncryption: 'AES256' };
 
@@ -89,7 +89,7 @@ $scope.fileSizeLabel = function() {
 	return Math.round($scope.sizeLimit / 1024 / 1024) + 'MB';
 };
 
-$scope.uniqueString = function() {
+function uniqueString() {
 	var text     = '';
 	var possible = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
 
@@ -97,7 +97,7 @@ $scope.uniqueString = function() {
 		text += possible.charAt(Math.floor(Math.random() * possible.length));
 	}
 	return text;
-};
+}
 
 // ------------------------ End Upload to S3 Code ---------------------------------------------- //
 
@@ -164,15 +164,16 @@ function similar_images_to_uploaded_image(s3_URL) {
 
 	// User-supplied annotations.
 	$scope.annotations = [];
+	// Input field for annotations.
 	$scope.text = '';
 
-	$scope.map = {
-		center: {
-			latitude: 39.8282,
-			longitude: -98.5795
-		},
-		zoom: 3
-	};
+	// $scope.map = {
+	// 	center: {
+	// 		latitude: 39.8282,
+	// 		longitude: -98.5795
+	// 	},
+	// 	zoom: 3
+	// };
 
 	/*
 	Array of marker objects
@@ -183,7 +184,7 @@ function similar_images_to_uploaded_image(s3_URL) {
 		title: 'title'
 	 }
 	 */
-	$scope.markers = [];
+	//$scope.markers = [];
 
 	$scope.ads = [];
 	$scope.adPagination = {
