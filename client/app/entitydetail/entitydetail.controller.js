@@ -4,6 +4,7 @@ angular.module('memexLinkerApp')
 
 .controller('EntitydetailCtrl', function ($scope, $timeout, $http, $stateParams, $q, $modal, lodash, Auth, $sce, Crossfilter, entityService, linkUtils) {
 	var _ = lodash;
+	var uniqueFlatAndDefined = linkUtils.uniqueFlatAndDefined;
 
 // ------------------------ Start Upload to S3 Code ---------------------------------------------- //
 // TODO: this logic should be moved to a service.
@@ -240,8 +241,7 @@ function similar_images_to_uploaded_image(s3_URL) {
 		});
 	};
 
-	// Submit a new note.
-	$scope.submit = function() {
+	$scope.submitNote = function() {
 		var text = this.text;
 		this.text = '';
 		var username = 'Anonymous';
@@ -286,36 +286,35 @@ function similar_images_to_uploaded_image(s3_URL) {
 
 	// Link Ad to this Entity
 	$scope.linkToEntity = function(adId) {
-		console.log('--ad');
-		console.log(adId);
 		$http.post('/api/v1/entity/' + $scope.id + '/link/' + adId, {
 			user: getUserName()
 		}).then(function(response){
-			console.log('--success');
-			console.log(response);
+			// success
 		}, function(response){
-			console.log('doom!');
+			console.log('linkToEntity failed.');
 			console.log(response);
 		});
 	};
 
 	$scope.delinkFromEntity = function(adId) {
-		console.log('--ad');
-		console.log(adId);
 		$http.delete('/api/v1/entity/' + $scope.id + '/link/' + adId, {
 			user: getUserName()
 		}).then(function(response){
-			console.log('delinked.');
+			// success
 		}, function(response){
-			console.log('DELINK FAILED');
+			console.log('delinkFromEntity failed.');
+			console.log(response);
 		});
 	};
 
-	var uniqueFlatAndDefined = linkUtils.uniqueFlatAndDefined;
-
-	function _appendAds(ads) {
-		_.map(ads, function(ad) {
-
+	/**
+	 * Prepares "raw" ads from the API for display.
+	 * @param  {[type]} rawAds [description]
+	 * @return {[type]} Ads for display.
+	 */
+	function processRawAds(rawAds) {
+		var processedAds = [];
+		_.map(rawAds, function(ad) {
 			ad.timestamp = Date.parse(ad.posttime);	
 			
 			if(isNaN(ad.timestamp)) {
@@ -326,45 +325,41 @@ function similar_images_to_uploaded_image(s3_URL) {
 			ad.city = ad.city.substring(0,20);
 
 			if(_.has(ad, 'sources_id') && _.has(entityService.icons, ad.sources_id)) {
-					//ad.icon = entityService.icons[ad.sources_id];
-					ad.options = {
-						icon: {
-							url: entityService.icons[ad.sources_id],
-							scaledSize: new google.maps.Size(34, 44)
-						}
-					};
-				} else {
-					console.log('No icon found.');
-					ad.icon = '/assets/images/backpage.png';
-				}
-
-				// If ad has latitude and longitude values, convert them to numbers
-				if ( 'latitude' in ad && 'longitude' in ad) {
-					console.log('converting lat lon values to numbers');
-					ad.latitude = Number(ad.latitude);
-					ad.longitude = Number(ad.longitude);
-					$scope.ads.push(ad);
-					$scope.$ngc.addModel(ad);
-				} else {
-					// If latitude and longitude are not present, try to geocode the city name.
-					if(_.has(ad, 'city')) {
-						geocodeCity(ad.city).then(function(point) {
-							ad.latitude = point.latitude;
-							ad.longitude = point.longitude;
-							//console.log('geoceded ' + ad.city + ' to (' + point.latitude + ', ' + point.longitude + ')');
-							$scope.ads.push(ad);
-							var before = $scope.$ngc.collection().length; 
-							$scope.$ngc.addModel(ad);
-							// Note: If an ad does not appear to be added, check if any filters applied to $ngc apply to the ad.
-						}, function(reason) {
-							console.log('Failed: ' + reason);
-						});
-					} else {
-						console.log('location?');
+				ad.options = {
+					icon: {
+						url: entityService.icons[ad.sources_id],
+						scaledSize: new google.maps.Size(34, 44)
 					}
-				}
-			});
-}
+				};
+			} else {
+				console.log('No icon found.');
+				ad.icon = '/assets/images/backpage.png';
+			}
+
+			if ( 'latitude' in ad && 'longitude' in ad) {
+				ad.latitude = Number(ad.latitude);
+				ad.longitude = Number(ad.longitude);
+			} else {
+				ad.latitude = 0;
+				ad.longitude = 0;
+				// If latitude and longitude are not present, try to geocode the city name.
+				
+				// if(_.has(ad, 'city')) {
+				// 	geocodeCity(ad.city).then(function(point) {
+				// 		$scope.ads.push(ad);
+				// 		$scope.$ngc.addModel(ad);
+				// 		// Note: If an ad does not appear to be added, check if any filters applied to $ngc apply to the ad.
+				// 	}, function(reason) {
+				// 		console.log('Failed: ' + reason);
+				// 	});
+				// } else {
+				// 	console.log('location?');
+				// }
+			}
+			processedAds.push(ad);
+		});
+		return processedAds;
+	}
 
 	/**
 	 * Gets ads linked to this entity, and notes.
@@ -372,30 +367,37 @@ function similar_images_to_uploaded_image(s3_URL) {
 	 */
 	 function updateLinked() {
 		entityService.Entity.query({id: $scope.id, size:$scope.adPagination.perPage, page:$scope.adPagination.page, count:'yes'}, function(data) {
-	 		console.log(data);
-	 		var _ads = data.ads;
-
-			$scope.adPagination.total = data.total;
 			var notes = data.notes;
-
 			_.map(notes, function(note){
 				$scope.annotations.push(note);
 			});
-			_appendAds(_ads);
+			var rawAds = data.ads;
+			$scope.adPagination.total = data.total;
+			var processedAds = processRawAds(rawAds);
+			angular.forEach(processedAds, function(ad) {
+				$scope.ads.push(ad);
+				$scope.$ngc.addModel(ad);
+			});
 		});	
 	 }
 
-	 $scope.addMoreItems = function() {
+	 /**
+	  * Fetch and process next page of ads.
+	  * @return {[type]} [description]
+	  */
+	 $scope.loadNextPageOfAds = function() {
 	 	if($scope.adPagination.page * $scope.adPagination.perPage < $scope.adPagination.total) {
 	 		console.log('yes');
 	 		var nextPage = $scope.adPagination.page + 1;
-
 	 		$scope.adPagination.page = nextPage;
-			//TODO: check if there are any more ads before querying?
 			entityService.Entity.query({id: $scope.id, size:$scope.adPagination.perPage, page:nextPage, count:'no'}, function(data) {
 				console.log(data);
-				var _ads = data.ads;
-				_appendAds(_ads);
+				var rawAds = data.ads;
+				var processedAds = processRawAds(rawAds);
+				angular.forEach(processedAds, function(ad) {
+					$scope.ads.push(ad);
+					$scope.$ngc.addModel(ad);
+				});
 			});
 		}
 	};
@@ -444,32 +446,6 @@ function suggestSimilarImages(imageUrls) {
 	return defer.promise;
 }
 
-// function suggestSimilarImages() {
-// 	toastr.info('Starting Reverse Image Search');
-	
-// 	for (var i = 0; i < $scope.imageUrls.length; i++) {
-// 		$http.get('/api/v1/image/similar?url=' + $scope.imageUrls[i]).success(function(res){
-// 			var ad=[];
-// 			for (var i = 0; i < res.length; i++) {
-// 				ad[i] = res[i].ad;
-// 			}
-// 			var ads = _.uniq(ad);
-// 			ads = _.filter(ads, function(element){
-// 				return ! _.isUndefined(element) && _.has(element,'id') && ! _.contains($scope.entity.adId, element.id);
-// 			});
-
-// 			$scope.similarAdsbyImage.push(ads);
-// 			$scope.similarAdsbyImage = _.flatten($scope.similarAdsbyImage);
-// 		});
-// 	}
-// 	toastr.clear;
-// 	if ($scope.similarAdsbyImage.length>0) {
-// 		toastr.success('Found' + $scope.similarAdsbyImage.length + 'Similar Images', 'Reverse Image Search');
-// 	}
-// 	else {
-// 		toastr.error('Did Not Find Similar Images', 'Reverse Image Search');
-// 	}
-// }
 
 // ------------------------ End Suggest Ads with Similar Images ---------------------------------------------- //
 
@@ -552,41 +528,41 @@ function suggestSimilarImages(imageUrls) {
 	 		return ! _.isUndefined(element);
 	 	});
 
-	 	if (! _.isEmpty($scope.entity.cities)) {
+	 	// if (! _.isEmpty($scope.entity.cities)) {
 
-	 		var promise = geocodeCity($scope.entity.cities[0]);
-	 		promise.then(function(point) {
-	 			$scope.map = {
-	 				center: {
-	 					latitude: point.latitude,
-	 					longitude: point.longitude
-	 				},
-	 				zoom: 3
-	 			};
-	 		}, function(reason) {
-	 			console.log('Failed');
-	 			console.log(reason);
-	 		}, function(update) {
-	 			console.log(update);
-	 		});
+	 	// 	var promise = geocodeCity($scope.entity.cities[0]);
+	 	// 	promise.then(function(point) {
+	 	// 		$scope.map = {
+	 	// 			center: {
+	 	// 				latitude: point.latitude,
+	 	// 				longitude: point.longitude
+	 	// 			},
+	 	// 			zoom: 3
+	 	// 		};
+	 	// 	}, function(reason) {
+	 	// 		console.log('Failed');
+	 	// 		console.log(reason);
+	 	// 	}, function(update) {
+	 	// 		console.log(update);
+	 	// 	});
 
-	 		_.forEach($scope.entity.cities, function(city, key) {
-	 			geocodeCity(city)
-	 			.then(function(point){
-				 //   id: 583187,
-				 //   latitude: 46.7682,
-				 //   longitude: -71.3234,
-				 //   title: 'title'
-				 var m = {
-				 	id:key,
-				 	latitude: point.latitude,
-				 	longitude: point.longitude,
-				 	title: city
-				 };
-				 $scope.markers.push(m);
-				});
-	 		});
-	 	}
+	 	// 	_.forEach($scope.entity.cities, function(city, key) {
+	 	// 		geocodeCity(city)
+	 	// 		.then(function(point){
+			// 	 //   id: 583187,
+			// 	 //   latitude: 46.7682,
+			// 	 //   longitude: -71.3234,
+			// 	 //   title: 'title'
+			// 	 var m = {
+			// 	 	id:key,
+			// 	 	latitude: point.latitude,
+			// 	 	longitude: point.longitude,
+			// 	 	title: city
+			// 	 };
+			// 	 $scope.markers.push(m);
+			// 	});
+	 	// 	});
+	 	// }
 
 	 	suggestSimilarImages($scope.imageUrls).then(function(suggestedAds){
 	 		console.log('Received ' + suggestedAds.length + ' suggestedAds.');
@@ -598,26 +574,26 @@ function suggestSimilarImages(imageUrls) {
 	 }
 
 	// The following function requires access to the internet. We need to develop an offline version of this geocoder.
-	var geocoder = new google.maps.Geocoder();
-	function geocodeCity(cityName) {
-		var deferred = $q.defer();
+	// var geocoder = new google.maps.Geocoder();
+	// function geocodeCity(cityName) {
+	// 	var deferred = $q.defer();
 
-		geocoder.geocode( { 'address': cityName }, function(results, status) {
-			if (status === google.maps.GeocoderStatus.OK && results.length > 0) {
-				var location = results[0].geometry.location;
-				deferred.resolve({
-					latitude: parseFloat(location.lat()),
-					longitude: parseFloat(location.lng())
-				});
-			} else {
-				deferred.resolve({
-					latitude: 0,
-					longitude: 0
-				});
-			}
-		});
-		return deferred.promise;
-	}
+	// 	geocoder.geocode( { 'address': cityName }, function(results, status) {
+	// 		if (status === google.maps.GeocoderStatus.OK && results.length > 0) {
+	// 			var location = results[0].geometry.location;
+	// 			deferred.resolve({
+	// 				latitude: parseFloat(location.lat()),
+	// 				longitude: parseFloat(location.lng())
+	// 			});
+	// 		} else {
+	// 			deferred.resolve({
+	// 				latitude: 0,
+	// 				longitude: 0
+	// 			});
+	// 		}
+	// 	});
+	// 	return deferred.promise;
+	// }
 
 	var _suggestionsPromise = entityService.Suggest.query({id: $scope.id}, function() {
 		console.log('Suggest:');

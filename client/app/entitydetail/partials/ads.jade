@@ -8,7 +8,7 @@ nav(ng-if='$ngc.collection().length>50')
 			a(href='#', ng-click="next()") Next
 br
 
-div(infinite-scroll='addMoreItems()')
+div(infinite-scroll='loadNextPageOfAds()')
 	.panel.panel-default(ng-repeat="ad in $ngc.collection() | orderBy:'-timestamp'")
 		.panel-heading.h1  {{sourceMap[ad.sources_id]}} at {{ad.posttime | date}}
 		.panel-body.vertical-layout
