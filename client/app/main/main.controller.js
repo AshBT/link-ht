@@ -1,7 +1,7 @@
 'use strict';
 
 angular.module('memexLinkerApp')
-.controller('MainCtrl', function ($scope, $http, $sce, $q, socket, lodash, entityService, linkUtils, Crossfilter) {
+.controller('MainCtrl', function ($scope, $http, $sce, $q, socket, lodash, entityService, linkUtils, Crossfilter, toastr) {
 
 	var _ = lodash;
 

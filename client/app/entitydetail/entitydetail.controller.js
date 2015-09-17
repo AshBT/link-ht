@@ -2,7 +2,7 @@
 
 angular.module('memexLinkerApp')
 
-.controller('EntitydetailCtrl', function ($scope, $timeout, $http, $stateParams, $q, $modal, lodash, Auth, $sce, Crossfilter, entityService, linkUtils) {
+.controller('EntitydetailCtrl', function ($scope, $timeout, $http, $stateParams, $q, $modal, lodash, Auth, $sce, Crossfilter, entityService, linkUtils, toastr) {
 	var _ = lodash;
 	var uniqueFlatAndDefined = linkUtils.uniqueFlatAndDefined;
 

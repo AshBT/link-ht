@@ -13,6 +13,7 @@ angular.module('memexLinkerApp', [
   'ui-rangeSlider',
   'ngCrossfilter',
   'infinite-scroll',
+  'toastr',
   'directives'
 ])
   .config(function ($stateProvider, $urlRouterProvider, $locationProvider, $httpProvider) {
