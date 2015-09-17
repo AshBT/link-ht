@@ -11,12 +11,8 @@ angular.module('memexLinkerApp')
 	$scope.sizeLimit      = 15878640; // 10MB in Bytes
 	$scope.uploadProgress = 0;
 	$scope.creds          = {};
-
-	var access='';
-	var secret='';
-	var s3_URL = [];
-
-	//console.log($scope.file);
+	
+	var s3URL = [];
 
 	/**
 	 * [upload description]
@@ -50,7 +46,7 @@ angular.module('memexLinkerApp')
 			}
 			// Prepend Unique String To Prevent Overwrites
 			var uniqueFileName = 'Upload/' + uniqueString() + '-' + $scope.file.name;
-			s3_URL.push($sce.trustAsResourceUrl('https://s3-us-west-1.amazonaws.com/generalmemex/' + uniqueFileName));
+			s3URL.push($sce.trustAsResourceUrl('https://s3-us-west-1.amazonaws.com/generalmemex/' + uniqueFileName));
 			var params = { Key: uniqueFileName, ContentType: $scope.file.type, Body: $scope.file, ServerSideEncryption: 'AES256' };
 
 			bucket.putObject(params, function(err, data) {
@@ -75,8 +71,8 @@ angular.module('memexLinkerApp')
 			});
 
 			$timeout(function() {
-				$scope.s3_URLs = s3_URL
-				console.log('update with timeout fired')
+				$scope.s3URLs = s3URL;
+				console.log('update with timeout fired');
 			}, 5000);
 		} else {
 			// No File Selected
@@ -102,32 +98,44 @@ function uniqueString() {
 // ------------------------ End Upload to S3 Code ---------------------------------------------- //
 
 $scope.seeImages = function() {
-	similar_images_to_uploaded_image($scope.s3_URLs);
+	$scope.simImageUrl =[];
+	findSimilarImages($scope.s3URLs[0]).then(function(similarImageUrls) {
+		console.log('Found ' + similarImageUrls.length + ' similar images.');
+		$scope.simImageUrl = similarImageUrls;
+	});
 };
 
-function similar_images_to_uploaded_image(s3_URL) {
-	$scope.simImageUrl =[];
+/**
+ * [similarImagesToUploadedImage description]
+ * @param  {[type]} imgUrl 
+ * @return {[type]}       [description]
+ */
+function findSimilarImages(imgUrl) {
 
-	$http.get('/api/v1/image/similar?url=' + s3_URL[0]).success(function(res){
+	var defer = $q.defer();
 
-		var ad=[];
-		var url=[];
+	$http.get('/api/v1/image/similar?url=' + imgUrl).success(function(res){
+		var ads=[];
+		var urls=[];
 		for (var i = 0; i < res.length; i++) {
-			ad[i] = res[i].ad;
-			url[i] = $sce.trustAsResourceUrl(res[i].cached_image_urls);
+			ads[i] = res[i].ad;
+			urls[i] = $sce.trustAsResourceUrl(res[i].cached_image_urls);
 		}
-		ad = _.uniq(ad);
-		ad = _.filter(ad, function(element){
+		ads = _.uniq(ads);
+		ads = _.filter(ads, function(element){
 			return ! _.isUndefined(element);
 		});
-		url = _.uniq(url);
-		url = _.filter(url, function(element){
+		urls = _.uniq(urls);
+		urls = _.filter(urls, function(element){
 			return ! _.isUndefined(element);
 		});
 
-		$scope.simImageUrl = url; // + $scope.simImageUrl
-		console.log($scope.simImageUrl);
+		//$scope.simImageUrl = urls; // + $scope.simImageUrl
+		//console.log($scope.simImageUrl);
+		defer.resolve({ads:ads, urls:urls});
 	});
+
+	return defer.promise;
 }
 
 // ------------------------ End Similar to Uploaded Code ---------------------------------------------- //
@@ -166,25 +174,6 @@ function similar_images_to_uploaded_image(s3_URL) {
 	$scope.annotations = [];
 	// Input field for annotations.
 	$scope.text = '';
-
-	// $scope.map = {
-	// 	center: {
-	// 		latitude: 39.8282,
-	// 		longitude: -98.5795
-	// 	},
-	// 	zoom: 3
-	// };
-
-	/*
-	Array of marker objects
-	 {
-		id: 583187,
-		latitude: 46.7682,
-		longitude: -71.3234,
-		title: 'title'
-	 }
-	 */
-	//$scope.markers = [];
 
 	$scope.ads = [];
 	$scope.adPagination = {
@@ -242,7 +231,7 @@ function similar_images_to_uploaded_image(s3_URL) {
 		});
 	};
 
-	$scope.submitNote = function() {
+	$scope.createNote = function() {
 		var text = this.text;
 		this.text = '';
 		var username = 'Anonymous';
@@ -262,7 +251,7 @@ function similar_images_to_uploaded_image(s3_URL) {
 		}, function(response) {
 			// called asynchronously if an error occurs
 			// or server returns response with an error status.
-			console.log('Error while submitting annotation.');
+			console.log('Error while creating note.');
 			console.log(response);
 		});
 	};
@@ -409,8 +398,6 @@ function similar_images_to_uploaded_image(s3_URL) {
 
 
 // ------------------------ Start Suggest Ads with Similar Images ---------------------------------------------- //
-
-var suggestTask;
 
 
 /**
