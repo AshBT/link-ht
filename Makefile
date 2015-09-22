@@ -1,5 +1,5 @@
 SHELL   := /bin/bash
-PROJECT := linkht
+PROJECT := link-ht
 OSNAME  := $(shell uname -s)
 ARCH    := $(shell uname -m)
 
