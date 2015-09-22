@@ -4,10 +4,6 @@
 // ==================================
 var env = require('./utils');
 module.exports = {
-  // MongoDB connection options
-  mongo: {
-    uri: 'mongodb://localhost/memexlinker-dev'
-  },
 
   mysql: {
     user: 'root',
