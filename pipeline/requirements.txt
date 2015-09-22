@@ -1,7 +1,7 @@
 sqlalchemy
 pymysql
 elasticsearch
-gevent
+gevent==1.1b5
 requests
 phonenumbers
 ftfy
