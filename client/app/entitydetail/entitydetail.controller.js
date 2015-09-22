@@ -18,15 +18,15 @@ angular.module('memexLinkerApp')
 	 * [upload description]
 	 * @return {[type]} [description]
 	 */
-	$scope.upload = function() {
-		console.log('uploading...');
-		console.log($scope.file);
+	 $scope.upload = function() {
+	 	console.log('uploading...');
+	 	console.log($scope.file);
 
-		var f = document.getElementById('file').files[0],
-		r = new FileReader();
-		r.onloadend = function(e){
-			var data = e.target.result;
-		};
+	 	var f = document.getElementById('file').files[0],
+	 	r = new FileReader();
+	 	r.onloadend = function(e){
+	 		var data = e.target.result;
+	 	};
 		// r.readAsBinaryString(f);
 		console.log(f);
 		$scope.file = f;
@@ -62,9 +62,9 @@ angular.module('memexLinkerApp')
 				setTimeout(function() {
 					$scope.uploadProgress = 0;
 					$scope.$digest();
-					}, 4000);
-				}
-			})
+				}, 4000);
+			}
+		})
 			.on('httpUploadProgress',function(progress) {
 				$scope.uploadProgress = Math.round(progress.loaded / progress.total * 100);
 				$scope.$digest();
@@ -80,7 +80,7 @@ angular.module('memexLinkerApp')
 		}
 	};
 
-$scope.fileSizeLabel = function() {
+	$scope.fileSizeLabel = function() {
 	// Convert Bytes To MB
 	return Math.round($scope.sizeLimit / 1024 / 1024) + 'MB';
 };
@@ -110,33 +110,33 @@ $scope.seeImages = function() {
  * @param  {[type]} imgUrl 
  * @return {[type]}       [description]
  */
-function findSimilarImages(imgUrl) {
+ function findSimilarImages(imgUrl) {
 
-	var defer = $q.defer();
+ 	var defer = $q.defer();
 
-	$http.get('/api/v1/image/similar?url=' + imgUrl).success(function(res){
-		var ads=[];
-		var urls=[];
-		for (var i = 0; i < res.length; i++) {
-			ads[i] = res[i].ad;
-			urls[i] = $sce.trustAsResourceUrl(res[i].cached_image_urls);
-		}
-		ads = _.uniq(ads);
-		ads = _.filter(ads, function(element){
-			return ! _.isUndefined(element);
-		});
-		urls = _.uniq(urls);
-		urls = _.filter(urls, function(element){
-			return ! _.isUndefined(element);
-		});
+ 	$http.get('/api/v1/image/similar?url=' + imgUrl).success(function(res){
+ 		var ads=[];
+ 		var urls=[];
+ 		for (var i = 0; i < res.length; i++) {
+ 			ads[i] = res[i].ad;
+ 			urls[i] = $sce.trustAsResourceUrl(res[i].cached_image_urls);
+ 		}
+ 		ads = _.uniq(ads);
+ 		ads = _.filter(ads, function(element){
+ 			return ! _.isUndefined(element);
+ 		});
+ 		urls = _.uniq(urls);
+ 		urls = _.filter(urls, function(element){
+ 			return ! _.isUndefined(element);
+ 		});
 
 		//$scope.simImageUrl = urls; // + $scope.simImageUrl
 		//console.log($scope.simImageUrl);
 		defer.resolve({ads:ads, urls:urls});
 	});
 
-	return defer.promise;
-}
+ 	return defer.promise;
+ }
 
 // ------------------------ End Similar to Uploaded Code ---------------------------------------------- //
 
@@ -302,36 +302,36 @@ function findSimilarImages(imgUrl) {
 	 * @param  {[type]} rawAds [description]
 	 * @return {[type]} Ads for display.
 	 */
-	function processRawAds(rawAds) {
-		var processedAds = [];
-		_.map(rawAds, function(ad) {
-			ad.timestamp = Date.parse(ad.posttime);	
-			
-			if(isNaN(ad.timestamp)) {
-				console.log('Unable to parse ad posttime ' + ad.posttime + ' Using an arbitrary date instead.');
-				ad.timestamp = (new Date(2015, 0, 1)).getTime();
-				ad.posttime = (new Date(2015, 0, 1)).getTime();
-			}
-			ad.city = ad.city.substring(0,20);
+	 function processRawAds(rawAds) {
+	 	var processedAds = [];
+	 	_.map(rawAds, function(ad) {
+	 		ad.timestamp = Date.parse(ad.posttime);	
+	 		
+	 		if(isNaN(ad.timestamp)) {
+	 			console.log('Unable to parse ad posttime ' + ad.posttime + ' Using an arbitrary date instead.');
+	 			ad.timestamp = (new Date(2015, 0, 1)).getTime();
+	 			ad.posttime = (new Date(2015, 0, 1)).getTime();
+	 		}
+	 		ad.city = ad.city.substring(0,20);
 
-			if(_.has(ad, 'sources_id') && _.has(entityService.icons, ad.sources_id)) {
-				ad.options = {
-					icon: {
-						url: entityService.icons[ad.sources_id],
-						scaledSize: new google.maps.Size(34, 44)
-					}
-				};
-			} else {
-				console.log('No icon found.');
-				ad.icon = '/assets/images/backpage.png';
-			}
+	 		if(_.has(ad, 'sources_id') && _.has(entityService.icons, ad.sources_id)) {
+	 			ad.options = {
+	 				icon: {
+	 					url: entityService.icons[ad.sources_id],
+	 					scaledSize: new google.maps.Size(34, 44)
+	 				}
+	 			};
+	 		} else {
+	 			console.log('No icon found.');
+	 			ad.icon = '/assets/images/backpage.png';
+	 		}
 
-			if ( 'latitude' in ad && 'longitude' in ad) {
-				ad.latitude = Number(ad.latitude);
-				ad.longitude = Number(ad.longitude);
-			} else {
-				ad.latitude = 0;
-				ad.longitude = 0;
+	 		if ( 'latitude' in ad && 'longitude' in ad) {
+	 			ad.latitude = Number(ad.latitude);
+	 			ad.longitude = Number(ad.longitude);
+	 		} else {
+	 			ad.latitude = 0;
+	 			ad.longitude = 0;
 				// If latitude and longitude are not present, try to geocode the city name.
 				
 				// if(_.has(ad, 'city')) {
@@ -348,53 +348,53 @@ function findSimilarImages(imgUrl) {
 			}
 			processedAds.push(ad);
 		});
-		return processedAds;
-	}
+return processedAds;
+}
 
 	/**
 	 * Gets ads linked to this entity, and notes.
 	 * @return {[type]} [description]
 	 */
 	 function updateLinked() {
-		entityService.Entity.query({id: $scope.id, size:$scope.adPagination.perPage, page:$scope.adPagination.page, count:'yes'}, function(data) {
-			var notes = data.notes;
-			_.map(notes, function(note){
-				$scope.annotations.push(note);
-			});
-			var rawAds = data.ads;
-			$scope.adPagination.total = data.total;
-			var processedAds = processRawAds(rawAds);
-			angular.forEach(processedAds, function(ad) {
-				$scope.ads.push(ad);
-				$scope.$ngc.addModel(ad);
-			});
-		});	
+	 	entityService.Entity.query({id: $scope.id, size:$scope.adPagination.perPage, page:$scope.adPagination.page, count:'yes'}, function(data) {
+	 		var notes = data.notes;
+	 		_.map(notes, function(note){
+	 			$scope.annotations.push(note);
+	 		});
+	 		var rawAds = data.ads;
+	 		$scope.adPagination.total = data.total;
+	 		var processedAds = processRawAds(rawAds);
+	 		angular.forEach(processedAds, function(ad) {
+	 			$scope.ads.push(ad);
+	 			$scope.$ngc.addModel(ad);
+	 		});
+	 	});	
 	 }
 
 	 /**
 	  * Fetch and process next page of ads.
 	  * @return {[type]} [description]
 	  */
-	 $scope.loadNextPageOfAds = function() {
-	 	if($scope.adPagination.page * $scope.adPagination.perPage < $scope.adPagination.total) {
-	 		console.log('yes');
-	 		var nextPage = $scope.adPagination.page + 1;
-	 		$scope.adPagination.page = nextPage;
-			entityService.Entity.query({id: $scope.id, size:$scope.adPagination.perPage, page:nextPage, count:'no'}, function(data) {
-				console.log(data);
-				var rawAds = data.ads;
-				var processedAds = processRawAds(rawAds);
-				angular.forEach(processedAds, function(ad) {
-					$scope.ads.push(ad);
-					$scope.$ngc.addModel(ad);
-				});
-			});
-		}
-	};
+	  $scope.loadNextPageOfAds = function() {
+	  	if($scope.adPagination.page * $scope.adPagination.perPage < $scope.adPagination.total) {
+	  		console.log('yes');
+	  		var nextPage = $scope.adPagination.page + 1;
+	  		$scope.adPagination.page = nextPage;
+	  		entityService.Entity.query({id: $scope.id, size:$scope.adPagination.perPage, page:nextPage, count:'no'}, function(data) {
+	  			console.log(data);
+	  			var rawAds = data.ads;
+	  			var processedAds = processRawAds(rawAds);
+	  			angular.forEach(processedAds, function(ad) {
+	  				$scope.ads.push(ad);
+	  				$scope.$ngc.addModel(ad);
+	  			});
+	  		});
+	  	}
+	  };
 
-	$scope.$on('crossfilter/updated', function(event, collection, identifier) {
-		updateEntity();
-	});
+	  $scope.$on('crossfilter/updated', function(event, collection, identifier) {
+	  	updateEntity();
+	  });
 
 
 // ------------------------ Start Suggest Ads with Similar Images ---------------------------------------------- //
@@ -405,39 +405,34 @@ function findSimilarImages(imgUrl) {
  * @param  {[type]} imageUrls [description]
  * @return {[type]} Promise of an array of ads.
  */
-function suggestSimilarImages(imageUrls) {
-	console.log('Starting Reverse Image Search: ' + imageUrls.length + ' image URLs.');
-	if(imageUrls.length > 0) {
-		toastr.info('Starting Reverse Image Search: ' + imageUrls.length + ' image URLs.');
-	}
-	
-	var defer = $q.defer();
-	var promises = [];
+ function suggestSimilarImages(imageUrls) {
+ 	console.log('Starting Reverse Image Search: ' + imageUrls.length + ' image URLs.');
+ 	if(imageUrls.length > 0) {
+ 		toastr.info('Starting Reverse Image Search: ' + imageUrls.length + ' image URLs.');
+ 	}
+ 	var defer = $q.defer();
+ 	var promises = [];
+ 	angular.forEach(imageUrls, function(imageUrl){
+ 		promises.push($http.get('/api/v1/image/similar?url=' + imageUrl));
+ 	});
 
-	angular.forEach(imageUrls, function(imageUrl){
-		promises.push($http.get('/api/v1/image/similar?url=' + imageUrl));
-	});
+ 	$q.all(promises).then(function(responses){
+ 		var _suggestedAds = [];
+ 		angular.forEach(responses, function(res) {
+ 			var _ads = _.pluck(res, 'ad');
+ 			_suggestedAds = _suggestedAds.concat(_ads);
+ 		});
+ 		_suggestedAds = _.uniq(_.flatten(_suggestedAds));
+ 		_suggestedAds = _.filter(_suggestedAds, function(element) {
+ 			return ! _.isUndefined(element) && _.has(element,'id');
+ 		});
+ 		defer.resolve(_suggestedAds);
+ 	});
 
-	$q.all(promises).then(function(responses){
-		var _suggestedAds = [];
-		angular.forEach(responses, function(res) {
-			var _ads = _.pluck(res, 'ad');
-			_suggestedAds = _suggestedAds.concat(_ads);
-		});
-		_suggestedAds = _.uniq(_.flatten(_suggestedAds));
-		_suggestedAds = _.filter(_suggestedAds, function(element) {
-			return ! _.isUndefined(element) && _.has(element,'id');
-		});
-		defer.resolve(_suggestedAds);
-	});
-
-	return defer.promise;
-}
-
+ 	return defer.promise;
+ }
 
 // ------------------------ End Suggest Ads with Similar Images ---------------------------------------------- //
-
-
 
 	/**
 	 * Update the aggregate statistics for this entity, based on the (possibly filtered) set of linked ads, suggested ads, etc.
@@ -446,7 +441,6 @@ function suggestSimilarImages(imageUrls) {
 	 	$scope.entity.adId = uniqueFlatAndDefined(_.pluck($scope.ads, 'id')).sort();
 	 	var boom = 'ads_id%3A' + $scope.entity.adId.join('%20OR%20ads_id%3A');
 	 	$scope.imagecat = $sce.trustAsResourceUrl('https://darpamemex:darpamemex@imagecat.memexproxy.com/imagespace/#search/' + boom);
-
 	 	$scope.entity.phone = uniqueFlatAndDefined(_.pluck($scope.ads, 'phone')).sort();
 	 	$scope.entity.cities = uniqueFlatAndDefined(_.pluck($scope.ads, 'city')).sort();
 	 	$scope.entity.postTime = uniqueFlatAndDefined(_.pluck($scope.ads, 'posttime')).sort();
@@ -516,27 +510,27 @@ function suggestSimilarImages(imageUrls) {
 	 		return ! _.isUndefined(element);
 	 	});
 
-	 	// if (! _.isEmpty($scope.entity.cities)) {
+		// if (! _.isEmpty($scope.entity.cities)) {
 
-	 	// 	var promise = geocodeCity($scope.entity.cities[0]);
-	 	// 	promise.then(function(point) {
-	 	// 		$scope.map = {
-	 	// 			center: {
-	 	// 				latitude: point.latitude,
-	 	// 				longitude: point.longitude
-	 	// 			},
-	 	// 			zoom: 3
-	 	// 		};
-	 	// 	}, function(reason) {
-	 	// 		console.log('Failed');
-	 	// 		console.log(reason);
-	 	// 	}, function(update) {
-	 	// 		console.log(update);
-	 	// 	});
+		// 	var promise = geocodeCity($scope.entity.cities[0]);
+		// 	promise.then(function(point) {
+		// 		$scope.map = {
+		// 			center: {
+		// 				latitude: point.latitude,
+		// 				longitude: point.longitude
+		// 			},
+		// 			zoom: 3
+		// 		};
+		// 	}, function(reason) {
+		// 		console.log('Failed');
+		// 		console.log(reason);
+		// 	}, function(update) {
+		// 		console.log(update);
+		// 	});
 
-	 	// 	_.forEach($scope.entity.cities, function(city, key) {
-	 	// 		geocodeCity(city)
-	 	// 		.then(function(point){
+		// 	_.forEach($scope.entity.cities, function(city, key) {
+		// 		geocodeCity(city)
+		// 		.then(function(point){
 			// 	 //   id: 583187,
 			// 	 //   latitude: 46.7682,
 			// 	 //   longitude: -71.3234,
@@ -549,17 +543,17 @@ function suggestSimilarImages(imageUrls) {
 			// 	 };
 			// 	 $scope.markers.push(m);
 			// 	});
-	 	// 	});
-	 	// }
+		// 	});
+		// }
 
-	 	suggestSimilarImages($scope.imageUrls).then(function(suggestedAds){
-	 		console.log('Received ' + suggestedAds.length + ' suggestedAds.');
-	 		suggestedAds = _.filter(suggestedAds, function(element){
-	 			return !_.contains($scope.entity.adId, element.id);
-	 		});
-	 		$scope.similarAdsbyImage = _.uniq($scope.similarAdsbyImage.concat(suggestedAds));
-	 	});	
-	 }
+		suggestSimilarImages($scope.imageUrls).then(function(suggestedAds){
+			console.log('Received ' + suggestedAds.length + ' suggestedAds.');
+			suggestedAds = _.filter(suggestedAds, function(element){
+				return !_.contains($scope.entity.adId, element.id);
+			});
+			$scope.similarAdsbyImage = _.uniq($scope.similarAdsbyImage.concat(suggestedAds));
+		});	
+	}
 
 	// The following function requires access to the internet. We need to develop an offline version of this geocoder.
 	// var geocoder = new google.maps.Geocoder();
@@ -584,7 +578,6 @@ function suggestSimilarImages(imageUrls) {
 	// }
 
 	var _suggestionsPromise = entityService.Suggest.query({id: $scope.id}, function() {
-		console.log('Suggest:');
 		toastr.info('Starting...', 'Text Similarity Search');
 		console.log(_suggestionsPromise.suggestions);
 		$scope.suggestedAds = [];

@@ -51,4 +51,21 @@ npm install
 grunt serve
 ```
 
+Alternatively, 
+```
+make all
+make serve
+```
+
+## Populating local databases
+Start `mysqld` and `elasticsearch` locally, then
+```
+cd pipeline
+virtualenv env
+source env/bin/activate
+pip install -r requirements.txt
+cd onetime
+LINK_HT_PIPELINE='http://104.154.80.130:9800' ELS_USER=<your user> ELS_PASS=<your password> ELS_HOST=els.istresearch.com ELS_PORT=29200 python populate_ads.py
+```
+
 
