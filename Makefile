@@ -45,7 +45,6 @@ $(CONDA):
 	curl -O $(URL);
 	@if  [ -r miniconda ]; then rm -rf miniconda; fi
 	@bash $(INSTALL) -b -p miniconda
-	@$(CONDA) create -n venv python=$(PYTHON_VERSION)* -y
 
 npm: $(NVM_DIR)/nvm.sh
 	@echo "Installing NodeJS Packages"
