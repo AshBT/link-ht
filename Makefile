@@ -4,7 +4,7 @@ OSNAME  := $(shell uname -s)
 ARCH    := $(shell uname -m)
 
 # Python Information
-PYTHON_VERSION := 3
+PYTHON_VERSION := 2
 PYTHON  := $(shell which python$(PYTHON_VERSION))
 INSTALL := Miniconda$(subst 2,,$(PYTHON_VERSION))-latest-$(subst Darwin,MacOSX,$(OSNAME))-$(ARCH).sh
 URL     := http://repo.continuum.io/miniconda/${INSTALL}
