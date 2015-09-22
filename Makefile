@@ -68,7 +68,7 @@ install: miniconda npm bower
 	@echo "Packages Installed"
 
 .PHONY: serve
-serve: install
+serve:
 	$(GRUNT) serve
 
 .PHONY: clean
