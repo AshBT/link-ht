@@ -107,14 +107,10 @@ module.exports = (function() {
       from: starting_from
     }).then(function (source) {
       var ads = [];
-      for (var key in source) {
-        // other than the 'entity' key, all other keys are lists of ads
-        if (key !== 'entity' && key !== 'notes') {
-          var record = source[key];
-          record.user = key;
-          ads = ads.concat(record);
-        }
-      }
+
+      // Ads belonging to the "base" entity.
+      var baseAds = source.base;
+      ads = ads.concat(baseAds);
       ads.sort();
 
       var notes = [];
@@ -391,6 +387,82 @@ module.exports = (function() {
     })
   }
 
+  /**
+   * Marks the entity as saved by a particular user.
+   * @param  {[type]} req [description]
+   * @param  {[type]} res [description]
+   * @return {[type]}     [description]
+   */
+  var saveByUser = function(req, res) {
+    var user = req.query.user;
+    var entity_id = req.params.id;
+    console.log('----');
+    console.log('user:' + user);
+    console.log('entity id: ' + entity_id);
+    console.log('----');
+
+    var script = "if (ctx._source.containsKey('saveBy')) { ctx._source['saveBy'] += user } else { ctx._source['saveBy'] = [user] }";
+
+    db.elasticsearch.update({
+      index: config.elasticsearch.index,
+      type: 'entity',
+      id: entity_id,
+      retryOnConflict: 5,
+      body: {
+        script: script,
+        params: {
+          user: user
+        }
+      }
+    }).then(function(response) {
+      return res.json(response)
+    }, function(error) {
+      return res.status(400).json({error: error});
+    })     
+  }
+
+  /**
+   * Return the set of entities saved by a given user.
+   * @param  {[type]} req [description]
+   * @param  {[type]} res [description]
+   * @return {[type]}     [description]
+   */
+  var getSaveByUser = function(req, res) {
+    console.log('getSaveByUser');
+    var size = req.query.size || 10,
+        page = req.query.page || 1;
+    var starting_from = (page - 1) * size;
+    var user = req.query.user;
+    console.log('user:' + user);
+
+    // return db.elasticsearch.search({
+    //   index: config.elasticsearch.index,
+    //   type: 'entity',
+    //   size: size,
+    //   from: starting_from,
+    //   body: {
+    //     query: {
+    //       term: {"saveBy":user}
+    //     },
+    //     sort: [{"entity": "desc"}],
+    //   }
+    // })
+    return db.elasticsearch.search({
+      index: config.elasticsearch.index,
+      q: 'saveBy:' + user
+    })
+    .then(function (body) {
+      var hits = body.hits.hits;
+      console.log("**********___________________________**********")
+      console.log(hits)
+      console.log("**********___________________________**********")
+      res.json({status: 200, payload: hits});
+
+    }, function (error) {
+      res.status(400).json(error);
+    });
+  }
+
   var findSimilarImage = function(req, res) {
     var url = req.query.url;
     if (!url) {
@@ -474,6 +546,8 @@ console.log(options)
 
   return {
     annotate: annotate,
+    saveByUser: saveByUser,
+    getSaveByUser: getSaveByUser,
     search: search,
     suggestAd: suggestAd,
     getEntity: getEntity,

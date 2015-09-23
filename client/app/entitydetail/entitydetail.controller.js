@@ -261,11 +261,17 @@ $scope.seeImages = function() {
 		if(Auth.isLoggedIn()) {
 			username = Auth.getCurrentUser().name;
 		}
-		var entityInfo = {
-			entityId: $scope.id,
-			username: username
-		};
-		$http.post('/api/annotations/persist', {entityInfo : entityInfo});
+		$http.post('/api/v1/entity/' + $scope.id + '/saveByUser?user=' + username).
+			  then(function(response) {
+			    console.log(response);
+			    // this callback will be called asynchronously
+			    // when the response is available
+			  }, function(response) {
+			    console.log('something went wrong...');
+			    console.log(response);
+			    // called asynchronously if an error occurs
+			    // or server returns response with an error status.
+			  });
 	};
 
 	$scope.getHost = function (url) {
@@ -305,7 +311,7 @@ $scope.seeImages = function() {
 	 function processRawAds(rawAds) {
 	 	var processedAds = [];
 	 	_.map(rawAds, function(ad) {
-	 		ad.timestamp = Date.parse(ad.posttime);	
+	 		ad.timestamp = Date.parse(ad.posttime);
 	 		
 	 		if(isNaN(ad.timestamp)) {
 	 			console.log('Unable to parse ad posttime ' + ad.posttime + ' Using an arbitrary date instead.');

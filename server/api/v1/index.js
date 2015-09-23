@@ -83,6 +83,32 @@ router.post('/entity/:id/link/:ad_id', api.attachAd);
  */
 router.post('/entity/:id/note', api.annotate);
 
+/**
+ * savedByUser
+ * 
+ * This will mark the entity as saved by a particular user.
+ *
+ * Query parameters:
+ * 		user -- the username creating the annotation
+ *
+ * curl -XPOST "HOSTNAME/api/v1/entity/18004441234/saveByUser?user=foobar"
+ */
+router.post('/entity/:id/saveByUser', api.saveByUser);
+
+/**
+ * getSavedByUser
+ *
+ * Returns a list of entities saved by the user.
+ *
+ * Query parameters:
+ * 		user -- the username creating the annotation
+ * 		size  -- number of ads in the entity to return per page
+ *      page  -- the page to return
+ *
+ * curl "HOSTNAME/api/v1/entity/18004441234/getSaveByUser?user=foobar"
+ */
+router.get('/savedEntities', api.getSaveByUser);
+
 /** deleteAd
  *
  * The deleteAd endpoint can be used with

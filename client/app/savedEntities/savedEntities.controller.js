@@ -3,16 +3,12 @@
 angular.module('memexLinkerApp')
 .controller('SavedentitiesCtrl', function ($scope, $http, $q, socket, lodash, entityService, linkUtils, Crossfilter) {
   var _ = lodash;
-  var uniqueFlatAndDefined = linkUtils.uniqueFlatAndDefined;
-  var collectAdProperty = linkUtils.collectAdProperty;
-  var collectAdProperty2 = linkUtils.collectAdProperty2;
-  var _SEARCH_URL = '/api/v1/search';
-  $scope.entities = []
-  $scope.entities2 = []
-
-  $scope.adIds = []
-  $scope.temp_url=[]
-
+  // var uniqueFlatAndDefined = linkUtils.uniqueFlatAndDefined;
+  // var collectAdProperty = linkUtils.collectAdProperty;
+  // var collectAdProperty2 = linkUtils.collectAdProperty2;
+  // var _SEARCH_URL = '/api/v1/search';
+  $scope.entities = [];
+  $scope.adIds = [];
 
   var sources = {
     1 : 'Backpage',
@@ -121,37 +117,57 @@ angular.module('memexLinkerApp')
     return entity;
   }
 
-  $http.get('/api/annotations/search').then(function(response){
-
-    var x=[];
-    for (var i = 0; i < response.data.length; i++) {
-      x[i] = response.data[i]._source.entityid;
-    }
-    x = _.uniq(x);
-    x = _.filter(x, function(element){
-      return ! _.isUndefined(element);
+  $http.get('/api/v1/savedEntities?user=Anonymous').
+  then(function(response) {
+    // this callback will be called asynchronously
+    // when the response is available
+    var savedEntities = response.data.payload;
+    angular.forEach(savedEntities, function(rawEntity){
+      console.log(rawEntity);
+      $scope.entities.push(_formatEntity(rawEntity));
     });
-    console.log(x);
-    $scope.entities = [];
 
-    for (var i = 0; i < x.length; i++) {
-      $scope.adIds.push(x[i]);
-      $scope.temp_url.push('http://localhost:9000/entitydetail/' + x[i]);
-
-      $http.post(_SEARCH_URL, {query:x[i]}).then(function(response){
-        var e = _.map(response.data.entities, function(e) {
-          var entity = _formatEntity(e);
-          console.log(entity);
-          return entity;
-        });
-        console.log('adding entity...');
-        console.log(e);
-        $scope.entities.push(e);
-        $scope.entities = _.flatten($scope.entities);
-      });
-    }
-    // $scope.entities2 = y
-    // console.log($scope.entities2)
+  }, function(response) {
+    // called asynchronously if an error occurs
+    // or server returns response with an error status.
+    console.log('something went wrong...');
+    console.log(response);
   });
 
+
+  // then(function(response){
+  //   console.log(response);
+
+    // var x=[];
+    // for (var i = 0; i < response.data.length; i++) {
+    //   x[i] = response.data[i]._source.entityid;
+    // }
+    // x = _.uniq(x);
+    // x = _.filter(x, function(element){
+    //   return ! _.isUndefined(element);
+    // });
+    // console.log(x);
+    // $scope.entities = [];
+
+    // for (var i = 0; i < x.length; i++) {
+    //   $scope.adIds.push(x[i]);
+    //   $scope.temp_url.push('http://localhost:9000/entitydetail/' + x[i]);
+
+    //   $http.post(_SEARCH_URL, {query:x[i]}).then(function(response){
+    //     var e = _.map(response.data.entities, function(e) {
+    //       var entity = _formatEntity(e);
+    //       console.log(entity);
+    //       return entity;
+    //     });
+    //     console.log('adding entity...');
+    //     console.log(e);
+    //     $scope.entities.push(e);
+    //     $scope.entities = _.flatten($scope.entities);
+    //   });
+    // }
+    // $scope.entities2 = y
+    // console.log($scope.entities2)
+//     }), function(response) {
+
 });
+
