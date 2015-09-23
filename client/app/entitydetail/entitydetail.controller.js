@@ -275,8 +275,14 @@ function uniqueString() {
 	 			ad.timestamp = (new Date(2015, 0, 1)).getTime();
 	 			ad.posttime = (new Date(2015, 0, 1)).getTime();
 	 		}
-	 		ad.city = ad.city.substring(0,20);
 
+	 		if(!_.has(ad, 'city')) {
+	 			console.log('Ad lacks a city field');
+	 			ad.city = '';
+	 		} else {
+	 			ad.city = ad.city.substring(0,20);	
+	 		}
+	 		
 	 		if(_.has(ad, 'sources_id') && _.has(entityService.icons, ad.sources_id)) {
 	 			ad.options = {
 	 				icon: {
@@ -311,8 +317,8 @@ function uniqueString() {
 			}
 			processedAds.push(ad);
 		});
-return processedAds;
-}
+		return processedAds;
+	}
 
 	/**
 	 * Gets ads linked to this entity, and notes.

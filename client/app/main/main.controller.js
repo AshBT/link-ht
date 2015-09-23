@@ -63,7 +63,9 @@ $scope.items = ['Item 1', 'Item 2', 'Item 3'];
 		}
 	};
 
+
 	$scope.onSocialChange = function(enableSocialFilter) {
+		console.log('onSocialChange');
 		if(enableSocialFilter) {
 			$scope.entityCrossfilter.filterBy('socialmedia', function(values) {
 				return values.length > 0;
@@ -98,6 +100,11 @@ $scope.items = ['Item 1', 'Item 2', 'Item 3'];
 	$scope.search = function(pageNumber){
 
 		$scope.entityCrossfilter = new Crossfilter([], 'id', 'persistent', ['id', 'faceImageUrls', 'socialmedia', 'similarads']);
+		if($scope.hasSocialMedia) {
+			$scope.entityCrossfilter.filterBy('socialmedia', function(values) {
+				return values.length > 0;
+			});
+		}
 		$scope.aggregates = initAggregates();
 
 		console.log('You searched for ' + $scope.elasticSearchText);
