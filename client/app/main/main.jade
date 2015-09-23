@@ -13,18 +13,19 @@ div(ng-include='"components/navbar/navbar.html"')
 							form(ng-submit='search()' ng-click="counter = counter + 1" ng-init="counter=0")
 								input.search-query.form-control(type='text',ng-model='elasticSearchText', name='text', placeholder='Search...')
 								input.btn.btn-primary#submit(type='submit', value='Submit')
-					.col-md-1.form
-					.col-md-2.form(ng-if="aggregates.get('entityIds').length == 0")
-					.col-md-2.form(ng-if="aggregates.get('entityIds').length > 0", style="background-color:black")
+					.col-md-1
+					.col-md-2(ng-if="aggregates.get('entityIds').length == 0")
+					//- .col-md-2(ng-if="aggregates.get('entityIds').length > 0", style="background-color:black")
+					.col-md-2
 						left
 							h3(style='color:#ff5351') Controls
-							label(style='color:white') Blur Images:
+							label(style='color:black') Blur Images 
 								input(type="checkbox" ng-model="blur")
 							//- label(style='color:white') Has Face Picture:
 							//- 	input(type="checkbox", ng-model="hasFacePic" ng-change="onFaceChange(hasFacePic)")
 							//- label(style='color:white') Has Similar Ads:
 							//- 	input(type="checkbox", ng-model="hasSimilarAds" ng-change="onSimilarChange(hasSimilarAds)")
-							label(style='color:white') Has Social Media
+							label(style='color:black') Social Media 
 								input(type="checkbox", ng-model="hasSocialMedia" ng-change="onSocialChange(hasSocialMedia)")
 				.search-body.panel-body(ng-if="aggregates.get('entityIds').length > 0")
 					.col-md-12
@@ -162,6 +163,7 @@ div(ng-include='"components/navbar/navbar.html"')
 												img.responsive(ng-src="{{img}}"
 													style="max-height:50px; margin:0 auto;"
 													ng-class="{blurry: blur == true, clear: blur != true}")
+
 	footer.footer
 		center Designed and Developed by Qadium 2015 for DARPA's Memex program.
 		center Check out the open source code for Link HT on <a href='https://github.com/qadium/link-ht'> Github</a>.

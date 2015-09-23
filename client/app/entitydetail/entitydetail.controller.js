@@ -377,7 +377,6 @@ return processedAds;
 	  */
 	  $scope.loadNextPageOfAds = function() {
 	  	if($scope.adPagination.page * $scope.adPagination.perPage < $scope.adPagination.total) {
-	  		console.log('yes');
 	  		var nextPage = $scope.adPagination.page + 1;
 	  		$scope.adPagination.page = nextPage;
 	  		entityService.Entity.query({id: $scope.id, size:$scope.adPagination.perPage, page:nextPage, count:'no'}, function(data) {
