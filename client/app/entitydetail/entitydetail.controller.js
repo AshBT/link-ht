@@ -97,49 +97,6 @@ function uniqueString() {
 
 // ------------------------ End Upload to S3 Code ---------------------------------------------- //
 
-$scope.seeImages = function() {
-	$scope.simImageUrl =[];
-	findSimilarImages($scope.s3URLs[0]).then(function(similarImageUrls) {
-		console.log('Found ' + similarImageUrls.length + ' similar images.');
-		$scope.simImageUrl = similarImageUrls;
-	});
-};
-
-/**
- * [similarImagesToUploadedImage description]
- * @param  {[type]} imgUrl 
- * @return {[type]}       [description]
- */
- function findSimilarImages(imgUrl) {
-
- 	var defer = $q.defer();
-
- 	$http.get('/api/v1/image/similar?url=' + imgUrl).success(function(res){
- 		var ads=[];
- 		var urls=[];
- 		for (var i = 0; i < res.length; i++) {
- 			ads[i] = res[i].ad;
- 			urls[i] = $sce.trustAsResourceUrl(res[i].cached_image_urls);
- 		}
- 		ads = _.uniq(ads);
- 		ads = _.filter(ads, function(element){
- 			return ! _.isUndefined(element);
- 		});
- 		urls = _.uniq(urls);
- 		urls = _.filter(urls, function(element){
- 			return ! _.isUndefined(element);
- 		});
-
-		//$scope.simImageUrl = urls; // + $scope.simImageUrl
-		//console.log($scope.simImageUrl);
-		defer.resolve({ads:ads, urls:urls});
-	});
-
- 	return defer.promise;
- }
-
-// ------------------------ End Similar to Uploaded Code ---------------------------------------------- //
-
 	// Aggregate details about this entitiy.
 	$scope.entity = {
 		phone:'',
