@@ -435,29 +435,13 @@ module.exports = (function() {
     var user = req.query.user;
     console.log('user:' + user);
 
-    // return db.elasticsearch.search({
-    //   index: config.elasticsearch.index,
-    //   type: 'entity',
-    //   size: size,
-    //   from: starting_from,
-    //   body: {
-    //     query: {
-    //       term: {"saveBy":user}
-    //     },
-    //     sort: [{"entity": "desc"}],
-    //   }
-    // })
     return db.elasticsearch.search({
       index: config.elasticsearch.index,
       q: 'saveBy:' + user
     })
     .then(function (body) {
       var hits = body.hits.hits;
-      console.log("**********___________________________**********")
-      console.log(hits)
-      console.log("**********___________________________**********")
       res.json({status: 200, payload: hits});
-
     }, function (error) {
       res.status(400).json(error);
     });

@@ -84,7 +84,7 @@ router.post('/entity/:id/link/:ad_id', api.attachAd);
 router.post('/entity/:id/note', api.annotate);
 
 /**
- * savedByUser
+ * saveByUser
  * 
  * This will mark the entity as saved by a particular user.
  *
@@ -96,7 +96,7 @@ router.post('/entity/:id/note', api.annotate);
 router.post('/entity/:id/saveByUser', api.saveByUser);
 
 /**
- * getSavedByUser
+ * savedEntities
  *
  * Returns a list of entities saved by the user.
  *

@@ -1,7 +1,7 @@
 'use strict';
 
 angular.module('memexLinkerApp')
-.controller('SavedentitiesCtrl', function ($scope, $http, $q, socket, lodash, entityService, linkUtils, Crossfilter) {
+.controller('SavedentitiesCtrl', function ($scope, $http, $q, socket, lodash, entityService, linkUtils) {
   var _ = lodash;
   // var uniqueFlatAndDefined = linkUtils.uniqueFlatAndDefined;
   // var collectAdProperty = linkUtils.collectAdProperty;
@@ -61,10 +61,7 @@ angular.module('memexLinkerApp')
     var phones = linkUtils.uniqueFlatAndDefined(linkUtils.collectAdProperty(ads, 'phone'));
     var titles = linkUtils.collectAdProperty(ads, 'title');
     var texts = linkUtils.collectAdProperty(ads, 'text');
-    var snippet1= "";
-    var snippet2= "";
-    var snippet3= "";
-    var all_text = titles + texts;
+    var allText = titles + texts;
     var names = linkUtils.uniqueFlatAndDefined(linkUtils.collectAdProperty(ads, 'name'));
     var cities = linkUtils.uniqueFlatAndDefined(linkUtils.collectAdProperty(ads, 'city'));
     for (var i = 0; i < cities.length; i++) {
@@ -74,7 +71,6 @@ angular.module('memexLinkerApp')
     var instagram = linkUtils.uniqueFlatAndDefined(linkUtils.collectAdProperty(ads, 'instagram'));
     var twitter = linkUtils.uniqueFlatAndDefined(linkUtils.collectAdProperty(ads, 'twitter'));
     var socialmedia = twitter + instagram + youtube;
-    var ethnicity = linkUtils.uniqueFlatAndDefined(linkUtils.collectAdProperty(ads, 'ethnicity'));
     var imageUrls = _.uniq(lodash.flatten(
       _.map(ads, function(ad) {
         return ad.image_locations;
@@ -112,7 +108,7 @@ angular.module('memexLinkerApp')
       socialmedia: socialmedia,
       titles: titles,
       texts: texts,
-      all_text: all_text
+      allText: allText
     };
     return entity;
   }
@@ -134,40 +130,6 @@ angular.module('memexLinkerApp')
     console.log(response);
   });
 
-
-  // then(function(response){
-  //   console.log(response);
-
-    // var x=[];
-    // for (var i = 0; i < response.data.length; i++) {
-    //   x[i] = response.data[i]._source.entityid;
-    // }
-    // x = _.uniq(x);
-    // x = _.filter(x, function(element){
-    //   return ! _.isUndefined(element);
-    // });
-    // console.log(x);
-    // $scope.entities = [];
-
-    // for (var i = 0; i < x.length; i++) {
-    //   $scope.adIds.push(x[i]);
-    //   $scope.temp_url.push('http://localhost:9000/entitydetail/' + x[i]);
-
-    //   $http.post(_SEARCH_URL, {query:x[i]}).then(function(response){
-    //     var e = _.map(response.data.entities, function(e) {
-    //       var entity = _formatEntity(e);
-    //       console.log(entity);
-    //       return entity;
-    //     });
-    //     console.log('adding entity...');
-    //     console.log(e);
-    //     $scope.entities.push(e);
-    //     $scope.entities = _.flatten($scope.entities);
-    //   });
-    // }
-    // $scope.entities2 = y
-    // console.log($scope.entities2)
-//     }), function(response) {
 
 });
 
