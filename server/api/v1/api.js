@@ -22,29 +22,44 @@ module.exports = (function() {
 //------------------------------LOGGING---------------------------------
 
 
-
   var _search = function(query, size, page) {
+
+    var request = require("request");
+
+    var requestData = JSON.stringify({"search": query});
+
+    var options = {
+        method: 'POST',
+        url: '[FLASKAPIPATH]/search',
+        headers: { 'content-type': 'application/json' },
+        body: requestData
+    };
+
+    request(options, function (error, response, body) {
+        if (error) throw new Error(error);
+      console.log(body);
+    })
 
 
     var starting_from = (page - 1) * size;
 
     return db.elasticsearch.search({
       index: config.elasticsearch.index,
-      type: 'entity',
+      // type: 'group',
       size: size,
-      from: starting_from,
+      from: page,
       body: {
         query: {
           match_phrase: {
-            "text": query
+            "_all": query
           }
-        },
-        sort: [{"entity": "desc"}],
-        highlight: {
-            fields : {
-                "text" : {}
-            }
-        }
+        } //,
+      //   sort: [{"entity": "desc"}],
+      //   highlight: {
+      //       fields : {
+      //           "text" : {}
+      //       }
+      //   }
       }
     }).then(function (body) {
       var hits = body.hits.hits;
@@ -204,6 +219,7 @@ module.exports = (function() {
     var number_per_page = req.query.size || 10,
         page = req.query.page || 1,
         count = req.query.count || "no";
+    console.log(req.body.query)
     var query_string = req.body.query;
     if (query_string) {
       var search_deferred = _search(query_string, number_per_page, page),
