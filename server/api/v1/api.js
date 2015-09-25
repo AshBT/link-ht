@@ -29,7 +29,7 @@ module.exports = (function() {
 
     var options = {
         method: 'POST',
-        url: "http://104.197.96.190:8080/search",
+        url: '[FLASKAPIPATH]/search',
         headers: { 'content-type': 'application/json' },
         body: requestData
     };
