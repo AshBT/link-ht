@@ -21,25 +21,22 @@ module.exports = (function() {
 
 //------------------------------LOGGING---------------------------------
 
-
   var _search = function(query, size, page) {
 
-    var request = require("request");
+    var request = require("request-promise");
 
     var requestData = JSON.stringify({"search": query});
 
     var options = {
         method: 'POST',
-        url: '[FLASKAPIPATH]/search',
+        url: "http://104.197.96.190:8080/search",
         headers: { 'content-type': 'application/json' },
         body: requestData
     };
 
-    request(options, function (error, response, body) {
-        if (error) throw new Error(error);
-      console.log(body);
-    })
+    var response = request(options);
 
+    response.then(console.log).catch(console.error);
 
     var starting_from = (page - 1) * size;
 
