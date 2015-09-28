@@ -222,7 +222,7 @@ module.exports = (function() {
       var search_deferred = _search(query_string, number_per_page, page),
           count_deferred = {status: 200, payload: undefined};
       if (count === "yes") {
-         count_deferred = _count(query_string);
+        count_deferred = _count(query_string);
       }
       Promise.all([search_deferred, count_deferred])
         .then(function (results) {
