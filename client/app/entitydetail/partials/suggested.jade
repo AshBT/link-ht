@@ -1,7 +1,7 @@
 //- div(ngif='suggestedAds.length===0')
 //- 	p No suggested ads.
 
-
+//- TO DO: Add a version of _source. after ad. in #head2; 1st, we need to decide where suggested ads are getting posted. This may in fact be a different index.
 .panel.panel-default(ng-repeat="ad in similarAdsbyImage | orderBy:'-posttime'")
 
 	#head2.panel-heading.h1 {{sourceMap[ad.sources_id]}} at {{ad.posttime | date}}

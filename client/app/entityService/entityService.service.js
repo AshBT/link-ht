@@ -147,44 +147,43 @@ function entityService($http, $q, $sce, $resource, linkUtils, lodash) {
  			highlight = highlight.replace(spanEnd,'</span>');
  			highlight = $sce.trustAsHtml(highlight);
 	 	}
-	 	
+
 	 	var ads = rawEntity._source.docs;
 		// Aggregate ad details
+		console.log("1")
+		console.log(ads)
+		console.log("2")
 		var postTimes = _.map(ads, function(ad){
-			//console.log(ad);
-			return new Date(ad.posttime);
+			return new Date(ad._source.posttime);
 		});
+		//console.log(postTimes)
 		var lastPostTime = _.max(postTimes);
 		var firstPostTime = _.min(postTimes);
-		var ages = linkUtils.uniqueFlatAndDefined(linkUtils.collectAdProperty(ads, 'age')).sort();
-		var rates60 = linkUtils.uniqueFlatAndDefined(linkUtils.collectAdProperty(ads, 'rate60')).sort();
+		var ages = linkUtils.uniqueFlatAndDefined(linkUtils.collectAdProperty(ads, '_source.age')).sort();
+		var rates60 = linkUtils.uniqueFlatAndDefined(linkUtils.collectAdProperty(ads, '_source.rate60')).sort();
 		var websites=[];
-		var sourcesid = linkUtils.uniqueFlatAndDefined(linkUtils.collectAdProperty(ads, 'sources_id'));
+		var sourcesid = linkUtils.uniqueFlatAndDefined(linkUtils.collectAdProperty(ads, '_source.sources_id'));
 		for (var i = 0; i < sourcesid.length; i++) {
 			websites = websites.concat(sources[sourcesid[i]]);
 		}
 		websites = _.filter(_.uniq(websites), function(element){
 			return ! _.isUndefined(element);
 		});
-		var phones = linkUtils.uniqueFlatAndDefined(linkUtils.collectAdProperty(ads, 'phone'));
+		var phones = linkUtils.uniqueFlatAndDefined(linkUtils.collectAdProperty(ads, '_source.phone'));
 
-		var titles = linkUtils.collectAdProperty(ads, 'title');
-		var texts = linkUtils.collectAdProperty(ads, 'text');
-		var snippet1= "";
-		var snippet2= "";
-		var snippet3= "";
-		var all_text = titles + texts;
-		var names = linkUtils.uniqueFlatAndDefined(linkUtils.collectAdProperty(ads, 'name'));
-		var cities = linkUtils.uniqueFlatAndDefined(linkUtils.collectAdProperty(ads, 'city'));
+		var titles = linkUtils.collectAdProperty(ads, '_source.title');
+		var texts = linkUtils.collectAdProperty(ads, '_source.text');
+		var names = linkUtils.uniqueFlatAndDefined(linkUtils.collectAdProperty(ads, '_source.name'));
+		var cities = linkUtils.uniqueFlatAndDefined(linkUtils.collectAdProperty(ads, '_source.city'));
 		for (var i = 0; i < cities.length; i++) {
           cities[i]=cities[i].substring(0,20);
         }
        	var cities = linkUtils.uniqueFlatAndDefined(cities);
-		var youtube = linkUtils.uniqueFlatAndDefined(linkUtils.collectAdProperty(ads, 'youtube'));
-		var instagram = linkUtils.uniqueFlatAndDefined(linkUtils.collectAdProperty(ads, 'instagram'));
-		var twitter = linkUtils.uniqueFlatAndDefined(linkUtils.collectAdProperty(ads, 'twitter'));
+		var youtube = linkUtils.uniqueFlatAndDefined(linkUtils.collectAdProperty(ads, '_source.youtube'));
+		var instagram = linkUtils.uniqueFlatAndDefined(linkUtils.collectAdProperty(ads, '_source.instagram'));
+		var twitter = linkUtils.uniqueFlatAndDefined(linkUtils.collectAdProperty(ads, '_source.twitter'));
 		var socialmedia = twitter + instagram + youtube;
-		var ethnicity = linkUtils.uniqueFlatAndDefined(linkUtils.collectAdProperty(ads, 'ethnicity'));
+		var ethnicity = linkUtils.uniqueFlatAndDefined(linkUtils.collectAdProperty(ads, '_source.ethnicity'));
 		var imageUrls = _.uniq(lodash.flatten(
 			_.map(ads, function(ad) {
 				return ad.image_locations;
@@ -224,7 +223,6 @@ function entityService($http, $q, $sce, $resource, linkUtils, lodash) {
 			socialmedia: socialmedia,
 			titles: titles,
 			texts: texts,
-			all_text: all_text,
 			highlight: highlight
 		};
 		return entity;

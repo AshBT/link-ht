@@ -10,12 +10,12 @@ br
 
 div(infinite-scroll='loadNextPageOfAds()')
 	.panel.panel-default(ng-repeat="ad in $ngc.collection() | orderBy:'-timestamp'")
-		.panel-heading.h1  {{sourceMap[ad.sources_id]}} at {{ad.posttime | date}}
+		.panel-heading.h1  {{sourceMap[ad._source.sources_id]}} at {{ad._source.posttime | date}}
 		.panel-body.vertical-layout
 			.item
-				h4 {{ad.title}}
-				p {{ad.text}}
-				p Original Post's URL: {{ad.url}}
+				h4 {{ad._source.title}}
+				p {{ad._source.text}}
+				p Original Post's URL: {{ad._source.url}}
 			.item
 				row
 					col-md-3(ng-repeat = 'img in ad.image_locations track by $index')

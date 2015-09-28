@@ -268,41 +268,40 @@ function uniqueString() {
 	 function processRawAds(rawAds) {
 	 	var processedAds = [];
 	 	_.map(rawAds, function(ad) {
-	 		ad.timestamp = Date.parse(ad.posttime);
+	 		ad.timestamp = Date.parse(ad._source.posttime);
 	 		
 	 		if(isNaN(ad.timestamp)) {
-	 			console.log('Unable to parse ad posttime ' + ad.posttime + ' Using an arbitrary date instead.');
-	 			ad.timestamp = (new Date(2015, 0, 1)).getTime();
-	 			ad.posttime = (new Date(2015, 0, 1)).getTime();
+	 			console.log('Unable to parse ad posttime ' + ad._source.posttime + ' Using an arbitrary date instead.');
+	 			ad._source.timestamp = (new Date(2015, 0, 1)).getTime();
+	 			ad._source.posttime = (new Date(2015, 0, 1)).getTime();
 	 		}
 
 	 		if(!_.has(ad, 'city')) {
 	 			console.log('Ad lacks a city field');
-	 			ad.city = '';
+	 			ad._source.city = '';
 	 		} else {
-	 			ad.city = ad.city.substring(0,20);	
+	 			ad._source.city = ad._source.city.substring(0,20);	
 	 		}
 	 		
-	 		if(_.has(ad, 'sources_id') && _.has(entityService.icons, ad.sources_id)) {
+	 		if(_.has(ad, 'sources_id') && _.has(entityService.icons, ad._source.sources_id)) {
 	 			ad.options = {
 	 				icon: {
-	 					url: entityService.icons[ad.sources_id],
+	 					url: entityService.icons[ad._source.sources_id],
 	 					scaledSize: new google.maps.Size(34, 44)
 	 				}
 	 			};
 	 		} else {
 	 			console.log('No icon found.');
-	 			ad.icon = '/assets/images/backpage.png';
+	 			ad._source.icon = '/assets/images/backpage.png';
 	 		}
 
 	 		if ( 'latitude' in ad && 'longitude' in ad) {
-	 			ad.latitude = Number(ad.latitude);
-	 			ad.longitude = Number(ad.longitude);
+	 			ad._source.latitude = Number(ad.latitude);
+	 			ad._source.longitude = Number(ad.longitude);
 	 		} else {
-	 			ad.latitude = 0;
-	 			ad.longitude = 0;
+	 			ad._source.latitude = 0;
+	 			ad._source.longitude = 0;
 				// If latitude and longitude are not present, try to geocode the city name.
-				
 				// if(_.has(ad, 'city')) {
 				// 	geocodeCity(ad.city).then(function(point) {
 				// 		$scope.ads.push(ad);
@@ -330,9 +329,13 @@ function uniqueString() {
 	 		_.map(notes, function(note){
 	 			$scope.annotations.push(note);
 	 		});
+
 	 		var rawAds = data.ads;
 	 		$scope.adPagination.total = data.total;
 	 		var processedAds = processRawAds(rawAds);
+	 		console.log("o0o0o0o0o0")
+	 		console.log("o0o0o0o0o0")
+	 		console.log(processedAds)
 	 		angular.forEach(processedAds, function(ad) {
 	 			$scope.ads.push(ad);
 	 			$scope.$ngc.addModel(ad);
@@ -406,21 +409,24 @@ function uniqueString() {
 	 * Update the aggregate statistics for this entity, based on the (possibly filtered) set of linked ads, suggested ads, etc.
 	 */
 	 function updateEntity() {
-	 	$scope.entity.adId = uniqueFlatAndDefined(_.pluck($scope.ads, 'id')).sort();
+	 	console.log("aAaAaA")
+	 	console.log($scope.ads)
+	 	$scope.entity.adId = uniqueFlatAndDefined(_.pluck($scope.ads, '_id')).sort();
 	 	var boom = 'ads_id%3A' + $scope.entity.adId.join('%20OR%20ads_id%3A');
 	 	$scope.imagecat = $sce.trustAsResourceUrl('https://darpamemex:darpamemex@imagecat.memexproxy.com/imagespace/#search/' + boom);
-	 	$scope.entity.phone = uniqueFlatAndDefined(_.pluck($scope.ads, 'phone')).sort();
-	 	$scope.entity.cities = uniqueFlatAndDefined(_.pluck($scope.ads, 'city')).sort();
-	 	$scope.entity.postTime = uniqueFlatAndDefined(_.pluck($scope.ads, 'posttime')).sort();
-	 	$scope.entity.age = uniqueFlatAndDefined(_.pluck($scope.ads, 'age')).sort();
-	 	$scope.entity.ethnicities = uniqueFlatAndDefined(_.pluck($scope.ads, 'ethnicity')).sort();
-	 	$scope.entity.height = uniqueFlatAndDefined(_.pluck($scope.ads, 'height')).sort();
-	 	$scope.entity.weight = uniqueFlatAndDefined(_.pluck($scope.ads, 'weight')).sort();
-	 	$scope.entity.eyes = uniqueFlatAndDefined(_.pluck($scope.ads, 'eyes')).sort();
-	 	$scope.entity.hair = uniqueFlatAndDefined(_.pluck($scope.ads, 'hair')).sort();
-	 	$scope.entity.price = uniqueFlatAndDefined(_.pluck($scope.ads, 'rate60')).sort();
-	 	$scope.entity.email = uniqueFlatAndDefined(_.pluck($scope.ads, 'email')).sort();
-	 	$scope.entity.name = uniqueFlatAndDefined(_.pluck($scope.ads, 'name')).sort();
+	 	$scope.entity.phone = uniqueFlatAndDefined(_.pluck($scope.ads, '_source.phone')).sort();
+	 	console.log($scope.entity.phone)
+	 	$scope.entity.cities = uniqueFlatAndDefined(_.pluck($scope.ads, '_source.city')).sort();
+	 	$scope.entity.postTime = uniqueFlatAndDefined(_.pluck($scope.ads, '_source.posttime')).sort();
+	 	$scope.entity.age = uniqueFlatAndDefined(_.pluck($scope.ads, '_source.age')).sort();
+	 	$scope.entity.ethnicities = uniqueFlatAndDefined(_.pluck($scope.ads, '_source.ethnicity')).sort();
+	 	$scope.entity.height = uniqueFlatAndDefined(_.pluck($scope.ads, '_source.height')).sort();
+	 	$scope.entity.weight = uniqueFlatAndDefined(_.pluck($scope.ads, '_source.weight')).sort();
+	 	$scope.entity.eyes = uniqueFlatAndDefined(_.pluck($scope.ads, '_source.eyes')).sort();
+	 	$scope.entity.hair = uniqueFlatAndDefined(_.pluck($scope.ads, '_source.hair')).sort();
+	 	$scope.entity.price = uniqueFlatAndDefined(_.pluck($scope.ads, '_source.rate60')).sort();
+	 	$scope.entity.email = uniqueFlatAndDefined(_.pluck($scope.ads, '_source.email')).sort();
+	 	$scope.entity.name = uniqueFlatAndDefined(_.pluck($scope.ads, '_source.name')).sort();
 	 	$scope.entity.instagram = uniqueFlatAndDefined(_.pluck($scope.ads, 'instagram')).sort();
 	 	$scope.entity.instagram_followers= uniqueFlatAndDefined(_.pluck($scope.ads, 'instagram_followers')).sort();
 	 	$scope.entity.instagram_follows= uniqueFlatAndDefined(_.pluck($scope.ads, 'instagram_follows')).sort();
@@ -460,7 +466,7 @@ function uniqueString() {
 
 	 	var rawImageUrls = _.flatten(
 	 		_.map($scope.ads, function(ad) {
-	 			return ad.image_locations;
+	 			return ad._source.image_locations;
 	 		}),
 	 		true
 	 		);

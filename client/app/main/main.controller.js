@@ -123,23 +123,6 @@ $scope.items = ['Item 1', 'Item 2', 'Item 3'];
 			console.log('Found ' + paginatedResults.total + ' entites');
 			$scope.entities = entities;
 			_.forEach($scope.entities, function(entity) {
-				var regex=entity.all_text.match(re1,"");
-				if (regex!=null) {
-					var start_regex = regex[0].match(re3,"")[0].replace(re2,"");
-					var mid_regex = regex[0].match(re2,"")[0]
-					var end_regex = regex[0].match(re4,"")[0].replace(re2,"");
-					// console.log(start_regex + mid_regex + end_regex);
-					entity.snippet1 = start_regex;
-					entity.snippet2 = mid_regex;
-					entity.snippet3 = end_regex;
-					entity.nResults = regex.length;
-				}
-				else {
-					console.log("The regex returned a Null result");
-					// entity.snippet1 = start_regex;
-					// entity.snippet2 = mid_regex;
-					// entity.snippet3 = end_regex;
-				}
 				updateAggregates(entity, $scope.aggregates);
 			});
 			//var _models = $scope.entityCrossfilter.collection();
@@ -148,7 +131,7 @@ $scope.items = ['Item 1', 'Item 2', 'Item 3'];
 			//console.log(entities)
 			$scope.entityCrossfilter.addModels(entities);
 			// console.log($scope.aggregates);
-			console.log($scope.entityCrossfilter.collection());
+			//console.log($scope.entityCrossfilter.collection());
 			toastr.clear()
 			// toastr.success("Search completed.", "Search")
 
