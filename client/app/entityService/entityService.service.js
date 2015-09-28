@@ -138,14 +138,17 @@ function entityService($http, $q, $sce, $resource, linkUtils, lodash) {
 	  * @return {[type]}           [description]
 	  */
 	 function _formatEntity(rawEntity) {
-	 	var highlight =  rawEntity.highlight.text[0];
-		var spanStart = new RegExp("<em>","gi");
-		var spanEnd = new RegExp("</em>","gi");
-		highlight = highlight.replace(spanStart,'<span style="background-color: #FFFF00">');
-		highlight = highlight.replace(spanEnd,'</span>');
-		highlight = $sce.trustAsHtml(highlight);
-
-	 	var ads = rawEntity._source.base;
+	 	console.log(rawEntity)
+	 	if (rawEntity.highlight) {
+ 		 	var highlight =  rawEntity.highlight["docs._source.text"][0];
+ 			var spanStart = new RegExp("<em>","gi");
+ 			var spanEnd = new RegExp("</em>","gi");
+ 			highlight = highlight.replace(spanStart,'<span style="background-color: #FFFF00">');
+ 			highlight = highlight.replace(spanEnd,'</span>');
+ 			highlight = $sce.trustAsHtml(highlight);
+	 	}
+	 	
+	 	var ads = rawEntity._source.docs;
 		// Aggregate ad details
 		var postTimes = _.map(ads, function(ad){
 			//console.log(ad);
