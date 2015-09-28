@@ -7,7 +7,8 @@ module.exports = (function() {
       config = require('../../config/environment'),
       https = require('https'),
       querystring = require('querystring'),
-      _ = require('lodash');
+      _ = require('lodash'),
+      request = require("request-promise");
 
 
 //------------------------------LOGGING---------------------------------
@@ -23,24 +24,21 @@ module.exports = (function() {
 
   var _search = function(query, size, page) {
 
-    var request = require("request-promise");
-
     var requestData = JSON.stringify({"search": query});
 
     var options = {
         method: 'POST',
-        url: '[FLASKAPIPATH]/search',
+        url: 'http://104.197.96.190:8080/search',
         headers: { 'content-type': 'application/json' },
         body: requestData
     };
 
     var response = request(options);
 
-    response.then(console.log).catch(console.error);
-
     var starting_from = (page - 1) * size;
 
-    return db.elasticsearch.search({
+    var queryElasticSearch = function () {
+      return db.elasticsearch.search({
       index: config.elasticsearch.index,
       // type: 'group',
       size: size,
@@ -50,13 +48,13 @@ module.exports = (function() {
           match_phrase: {
             "_all": query
           }
-        } //,
-      //   sort: [{"entity": "desc"}],
-      //   highlight: {
-      //       fields : {
-      //           "text" : {}
-      //       }
-      //   }
+        },
+        sort: [{"docs._source.posttime": "desc"}],
+        highlight: {
+            fields : {
+                "docs._source.text" : {}
+            }
+        }
       }
     }).then(function (body) {
       var hits = body.hits.hits;
@@ -73,12 +71,14 @@ module.exports = (function() {
       return {status: 400, payload: error};
       //res.status(400).json(error);
     });
+	}
+	return response.then(queryElasticSearch).catch(console.error);
   }
 
   var _count = function(query) {
     return db.elasticsearch.count({
       index: config.elasticsearch.index,
-      type: 'entity',
+      type: 'group',
       body: {
         query: {
           match: {
@@ -222,7 +222,7 @@ module.exports = (function() {
       var search_deferred = _search(query_string, number_per_page, page),
           count_deferred = {status: 200, payload: undefined};
       if (count === "yes") {
-        count_deferred = _count(query_string);
+         count_deferred = _count(query_string);
       }
       Promise.all([search_deferred, count_deferred])
         .then(function (results) {
