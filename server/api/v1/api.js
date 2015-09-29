@@ -28,7 +28,7 @@ module.exports = (function() {
 
     var options = {
         method: 'POST',
-        url: '[FLASKAPIPATH]/search',
+        url: 'http://104.197.96.190:8080/search',
         headers: { 'content-type': 'application/json' },
         body: requestData
     };
@@ -114,14 +114,14 @@ module.exports = (function() {
 
     return db.elasticsearch.getSource({
       index: config.elasticsearch.index,
-      type: 'entity',
+      type: 'group',
       id: entity_id,
       from: starting_from
     }).then(function (source) {
       var ads = [];
 
-      // Ads belonging to the "base" entity.
-      var baseAds = source.base;
+      // Ads belonging to the "base" entity. --And now changing base to docs...
+      var baseAds = source.docs;
       ads = ads.concat(baseAds);
       ads.sort();
 
@@ -165,7 +165,7 @@ module.exports = (function() {
 
     db.elasticsearch.update({
       index: config.elasticsearch.index,
-      type: 'entity',
+      type: 'group',
       id: entity_id,
       retryOnConflict: 5,
       body: {
